@@ -3,7 +3,7 @@
 // whose body is a k402 challenge ({ k402, accepts:[offers] }) offering a payable scheme with a
 // well-formed pay destination. Runs server-side (browser can't reach third-party hosts) with an
 // SSRF guard, since the endpoint URL is user-supplied.
-import dns from 'node:dns';
+import { assertPublicUrl, probe } from '../../lib/probe';
 
 export const config = { maxDuration: 15 }; // a slow provider probe shouldn't hit the default function ceiling
 
@@ -15,62 +15,6 @@ const kas = (sompi) => {
   if (!isFinite(n)) return null;
   return parseFloat(n.toFixed(8));
 };
-
-function isPrivateIP(ip) {
-  const v4 = ip.startsWith('::ffff:') ? ip.slice(7) : ip;
-  const m = v4.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
-  if (m) {
-    const [a, b] = [Number(m[1]), Number(m[2])];
-    if (a === 10 || a === 127 || a === 0) return true;
-    if (a === 169 && b === 254) return true;        // link-local / cloud metadata
-    if (a === 192 && b === 168) return true;
-    if (a === 172 && b >= 16 && b <= 31) return true;
-    if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
-    return false;
-  }
-  const l = ip.toLowerCase();
-  if (l === '::1' || l === '::') return true;
-  if (l.startsWith('fe80') || l.startsWith('fc') || l.startsWith('fd')) return true; // link-local / ULA
-  return false;
-}
-
-// Reject non-http(s) and any host that resolves to a private/loopback/link-local address.
-async function assertPublicUrl(raw) {
-  let u;
-  try { u = new URL(raw); } catch { throw new Error('not a valid URL'); }
-  if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error('URL must be http(s)');
-  const host = u.hostname.replace(/^\[|\]$/g, '');
-  if (/^(localhost|.*\.local|.*\.internal)$/i.test(host)) throw new Error('host not allowed');
-  if (/^[\d.]+$/.test(host) || host.includes(':')) {
-    if (isPrivateIP(host)) throw new Error('host resolves to a private address');
-    return u;
-  }
-  const addrs = await dns.promises.lookup(host, { all: true }).catch(() => { throw new Error('host did not resolve (DNS)'); });
-  if (addrs.some((a) => isPrivateIP(a.address))) throw new Error('host resolves to a private address');
-  return u;
-}
-
-async function probe(url) {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 9000);
-  const started = Date.now();
-  try {
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: '{}',
-      redirect: 'manual',
-      signal: ctrl.signal,
-    });
-    const latency = Date.now() - started;
-    const text = await r.text().catch(() => '');
-    let json = null;
-    try { json = JSON.parse(text); } catch { /* not json */ }
-    return { status: r.status, latency, json, textLen: text.length };
-  } finally {
-    clearTimeout(t);
-  }
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });

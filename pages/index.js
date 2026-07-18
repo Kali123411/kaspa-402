@@ -53,9 +53,10 @@ function ReputationMeter({ p, maxKas }) {
   );
 }
 
-function ProviderCard({ p, maxKas, onUse }) {
+function ProviderCard({ p, maxKas, onUse, dead, deadDetail }) {
   return (
-    <article className="glass card-hover flex flex-col gap-3 rounded-2xl border border-teal-400/15 p-5">
+    <article title={dead ? `unreachable — ${deadDetail || 'no k402 response'}` : undefined}
+      className={`glass card-hover flex flex-col gap-3 rounded-2xl border p-5 ${dead ? 'border-rose-400/20 opacity-60' : 'border-teal-400/15'}`}>
       <div className="flex items-baseline justify-between gap-2.5">
         <a href={`/skill/${encodeURIComponent(p.cap)}`}
           className="font-mono text-[16px] text-gray-100 underline-offset-4 transition hover:text-teal-300 hover:underline"
@@ -76,6 +77,9 @@ function ProviderCard({ p, maxKas, onUse }) {
       <ReputationMeter p={p} maxKas={maxKas} />
       <div className="mt-auto flex items-center justify-between gap-2.5 border-t border-gray-700/60 pt-3">
         <div className="flex flex-wrap gap-1.5">
+          {dead ? (
+            <span className="rounded-md border border-rose-400/40 bg-rose-400/5 px-2 py-0.5 font-mono text-[11px] text-rose-300">unreachable</span>
+          ) : null}
           {p.schemes.map((s) => (
             <span key={s} className="rounded-md border border-gray-700 bg-gray-950/50 px-2 py-0.5 font-mono text-[11px] text-gray-400">{s}</span>
           ))}
@@ -399,13 +403,24 @@ export default function Marketplace() {
   const [sort, setSort] = useState('rep');
   const [used, setUsed] = useState(null);
   const [kasCount, setKasCount] = useState(0);
+  const [health, setHealth] = useState(null);
+  const [hideDead, setHideDead] = useState(false);
 
   useEffect(() => {
     fetch('/api/exchange')
       .then((r) => r.json())
       .then((d) => setRaw((d.providers || []).map(mapProvider)))
       .catch(() => setRaw([]));
+    // liveness sweep (cached at the edge); dead endpoints get dimmed + sorted last
+    fetch('/api/health')
+      .then((r) => r.json())
+      .then((d) => setHealth(d))
+      .catch(() => {});
   }, []);
+
+  // unknown/unchecked endpoints are treated as alive so a health blip never hides a real listing
+  const healthOf = (p) => (health && health.endpoints && health.endpoints[p.endpoint]) || null;
+  const aliveOf = (p) => { const h = healthOf(p); return h ? h.alive : true; };
 
   const totalKas = useMemo(() => raw.reduce((s, p) => s + p.kas, 0), [raw]);
   const providerCount = useMemo(() => new Set(raw.map((p) => p.payeeFull)).size, [raw]);
@@ -425,6 +440,9 @@ export default function Marketplace() {
       .filter((p) => (!ql || p.cap.includes(ql) || p.who.toLowerCase().includes(ql) || (p.model || '').toLowerCase().includes(ql)) && p.price <= mp && p.kas >= mr)
       .sort((a, b) => (sort === 'price' ? a.price - b.price : sort === 'new' ? a.closes - b.closes : b.kas - a.kas));
   }, [raw, q, maxPrice, minRep, sort]);
+
+  const deadInView = list.reduce((n, p) => n + (aliveOf(p) ? 0 : 1), 0);
+  const checkedAgo = health?.checked_at ? Math.max(0, Math.round((Date.now() - health.checked_at) / 60000)) : null;
 
   return (
     <>
@@ -496,11 +514,20 @@ export default function Marketplace() {
             </select>
             <span className="ml-auto font-mono text-[12.5px] text-gray-400"><b className="text-teal-400">{list.length}</b> of {raw.length} services</span>
           </div>
+          {deadInView > 0 ? (
+            <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12px] text-gray-500">
+              <span className="text-rose-300"><b>{deadInView}</b> unreachable</span>
+              {checkedAgo != null ? <span className="text-gray-600">· checked {checkedAgo === 0 ? 'just now' : `${checkedAgo}m ago`}</span> : null}
+              <button onClick={() => setHideDead((v) => !v)} className="text-teal-400 hover:underline">{hideDead ? 'show them' : 'hide them'}</button>
+            </div>
+          ) : null}
           {list.length ? (
             <div className="flex flex-col gap-8">
               {CAT_ORDER.map((cat) => {
-                const items = list.filter((p) => categoryOf(p.cap) === cat);
+                let items = list.filter((p) => categoryOf(p.cap) === cat);
+                if (hideDead) items = items.filter(aliveOf);
                 if (!items.length) return null;
+                items = [...items].sort((a, b) => Number(aliveOf(b)) - Number(aliveOf(a))); // dead last, order otherwise preserved
                 return (
                   <div key={cat}>
                     <div className="mb-3 flex items-center gap-3">
@@ -509,7 +536,7 @@ export default function Marketplace() {
                       <div className="h-px flex-1 bg-teal-400/15" />
                     </div>
                     <div className="grid gap-3.5 md:grid-cols-2">
-                      {items.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} />)}
+                      {items.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} dead={!aliveOf(p)} deadDetail={healthOf(p)?.detail} />)}
                     </div>
                   </div>
                 );
