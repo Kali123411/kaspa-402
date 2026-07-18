@@ -1,0 +1,21 @@
+{
+  "name": "kaspa-402",
+  "version": "1.0.0",
+  "private": true,
+  "description": "k402 service exchange — an open marketplace of agent-payable services settled on Kaspa L1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^16.0.7",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.3.2"
+  }
+}
