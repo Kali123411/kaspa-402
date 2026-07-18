@@ -8,6 +8,30 @@ const REGISTRY_POST = 'https://x402-compute.68cxgfyr0.workers.dev/registry/list'
 const MCP_URL = 'https://x402-compute.68cxgfyr0.workers.dev/mcp';
 const fmt = (n) => (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2));
 
+// Plain-English description of what each capability actually does — so a card tells you what you're
+// buying, and the Use panel shows what you send and get back. Falls back to a generic line.
+const CAP_INFO = {
+  'llm:chat': { what: 'General chat completion on a fast 7–8B model — Q&A, drafting, quick tasks.', send: '{ "model": "chat", "messages": [{ "role": "user", "content": "…" }] }', get: 'OpenAI-format chat completion' },
+  'llm:reason': { what: 'Deeper reasoning on a larger model — multi-step problems, analysis.', send: '{ "model": "reason", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
+  'llm:code': { what: 'Code generation and help from a coder-tuned model.', send: '{ "model": "code", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
+  'kaspa-expert': { what: 'RAG-grounded answers about Kaspa, on current knowledge (won’t hallucinate facts).', send: '{ "model": "kaspa-expert", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
+  summarize: { what: 'Condense text or a public URL into a short summary.', send: '{ "text": "…" (or "url"), "max_words": 120 }', get: '{ "summary": "…" }' },
+  extract: { what: 'Pull structured JSON from text, guaranteed to match a schema you provide.', send: '{ "text": "…", "schema": { … } }', get: 'JSON matching your schema' },
+  classify: { what: 'Label text into one (or several) of your categories.', send: '{ "text": "…", "labels": ["a", "b", "c"] }', get: '{ "label": "b" }' },
+  rewrite: { what: 'Rewrite text to an instruction — tone, format, or length.', send: '{ "text": "…", "instruction": "make it formal" }', get: '{ "text": "…" }' },
+  embed: { what: 'Turn text into vector embeddings for semantic search / RAG.', send: '{ "input": ["text one", "text two"] }', get: '{ "data": [{ "embedding": [ … ] }] }' },
+  read: { what: 'Fetch a public web page and return its title + clean markdown.', send: '{ "url": "https://…" }', get: '{ "title": "…", "markdown": "…" }' },
+  search: { what: 'Semantic search over a collection you indexed earlier.', send: '{ "collection": "…", "q": "…", "top_k": 5 }', get: 'ranked matches with scores' },
+  'zk-prove': { what: 'Generate a RISC Zero zero-knowledge proof — cycle-priced, verifiable by anyone.', send: '{ "image_id": "…", "input_b64": "…" }', get: '{ "receipt_b64": "…", "journal_b64": "…" }' },
+  attest: { what: 'Verify a RISC Zero receipt against an image id.', send: '{ "receipt_b64": "…", "image_id": "…" }', get: '{ "valid": true, "journal_b64": "…" }' },
+  'covenant:compile': { what: 'Compile a Silverscript covenant to script hex, ABI, template hash, and its P2SH address.', send: '{ "source": "…", "constructor_args": [ … ] }', get: '{ "script", "address", "template_hash" }' },
+  'covenant:build': { what: 'Assemble a covenant spend transaction (you sign locally; the service never holds keys).', send: '{ "inputs": [ … ], "outputs": [ … ] }', get: 'a broadcast-ready transaction + pre-verify' },
+  'chain:balance': { what: 'Balance of any Kaspa mainnet address, straight from a node — no indexer, no key.', send: '{ "address": "kaspa:…" }', get: '{ "balance": 123456789 }' },
+  'chain:utxos': { what: 'The UTXO set of a Kaspa address, including covenant ids where set.', send: '{ "address": "kaspa:…" }', get: '{ "utxos": [ … ] }' },
+  'chain:tx': { what: 'Mempool / acceptance status of a Kaspa transaction.', send: '{ "txid": "…" }', get: '{ "status": "…" }' },
+};
+const capInfo = (cap) => CAP_INFO[cap] || { what: 'A custom agent-payable service — open Use to see how to call it.' };
+
 function mapProvider(p) {
   const meta = p.meta || {};
   const rep = p.reputation || {};
@@ -70,6 +94,7 @@ function ProviderCard({ p, maxKas, onUse }) {
         <span className="mx-1.5 text-gray-600">·</span>
         {p.region}
       </div>
+      <p className="text-[13px] leading-snug text-gray-300">{capInfo(p.cap).what}</p>
       <ReputationMeter p={p} maxKas={maxKas} />
       <div className="mt-auto flex items-center justify-between gap-2.5 border-t border-gray-700/60 pt-3">
         <div className="flex flex-wrap gap-1.5">
@@ -138,7 +163,19 @@ function UseModal({ p, onClose }) {
           </div>
           <button onClick={onClose} aria-label="Close" className="font-mono text-lg leading-none text-gray-500 hover:text-teal-400">✕</button>
         </div>
-        <p className="mb-5 mt-3 text-[13.5px] text-gray-400">Paid <b className="text-gray-200">per call in KAS</b> — no account, no API key. Fund once and meter against it, or open a trustless channel. Pick a way:</p>
+        <div className="mb-4 mt-4 rounded-xl border border-gray-800 bg-gray-950/50 p-4">
+          <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-wider text-gray-500">What this does</div>
+          <p className="text-[13.5px] text-gray-300">{capInfo(p.cap).what}</p>
+          {capInfo(p.cap).send ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <div><div className="mb-1 font-mono text-[10px] uppercase tracking-wider text-teal-400">you send</div>
+                <pre className="overflow-x-auto rounded-lg border border-gray-800 bg-gray-950 px-3 py-2 font-mono text-[11px] leading-relaxed text-gray-300">{capInfo(p.cap).send}</pre></div>
+              <div><div className="mb-1 font-mono text-[10px] uppercase tracking-wider text-teal-400">you get</div>
+                <pre className="overflow-x-auto rounded-lg border border-gray-800 bg-gray-950 px-3 py-2 font-mono text-[11px] leading-relaxed text-gray-300">{capInfo(p.cap).get}</pre></div>
+            </div>
+          ) : null}
+        </div>
+        <p className="mb-4 text-[13.5px] text-gray-400">Paid <b className="text-gray-200">per call in KAS</b> — no account, no API key. Fund once and meter against it, or open a trustless channel. Pick a way:</p>
         <div className="flex flex-col gap-3">
           <Method n="1" title="Ask an agent" tag="easiest" body="Add the hosted MCP server; your agent discovers this service and pays for it itself — no code." code={mcpCode} />
           <Method n="2" title="Prepaid session" tag="simplest in code" body="Open a session, fund it once with KAS, then call the endpoint with an X-Session header. Metered per token." code={sessionCode} />
