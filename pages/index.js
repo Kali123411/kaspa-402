@@ -32,6 +32,17 @@ const CAP_INFO = {
 };
 const capInfo = (cap) => CAP_INFO[cap] || { what: 'A custom agent-payable service — open Use to see how to call it.' };
 
+// group services into browsable categories (derived from the capability), like a directory
+const CATEGORIES = [
+  ['Inference', (c) => c.startsWith('llm:') || c === 'kaspa-expert'],
+  ['Text & data', (c) => ['summarize', 'extract', 'classify', 'rewrite', 'read', 'embed', 'search'].includes(c)],
+  ['Kaspa chain data', (c) => c.startsWith('chain:')],
+  ['Covenants', (c) => c.startsWith('covenant:')],
+  ['Zero-knowledge', (c) => c === 'zk-prove' || c === 'attest'],
+];
+const CAT_ORDER = [...CATEGORIES.map((c) => c[0]), 'Other'];
+const categoryOf = (cap) => (CATEGORIES.find(([, test]) => test(cap)) || ['Other'])[0];
+
 function mapProvider(p) {
   const meta = p.meta || {};
   const rep = p.reputation || {};
@@ -521,10 +532,28 @@ export default function Marketplace() {
             </select>
             <span className="ml-auto font-mono text-[12.5px] text-gray-400"><b className="text-teal-400">{list.length}</b> of {raw.length} services</span>
           </div>
-          <div className="grid gap-3.5 md:grid-cols-2">
-            {list.length ? list.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} />)
-              : <div className="col-span-full py-12 text-center font-mono text-gray-400">no services match — widen the filters, or list yours below.</div>}
-          </div>
+          {list.length ? (
+            <div className="flex flex-col gap-8">
+              {CAT_ORDER.map((cat) => {
+                const items = list.filter((p) => categoryOf(p.cap) === cat);
+                if (!items.length) return null;
+                return (
+                  <div key={cat}>
+                    <div className="mb-3 flex items-center gap-3">
+                      <h3 className="font-orbitron text-[13px] font-bold uppercase tracking-[0.14em] text-teal-400">{cat}</h3>
+                      <span className="font-mono text-[11px] text-gray-500">{items.length}</span>
+                      <div className="h-px flex-1 bg-teal-400/15" />
+                    </div>
+                    <div className="grid gap-3.5 md:grid-cols-2">
+                      {items.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} />)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-12 text-center font-mono text-gray-400">no services match — widen the filters, or list yours below.</div>
+          )}
         </section>
 
         {/* list a service */}
@@ -556,12 +585,18 @@ export default function Marketplace() {
             <span className="text-gray-500"># Claude Code</span><br />
             claude mcp add --transport http k402 {MCP_URL}
           </div>
+          <p className="mt-3 text-[13px] text-gray-400">
+            Or point any agent at the machine-readable catalog — the whole marketplace (how to pay, the
+            discovery API, every service) in one fetch:{' '}
+            <a href="/llms.txt" className="font-mono text-teal-400 hover:underline">kaspa-402.org/llms.txt</a>.
+          </p>
         </section>
 
         {/* footer */}
         <footer className="mt-16 border-t border-teal-400/15 pt-8">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {[
+              ['Agent catalog (llms.txt)', '/llms.txt'],
               ['Protocol', 'https://github.com/Kali123411/k402/blob/main/PROTOCOL.md'],
               ['Provider guide', 'https://github.com/Kali123411/k402/blob/main/PROVIDERS.md'],
               ['Python package', 'https://pypi.org/project/k402/'],
