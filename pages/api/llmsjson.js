@@ -1,9 +1,14 @@
 // pages/api/llmsjson.js — the machine-readable catalog as structured JSON, served at /llms.json.
 // The programmatic twin of /llms.txt: same content, but a shape a consumer can parse without regex.
-import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, capInfo, categoryOf, fetchServices } from '../../lib/catalog';
+import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, capInfo, categoryOf, fetchServices, deadEndpoints } from '../../lib/catalog';
 
 export default async function handler(req, res) {
-  const providers = await fetchServices();
+  const all = await fetchServices();
+  // drop endpoints the health sweep confirmed dead — agents shouldn't be handed a dead endpoint
+  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
+  const base = req.headers.host ? `${proto}://${req.headers.host}` : SITE;
+  const dead = await deadEndpoints(base);
+  const providers = all.filter((p) => !dead.has(p.endpoint));
 
   const services = providers.map((p) => {
     const info = capInfo(p.capability);
@@ -35,6 +40,7 @@ export default async function handler(req, res) {
     pay: PAY,
     discovery: DISCOVERY,
     count: services.length,
+    excluded_unreachable: all.length - services.length,
     services,
   };
 
