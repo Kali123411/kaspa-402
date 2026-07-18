@@ -1,10 +1,15 @@
 // pages/api/llms.js — the machine-readable catalog, served at /llms.txt (via a rewrite).
 // One fetch gives an agent/LLM the whole marketplace: how to pay, the discovery API, and every
 // live service (capability, description, price, endpoint, schemes, reputation), grouped by category.
-import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, CAT_ORDER, categoryOf, fetchServices } from '../../lib/catalog';
+import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, CAT_ORDER, categoryOf, fetchServices, deadEndpoints } from '../../lib/catalog';
 
 export default async function handler(req, res) {
-  const providers = await fetchServices();
+  const all = await fetchServices();
+  // drop endpoints the health sweep confirmed dead — same as /llms.json (fail-open on any error)
+  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
+  const base = req.headers.host ? `${proto}://${req.headers.host}` : SITE;
+  const dead = await deadEndpoints(base);
+  const providers = all.filter((p) => !dead.has(p.endpoint));
 
   const L = [];
   L.push('# k402 service exchange — kaspa-402.org');
