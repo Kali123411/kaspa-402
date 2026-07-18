@@ -49,8 +49,11 @@ function mapProvider(p) {
     payeeFull: p.payee_pubkey,
     endpoint: p.endpoint || '',
     channelTerms: p.channel_terms || {},
+    description: p.description || '',
   };
 }
+// the provider's own blurb if they wrote one, else the built-in capability description
+const blurb = (p) => p.description || capInfo(p.cap).what;
 
 function ReputationMeter({ p, maxKas }) {
   if (p.closes === 0) {
@@ -94,7 +97,7 @@ function ProviderCard({ p, maxKas, onUse }) {
         <span className="mx-1.5 text-gray-600">·</span>
         {p.region}
       </div>
-      <p className="text-[13px] leading-snug text-gray-300">{capInfo(p.cap).what}</p>
+      <p className="text-[13px] leading-snug text-gray-300">{blurb(p)}</p>
       <ReputationMeter p={p} maxKas={maxKas} />
       <div className="mt-auto flex items-center justify-between gap-2.5 border-t border-gray-700/60 pt-3">
         <div className="flex flex-wrap gap-1.5">
@@ -165,7 +168,7 @@ function UseModal({ p, onClose }) {
         </div>
         <div className="mb-4 mt-4 rounded-xl border border-gray-800 bg-gray-950/50 p-4">
           <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-wider text-gray-500">What this does</div>
-          <p className="text-[13.5px] text-gray-300">{capInfo(p.cap).what}</p>
+          <p className="text-[13.5px] text-gray-300">{blurb(p)}</p>
           {capInfo(p.cap).send ? (
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               <div><div className="mb-1 font-mono text-[10px] uppercase tracking-wider text-teal-400">you send</div>
@@ -191,6 +194,7 @@ function ListingBuilder() {
   const [f, setF] = useState({
     cap: 'summarize', ep: 'https://your-host/summarize', price: '0.002',
     model: 'qwen2.5:7b', region: 'eu-west', name: 'my-node', pub: '',
+    desc: 'Fast 7B summariser — send text or a URL, get a short summary back.',
   });
   const [schemes, setSchemes] = useState({ 'kaspa-channel': true, 'kaspa-utxo': true, 'kaspa-session': false });
   const [copied, setCopied] = useState(false);
@@ -201,6 +205,7 @@ function ListingBuilder() {
     cap: f.cap, who: f.name, model: f.model, region: f.region,
     price: parseFloat(f.price) || 0, kas: 0, closes: 0,
     schemes: active, stake: 0, payee: (f.pub || 'yourpubkey').slice(0, 8),
+    description: f.desc,
   };
   const code = `# pip install k402
 from k402 import Listing
@@ -212,7 +217,7 @@ listing = Listing(
   payee_pubkey="${f.pub || 'YOUR_PAYEE_PUBKEY'}",
   price_usd=${parseFloat(f.price) || 0},
   schemes=[${active.map((s) => `"${s}"`).join(', ')}],
-  meta={"model": "${f.model}", "region": "${f.region}"},
+${f.desc ? `  description="${f.desc.replace(/"/g, '\\"')}",\n` : ''}  meta={"model": "${f.model}", "region": "${f.region}"},
 ).sign(YOUR_PAYEE_KEY)   # signs locally; key never leaves your machine
 
 httpx.post("${REGISTRY_POST}", json=listing.to_dict())`;
@@ -239,6 +244,8 @@ httpx.post("${REGISTRY_POST}", json=listing.to_dict())`;
           <div className="flex flex-col gap-1.5"><label className={LABEL}>Model / label</label><input className={FIELD} value={f.model} onChange={upd('model')} /></div>
           <div className="flex flex-col gap-1.5"><label className={LABEL}>Region</label><input className={FIELD} value={f.region} onChange={upd('region')} /></div>
           <div className="flex flex-col gap-1.5"><label className={LABEL}>Provider name</label><input className={FIELD} value={f.name} onChange={upd('name')} /></div>
+          <div className="col-span-2 flex flex-col gap-1.5"><label className={LABEL}>Description — what you offer</label>
+            <textarea className={FIELD + ' resize-y'} rows={2} value={f.desc} onChange={upd('desc')} placeholder="One or two lines: what the service does, what you send and get back." /></div>
           <div className="col-span-2 flex flex-col gap-1.5"><label className={LABEL}>Payee pubkey (x-only hex)</label>
             <input className={FIELD} value={f.pub} onChange={upd('pub')} placeholder="derive: k402.payer_pubkey_from_privkey(key)" /></div>
           <div className="col-span-2 flex flex-col gap-1.5"><label className={LABEL}>Schemes accepted</label>
