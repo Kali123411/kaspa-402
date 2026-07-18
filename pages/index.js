@@ -23,6 +23,8 @@ function mapProvider(p) {
     stake: p.stake_kas || 0,
     payee: String(p.payee_pubkey || '').slice(0, 8),
     payeeFull: p.payee_pubkey,
+    endpoint: p.endpoint || '',
+    channelTerms: p.channel_terms || {},
   };
 }
 
@@ -51,7 +53,7 @@ function ReputationMeter({ p, maxKas }) {
   );
 }
 
-function ProviderCard({ p, maxKas }) {
+function ProviderCard({ p, maxKas, onUse }) {
   return (
     <article className="glass card-hover flex flex-col gap-3 rounded-2xl border border-teal-400/15 p-5">
       <div className="flex items-baseline justify-between gap-2.5">
@@ -78,6 +80,12 @@ function ProviderCard({ p, maxKas }) {
             <span className="rounded-md border border-kaspa/35 bg-gray-950/50 px-2 py-0.5 font-mono text-[11px] text-kaspa">staked {p.stake} KAS</span>
           ) : null}
         </div>
+        {onUse ? (
+          <button onClick={() => onUse(p)}
+            className="shrink-0 rounded-lg border border-teal-400/40 bg-teal-400/5 px-3.5 py-1.5 font-mono text-[12.5px] font-semibold text-teal-400 transition hover:bg-teal-400/15 hover:shadow-glow-cyan">
+            Use →
+          </button>
+        ) : null}
       </div>
       <div className="font-mono text-[11.5px] text-gray-600">payee {p.payee}…</div>
     </article>
@@ -86,6 +94,61 @@ function ProviderCard({ p, maxKas }) {
 
 const FIELD = 'w-full rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2 font-mono text-[13px] text-gray-100 outline-none transition focus:border-teal-400 focus:shadow-[0_0_0_3px_rgba(0,240,255,0.1)]';
 const LABEL = 'font-mono text-[10.5px] uppercase tracking-wider text-gray-500';
+
+function CopyBtn({ text }) {
+  const [c, setC] = useState(false);
+  return (
+    <button onClick={() => navigator.clipboard.writeText(text).then(() => { setC(true); setTimeout(() => setC(false), 1400); })}
+      className="rounded border border-teal-400/35 px-2.5 py-1 font-mono text-[11px] text-teal-400 hover:bg-teal-400/10">{c ? 'copied ✓' : 'copy'}</button>
+  );
+}
+
+function Method({ n, title, tag, body, code }) {
+  return (
+    <div className="rounded-xl border border-teal-400/15 bg-gray-950/50 p-4">
+      <div className="mb-1.5 flex flex-wrap items-center gap-2.5">
+        <span className="rounded bg-teal-400 px-1.5 font-orbitron text-xs font-bold text-gray-950">{n}</span>
+        <span className="font-orbitron text-[13px] font-bold uppercase tracking-wide text-gray-100">{title}</span>
+        {tag ? <span className="rounded-full border border-teal-400/30 px-2 py-px font-mono text-[10px] uppercase tracking-widest text-teal-400">{tag}</span> : null}
+      </div>
+      <p className="mb-2.5 text-[13px] text-gray-400">{body}</p>
+      <div className="overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
+        <div className="flex justify-end border-b border-gray-800 px-2 py-1.5"><CopyBtn text={code} /></div>
+        <pre className="overflow-x-auto px-3.5 py-3 font-mono text-[11.5px] leading-relaxed text-gray-200">{code}</pre>
+      </div>
+    </div>
+  );
+}
+
+// The "how do I actually use this?" panel: three concrete ways to call a specific listed service,
+// pre-filled with its endpoint / payee / price. Opened by the "Use →" button on each card.
+function UseModal({ p, onClose }) {
+  let base = 'https://x402-compute.68cxgfyr0.workers.dev';
+  try { base = new URL(p.endpoint).origin; } catch (e) { /* keep default */ }
+  const mcpCode = `claude mcp add --transport http k402 ${MCP_URL}\n# then tell your agent:  use the k402 "${p.cap}" service to ...`;
+  const sessionCode = `# 1) open a prepaid session (once) — returns a Kaspa deposit address\ncurl -X POST ${base}/onboard/request\n\n# 2) fund that address with KAS, then call the service (metered per token):\ncurl -X POST ${p.endpoint || base + '/<endpoint>'} \\\n  -H "X-Session: <your-session>" -H "content-type: application/json" \\\n  -d '{ ...request... }'`;
+  const channelCode = `pip install k402\nfrom k402 import ChannelPayer, SubprocessChannelOpener, NodeBackend\n\npayer = ChannelPayer(payer_privkey=KEY, opener=SubprocessChannelOpener(bin, cwd),\n                     backend=NodeBackend("ws://your-node:17110"),\n                     registry_url="${base}")\nproviders = await payer.discover("${p.cap}")   # find this + similar providers\nr = await payer.pay(providers[0], "", {...})   # opens a channel to the payee, pays per call`;
+  return (
+    <div onClick={onClose} className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:p-8">
+      <div onClick={(e) => e.stopPropagation()} className="glass my-4 w-full max-w-2xl rounded-2xl border border-teal-400/25 p-6 shadow-glow-cyan">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="font-mono text-[17px] text-gray-100">{p.cap}</div>
+            <div className="mt-1 text-[13px] text-gray-400">{p.who} · <span className="text-teal-400">${p.price}/call</span> · <span className="font-mono text-gray-500">payee {p.payee}…</span></div>
+          </div>
+          <button onClick={onClose} aria-label="Close" className="font-mono text-lg leading-none text-gray-500 hover:text-teal-400">✕</button>
+        </div>
+        <p className="mb-5 mt-3 text-[13.5px] text-gray-400">Paid <b className="text-gray-200">per call in KAS</b> — no account, no API key. Fund once and meter against it, or open a trustless channel. Pick a way:</p>
+        <div className="flex flex-col gap-3">
+          <Method n="1" title="Ask an agent" tag="easiest" body="Add the hosted MCP server; your agent discovers this service and pays for it itself — no code." code={mcpCode} />
+          <Method n="2" title="Prepaid session" tag="simplest in code" body="Open a session, fund it once with KAS, then call the endpoint with an X-Session header. Metered per token." code={sessionCode} />
+          <Method n="3" title="Payment channel" tag="trustless · high volume" body="Open a covenant channel straight to this provider and pay per call with signed vouchers — no custodian." code={channelCode} />
+        </div>
+        <p className="mt-5 text-[12px] text-gray-500">New to this? <button onClick={() => { onClose(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-teal-400 hover:underline">Try a call free at the top</button> — no wallet — or read the <a href="https://github.com/Kali123411/k402/blob/main/PROVIDERS.md" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">full guide</a>.</p>
+      </div>
+    </div>
+  );
+}
 
 function ListingBuilder() {
   const [f, setF] = useState({
@@ -244,6 +307,7 @@ export default function Marketplace() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRep, setMinRep] = useState('');
   const [sort, setSort] = useState('rep');
+  const [used, setUsed] = useState(null);
   const [kasCount, setKasCount] = useState(0);
 
   useEffect(() => {
@@ -325,7 +389,7 @@ export default function Marketplace() {
         <section id="browse" className="pt-12">
           <div className="mb-5 flex items-end justify-between gap-3">
             <div><h2 className="font-orbitron text-[22px] font-bold uppercase tracking-tight">Browse services</h2>
-              <p className="mt-1.5 text-sm text-gray-400">Ranked by chain-verified reputation. Filter, then settle directly with the provider.</p></div>
+              <p className="mt-1.5 text-sm text-gray-400">Ranked by chain-verified reputation. Hit “Use →” on any service to see exactly how to call it.</p></div>
             <span className="rounded-full border border-teal-400/25 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-teal-400">live market</span>
           </div>
           <div className="mb-5 flex flex-wrap items-center gap-2.5">
@@ -338,7 +402,7 @@ export default function Marketplace() {
             <span className="ml-auto font-mono text-[12.5px] text-gray-400"><b className="text-teal-400">{list.length}</b> of {raw.length} services</span>
           </div>
           <div className="grid gap-3.5 md:grid-cols-2">
-            {list.length ? list.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} />)
+            {list.length ? list.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} />)
               : <div className="col-span-full py-12 text-center font-mono text-gray-400">no services match — widen the filters, or list yours below.</div>}
           </div>
         </section>
@@ -395,6 +459,7 @@ export default function Marketplace() {
           </p>
         </footer>
       </main>
+      {used ? <UseModal p={used} onClose={() => setUsed(null)} /> : null}
     </>
   );
 }
