@@ -3,45 +3,7 @@
 // providers onboard with the interactive builder (their key signs locally, never in the browser).
 import Head from 'next/head';
 import { useEffect, useMemo, useRef, useState } from 'react';
-
-const REGISTRY_POST = 'https://x402-compute.68cxgfyr0.workers.dev/registry/list';
-const MCP_URL = 'https://x402-compute.68cxgfyr0.workers.dev/mcp';
-const fmt = (n) => (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2));
-
-// Plain-English description of what each capability actually does — so a card tells you what you're
-// buying, and the Use panel shows what you send and get back. Falls back to a generic line.
-const CAP_INFO = {
-  'llm:chat': { what: 'General chat completion on a fast 7–8B model — Q&A, drafting, quick tasks.', send: '{ "model": "chat", "messages": [{ "role": "user", "content": "…" }] }', get: 'OpenAI-format chat completion' },
-  'llm:reason': { what: 'Deeper reasoning on a larger model — multi-step problems, analysis.', send: '{ "model": "reason", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
-  'llm:code': { what: 'Code generation and help from a coder-tuned model.', send: '{ "model": "code", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
-  'kaspa-expert': { what: 'RAG-grounded answers about Kaspa, on current knowledge (won’t hallucinate facts).', send: '{ "model": "kaspa-expert", "messages": [ … ] }', get: 'OpenAI-format chat completion' },
-  summarize: { what: 'Condense text or a public URL into a short summary.', send: '{ "text": "…" (or "url"), "max_words": 120 }', get: '{ "summary": "…" }' },
-  extract: { what: 'Pull structured JSON from text, guaranteed to match a schema you provide.', send: '{ "text": "…", "schema": { … } }', get: 'JSON matching your schema' },
-  classify: { what: 'Label text into one (or several) of your categories.', send: '{ "text": "…", "labels": ["a", "b", "c"] }', get: '{ "label": "b" }' },
-  rewrite: { what: 'Rewrite text to an instruction — tone, format, or length.', send: '{ "text": "…", "instruction": "make it formal" }', get: '{ "text": "…" }' },
-  embed: { what: 'Turn text into vector embeddings for semantic search / RAG.', send: '{ "input": ["text one", "text two"] }', get: '{ "data": [{ "embedding": [ … ] }] }' },
-  read: { what: 'Fetch a public web page and return its title + clean markdown.', send: '{ "url": "https://…" }', get: '{ "title": "…", "markdown": "…" }' },
-  search: { what: 'Semantic search over a collection you indexed earlier.', send: '{ "collection": "…", "q": "…", "top_k": 5 }', get: 'ranked matches with scores' },
-  'zk-prove': { what: 'Generate a RISC Zero zero-knowledge proof — cycle-priced, verifiable by anyone.', send: '{ "image_id": "…", "input_b64": "…" }', get: '{ "receipt_b64": "…", "journal_b64": "…" }' },
-  attest: { what: 'Verify a RISC Zero receipt against an image id.', send: '{ "receipt_b64": "…", "image_id": "…" }', get: '{ "valid": true, "journal_b64": "…" }' },
-  'covenant:compile': { what: 'Compile a Silverscript covenant to script hex, ABI, template hash, and its P2SH address.', send: '{ "source": "…", "constructor_args": [ … ] }', get: '{ "script", "address", "template_hash" }' },
-  'covenant:build': { what: 'Assemble a covenant spend transaction (you sign locally; the service never holds keys).', send: '{ "inputs": [ … ], "outputs": [ … ] }', get: 'a broadcast-ready transaction + pre-verify' },
-  'chain:balance': { what: 'Balance of any Kaspa mainnet address, straight from a node — no indexer, no key.', send: '{ "address": "kaspa:…" }', get: '{ "balance": 123456789 }' },
-  'chain:utxos': { what: 'The UTXO set of a Kaspa address, including covenant ids where set.', send: '{ "address": "kaspa:…" }', get: '{ "utxos": [ … ] }' },
-  'chain:tx': { what: 'Mempool / acceptance status of a Kaspa transaction.', send: '{ "txid": "…" }', get: '{ "status": "…" }' },
-};
-const capInfo = (cap) => CAP_INFO[cap] || { what: 'A custom agent-payable service — open Use to see how to call it.' };
-
-// group services into browsable categories (derived from the capability), like a directory
-const CATEGORIES = [
-  ['Inference', (c) => c.startsWith('llm:') || c === 'kaspa-expert'],
-  ['Text & data', (c) => ['summarize', 'extract', 'classify', 'rewrite', 'read', 'embed', 'search'].includes(c)],
-  ['Kaspa chain data', (c) => c.startsWith('chain:')],
-  ['Covenants', (c) => c.startsWith('covenant:')],
-  ['Zero-knowledge', (c) => c === 'zk-prove' || c === 'attest'],
-];
-const CAT_ORDER = [...CATEGORIES.map((c) => c[0]), 'Other'];
-const categoryOf = (cap) => (CATEGORIES.find(([, test]) => test(cap)) || ['Other'])[0];
+import { MCP_URL, REGISTRY_POST, fmt, capInfo, CAT_ORDER, categoryOf } from '../lib/catalog';
 
 function mapProvider(p) {
   const meta = p.meta || {};
@@ -95,7 +57,9 @@ function ProviderCard({ p, maxKas, onUse }) {
   return (
     <article className="glass card-hover flex flex-col gap-3 rounded-2xl border border-teal-400/15 p-5">
       <div className="flex items-baseline justify-between gap-2.5">
-        <span className="font-mono text-[16px] text-gray-100">{p.cap}</span>
+        <a href={`/skill/${encodeURIComponent(p.cap)}`}
+          className="font-mono text-[16px] text-gray-100 underline-offset-4 transition hover:text-teal-300 hover:underline"
+          title="Open the service manifest (SKILL.md)">{p.cap}</a>
         <span className="whitespace-nowrap font-mono text-[15px] text-teal-400 tabular-nums">
           ${p.price}
           <small className="text-[11px] text-gray-500">/call</small>
@@ -173,7 +137,7 @@ function UseModal({ p, onClose }) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="font-mono text-[17px] text-gray-100">{p.cap}</div>
-            <div className="mt-1 text-[13px] text-gray-400">{p.who} · <span className="text-teal-400">${p.price}/call</span> · <span className="font-mono text-gray-500">payee {p.payee}…</span></div>
+            <div className="mt-1 text-[13px] text-gray-400">{p.who} · <span className="text-teal-400">${p.price}/call</span> · <a href={`/skill/${encodeURIComponent(p.cap)}`} className="text-gray-400 underline underline-offset-2 hover:text-teal-400">manifest</a></div>
           </div>
           <button onClick={onClose} aria-label="Close" className="font-mono text-lg leading-none text-gray-500 hover:text-teal-400">✕</button>
         </div>

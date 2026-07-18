@@ -1,22 +1,10 @@
 // pages/api/llms.js — the machine-readable catalog, served at /llms.txt (via a rewrite).
 // One fetch gives an agent/LLM the whole marketplace: how to pay, the discovery API, and every
 // live service (capability, description, price, endpoint, schemes, reputation), grouped by category.
-const GATEWAY = 'https://x402-compute.68cxgfyr0.workers.dev';
-const CATS = [
-  ['Inference', (c) => c.startsWith('llm:') || c === 'kaspa-expert'],
-  ['Text & data', (c) => ['summarize', 'extract', 'classify', 'rewrite', 'read', 'embed', 'search'].includes(c)],
-  ['Kaspa chain data', (c) => c.startsWith('chain:')],
-  ['Covenants', (c) => c.startsWith('covenant:')],
-  ['Zero-knowledge', (c) => c === 'zk-prove' || c === 'attest'],
-];
-const catOf = (c) => (CATS.find(([, f]) => f(c)) || ['Other'])[0];
+import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, CAT_ORDER, categoryOf, fetchServices } from '../../lib/catalog';
 
 export default async function handler(req, res) {
-  let providers = [];
-  try {
-    const d = await (await fetch(`${GATEWAY}/registry/search?limit=500`)).json();
-    providers = d.providers || [];
-  } catch (e) { /* still serve the header if the registry is briefly unreachable */ }
+  const providers = await fetchServices();
 
   const L = [];
   L.push('# k402 service exchange — kaspa-402.org');
@@ -27,23 +15,22 @@ export default async function handler(req, res) {
   L.push('## How an agent pays');
   L.push('');
   L.push('- MCP (easiest): add the hosted server, then discover and pay from your agent:');
-  L.push(`    claude mcp add --transport http k402 ${GATEWAY}/mcp`);
+  L.push(`    ${PAY.mcp}`);
   L.push('    # tools: registry_search(capability=...), generate(...), summarize(...), etc.');
-  L.push(`- Prepaid session: POST ${GATEWAY}/onboard/request -> a Kaspa deposit address; fund it once`);
-  L.push('    with KAS, then call any endpoint with header  X-Session: <session>  (metered per token).');
-  L.push('- Payment channel (trustless): pip install k402; open a covenant channel to a provider and');
-  L.push('    pay per call with off-chain vouchers (k402.ChannelPayer). No custodian.');
+  L.push(`- Prepaid session: ${PAY.session}`);
+  L.push(`- Payment channel (trustless): ${PAY.channel}`);
   L.push('');
   L.push('## Discovery API');
   L.push('');
-  L.push(`- All services (JSON): GET ${GATEWAY}/registry/search`);
-  L.push(`- Filter: GET ${GATEWAY}/registry/search?capability=<cap>&max_price_usd=<n>&min_reputation_kas=<n>`);
-  L.push(`- One provider: GET ${GATEWAY}/registry/provider/<payee_pubkey>`);
+  L.push(`- All services (JSON): GET ${DISCOVERY.services}`);
+  L.push(`- Filter: GET ${DISCOVERY.filter}`);
+  L.push(`- One provider: GET ${DISCOVERY.provider}`);
+  L.push(`- This catalog as JSON: GET ${SITE}/llms.json`);
   L.push('');
   L.push(`## Services (${providers.length} live)`);
   L.push('');
-  for (const cat of [...CATS.map((c) => c[0]), 'Other']) {
-    const items = providers.filter((p) => catOf(p.capability) === cat);
+  for (const cat of CAT_ORDER) {
+    const items = providers.filter((p) => categoryOf(p.capability) === cat);
     if (!items.length) continue;
     L.push(`### ${cat}`);
     L.push('');
@@ -52,6 +39,7 @@ export default async function handler(req, res) {
       const desc = (p.description || '').replace(/\s+/g, ' ').trim() || 'agent-payable service';
       L.push(`- **${p.capability}** — ${desc}`);
       L.push(`  price: $${p.price_usd}/call · endpoint: ${p.endpoint} · schemes: ${(p.schemes || []).join(', ')} · reputation: ${rep} KAS settled`);
+      L.push(`  manifest: ${SITE}/skill/${encodeURIComponent(p.capability)}.md`);
     }
     L.push('');
   }
