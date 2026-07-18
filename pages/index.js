@@ -538,6 +538,10 @@ export default function Marketplace() {
               </div>
             ))}
           </div>
+          <a href="/validate" className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-teal-400/20 bg-teal-400/5 px-4 py-3 transition hover:border-teal-400/50 hover:shadow-glow-cyan">
+            <span className="text-[13px] text-gray-300"><b className="text-teal-400">Preflight first →</b> check your endpoint returns a proper k402 challenge before you list — no dead listings.</span>
+            <span className="shrink-0 font-mono text-[12.5px] text-teal-400">Validate</span>
+          </a>
           <ListingBuilder />
         </section>
 
@@ -570,6 +574,7 @@ export default function Marketplace() {
               ['Agent catalog (llms.txt)', '/llms.txt'],
               ['Catalog JSON', '/llms.json'],
               ['npx kaspa-402', 'https://github.com/Kali123411/kaspa-402-cli'],
+              ['Validate a service', '/validate'],
               ['Protocol', 'https://github.com/Kali123411/k402/blob/main/PROTOCOL.md'],
               ['Provider guide', 'https://github.com/Kali123411/k402/blob/main/PROVIDERS.md'],
               ['Python package', 'https://pypi.org/project/k402/'],
