@@ -443,6 +443,8 @@ export default function Marketplace() {
 
   const deadInView = list.reduce((n, p) => n + (aliveOf(p) ? 0 : 1), 0);
   const checkedAgo = health?.checked_at ? Math.max(0, Math.round((Date.now() - health.checked_at) / 60000)) : null;
+  // group by category only in the default view; a chosen sort or a search flattens into one ranked list
+  const grouped = sort === 'rep' && !q.trim();
 
   return (
     <>
@@ -502,7 +504,7 @@ export default function Marketplace() {
         <section id="browse" className="pt-12">
           <div className="mb-5 flex items-end justify-between gap-3">
             <div><h2 className="font-orbitron text-[22px] font-bold uppercase tracking-tight">Browse services</h2>
-              <p className="mt-1.5 text-sm text-gray-400">Ranked by chain-verified reputation. Hit “Use →” on any service to see exactly how to call it.</p></div>
+              <p className="mt-1.5 text-sm text-gray-400">Grouped by category by default; pick a sort or search to rank them all in one list. Hit “Use →” on any service to see how to call it.</p></div>
             <span className="rounded-full border border-teal-400/25 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-teal-400">live market</span>
           </div>
           <div className="mb-5 flex flex-wrap items-center gap-2.5">
@@ -522,26 +524,36 @@ export default function Marketplace() {
             </div>
           ) : null}
           {list.length ? (
-            <div className="flex flex-col gap-8">
-              {CAT_ORDER.map((cat) => {
-                let items = list.filter((p) => categoryOf(p.cap) === cat);
-                if (hideDead) items = items.filter(aliveOf);
-                if (!items.length) return null;
-                items = [...items].sort((a, b) => Number(aliveOf(b)) - Number(aliveOf(a))); // dead last, order otherwise preserved
-                return (
-                  <div key={cat}>
-                    <div className="mb-3 flex items-center gap-3">
-                      <h3 className="font-orbitron text-[13px] font-bold uppercase tracking-[0.14em] text-teal-400">{cat}</h3>
-                      <span className="font-mono text-[11px] text-gray-500">{items.length}</span>
-                      <div className="h-px flex-1 bg-teal-400/15" />
+            grouped ? (
+              // default directory view — grouped by category, each ranked by reputation
+              <div className="flex flex-col gap-8">
+                {CAT_ORDER.map((cat) => {
+                  let items = list.filter((p) => categoryOf(p.cap) === cat);
+                  if (hideDead) items = items.filter(aliveOf);
+                  if (!items.length) return null;
+                  items = [...items].sort((a, b) => Number(aliveOf(b)) - Number(aliveOf(a))); // dead last, order otherwise preserved
+                  return (
+                    <div key={cat}>
+                      <div className="mb-3 flex items-center gap-3">
+                        <h3 className="font-orbitron text-[13px] font-bold uppercase tracking-[0.14em] text-teal-400">{cat}</h3>
+                        <span className="font-mono text-[11px] text-gray-500">{items.length}</span>
+                        <div className="h-px flex-1 bg-teal-400/15" />
+                      </div>
+                      <div className="grid gap-3.5 md:grid-cols-2">
+                        {items.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} dead={!aliveOf(p)} deadDetail={healthOf(p)?.detail} />)}
+                      </div>
                     </div>
-                    <div className="grid gap-3.5 md:grid-cols-2">
-                      {items.map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} dead={!aliveOf(p)} deadDetail={healthOf(p)?.detail} />)}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              // a sort or search is active — flatten to a single ranked list so the ranking is visible
+              <div className="grid gap-3.5 md:grid-cols-2">
+                {(hideDead ? list.filter(aliveOf) : [...list])
+                  .sort((a, b) => Number(aliveOf(b)) - Number(aliveOf(a)))
+                  .map((p, i) => <ProviderCard key={p.payeeFull + p.cap + i} p={p} maxKas={maxKas} onUse={setUsed} dead={!aliveOf(p)} deadDetail={healthOf(p)?.detail} />)}
+              </div>
+            )
           ) : (
             <div className="py-12 text-center font-mono text-gray-400">no services match — widen the filters, or list yours below.</div>
           )}
