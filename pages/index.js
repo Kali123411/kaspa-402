@@ -544,15 +544,22 @@ export default function Marketplace() {
         {/* connect an agent */}
         <section className="mt-14 border-t border-teal-400/15 pt-9">
           <h2 className="mb-6 font-mono text-[12.5px] uppercase tracking-[0.18em] text-gray-400">Connect an agent</h2>
-          <p className="mb-4 max-w-[64ch] text-sm text-gray-400">Add the hosted MCP endpoint and your agent discovers and pays for any listed service — no install, no API key.</p>
-          <div className="overflow-x-auto rounded-2xl border border-teal-400/15 bg-gray-950/70 px-4 py-4 font-mono text-[12.5px] text-gray-200">
-            <span className="text-gray-500"># Claude Code</span><br />
+          <p className="mb-4 max-w-[64ch] text-sm text-gray-400">One command wires up the hosted MCP endpoint, and your agent discovers and pays for any listed service — no install, no API key.</p>
+          <div className="overflow-x-auto rounded-2xl border border-teal-400/15 bg-gray-950/70 px-4 py-4 font-mono text-[12.5px] leading-relaxed text-gray-200">
+            <span className="text-gray-500"># one-liner — adds the k402 MCP server, or prints config for any agent</span><br />
+            npx kaspa-402<br />
+            <br />
+            <span className="text-gray-500"># or add it directly in Claude Code</span><br />
             claude mcp add --transport http k402 {MCP_URL}
           </div>
           <p className="mt-3 text-[13px] text-gray-400">
             Or point any agent at the machine-readable catalog — the whole marketplace (how to pay, the
             discovery API, every service) in one fetch:{' '}
-            <a href="/llms.txt" className="font-mono text-teal-400 hover:underline">kaspa-402.org/llms.txt</a>.
+            <a href="/llms.txt" className="font-mono text-teal-400 hover:underline">/llms.txt</a>
+            {' '}·{' '}
+            <a href="/llms.json" className="font-mono text-teal-400 hover:underline">/llms.json</a>.
+            Each service also has a manifest at{' '}
+            <span className="font-mono text-gray-300">/skill/&lt;capability&gt;.md</span>.
           </p>
         </section>
 
@@ -561,6 +568,8 @@ export default function Marketplace() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {[
               ['Agent catalog (llms.txt)', '/llms.txt'],
+              ['Catalog JSON', '/llms.json'],
+              ['npx kaspa-402', 'https://github.com/Kali123411/kaspa-402-cli'],
               ['Protocol', 'https://github.com/Kali123411/k402/blob/main/PROTOCOL.md'],
               ['Provider guide', 'https://github.com/Kali123411/k402/blob/main/PROVIDERS.md'],
               ['Python package', 'https://pypi.org/project/k402/'],
