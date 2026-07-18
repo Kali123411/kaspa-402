@@ -2,7 +2,7 @@
 // settled trustlessly over Kaspa payment channels. Live listings from the registry (via /api/exchange);
 // providers onboard with the interactive builder (their key signs locally, never in the browser).
 import Head from 'next/head';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 const REGISTRY_POST = 'https://x402-compute.68cxgfyr0.workers.dev/registry/list';
 const MCP_URL = 'https://x402-compute.68cxgfyr0.workers.dev/mcp';
@@ -301,6 +301,77 @@ function TrialWidget() {
   );
 }
 
+// Auto-playing hero demo: types a prompt -> runs it -> streams the answer -> reveals "settled on
+// Kaspa" -> fades and loops. Native React, driven by a useEffect timeline; respects reduced-motion.
+function DemoLoop() {
+  const win = useRef(null), input = useRef(null), ans = useRef(null), anstext = useRef(null);
+  const settle = useRef(null), run = useRef(null), spin = useRef(null), amt = useRef(null);
+  useEffect(() => {
+    let cancelled = false;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const PROMPT = 'What consensus does Kaspa use, and why is it fast?';
+    const ANSWER = 'Kaspa uses GHOSTDAG — a blockDAG generalization of Nakamoto consensus. Instead of one chain, it orders many blocks in parallel, reaching ~1-second finality at 10 blocks per second.';
+    const caret = '<span class="inline-block w-[7px] h-[15px] align-[-2px] bg-teal-400 animate-pulse" style="box-shadow:0 0 8px #00f0ff"></span>';
+    const showAns = (on) => { const e = ans.current; if (!e) return; e.style.maxHeight = on ? '260px' : '0px'; e.style.paddingTop = on ? '13px' : '0px'; e.style.paddingBottom = on ? '13px' : '0px'; };
+    const setAmt = (kas, usd) => { if (amt.current) amt.current.innerHTML = kas.toFixed(3) + ' KAS <small class="text-gray-500">· $' + usd.toFixed(4) + '</small>'; };
+    async function type(el, text, sp) { for (let i = 0; i <= text.length && !cancelled; i++) { el.innerHTML = text.slice(0, i) + caret; await sleep(sp); } if (!cancelled && el) el.textContent = text; }
+    function countAmt() { return new Promise((res) => { const K = 0.021, U = 0.0006, dur = 700; let t0 = null; const tick = (ts) => { if (cancelled) return res(); t0 ??= ts; const k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3); setAmt(K * e, U * e); k < 1 ? requestAnimationFrame(tick) : res(); }; requestAnimationFrame(tick); }); }
+    function reset() { if (cancelled || !input.current) return; input.current.textContent = ''; anstext.current.textContent = ''; showAns(false); settle.current.style.opacity = '0'; settle.current.style.transform = 'translateY(8px)'; spin.current.style.display = 'none'; setAmt(0, 0); win.current.style.opacity = '1'; }
+    async function loop() {
+      if (reduce) { input.current.textContent = PROMPT; showAns(true); anstext.current.textContent = ANSWER; settle.current.style.opacity = '1'; settle.current.style.transform = 'none'; setAmt(0.021, 0.0006); return; }
+      while (!cancelled) {
+        reset(); await sleep(700);
+        await type(input.current, PROMPT, 42); await sleep(450);
+        spin.current.style.display = 'inline-block'; await sleep(950); spin.current.style.display = 'none';
+        showAns(true); await sleep(200);
+        await type(anstext.current, ANSWER, 16); await sleep(500);
+        settle.current.style.opacity = '1'; settle.current.style.transform = 'none'; await countAmt();
+        await sleep(4200);
+        win.current.style.opacity = '0'; await sleep(650);
+      }
+    }
+    loop();
+    return () => { cancelled = true; };
+  }, []);
+  return (
+    <div ref={win} className="glass overflow-hidden rounded-2xl border border-teal-400/15 shadow-glow-cyan transition-opacity duration-500" style={{ background: 'rgba(10,6,22,0.85)' }}>
+      <div className="flex items-center gap-2.5 border-b border-gray-700/60 px-3.5 py-2.5" style={{ background: 'rgba(21,16,38,0.6)' }}>
+        <span className="flex gap-1.5">
+          <i className="block h-2.5 w-2.5 rounded-full" style={{ background: '#ff5f57' }} />
+          <i className="block h-2.5 w-2.5 rounded-full" style={{ background: '#febc2e' }} />
+          <i className="block h-2.5 w-2.5 rounded-full" style={{ background: '#28c840' }} />
+        </span>
+        <span className="flex flex-1 items-center gap-1.5 rounded-lg border border-gray-700 bg-gray-950/60 px-2.5 py-1 font-mono text-xs text-gray-400">🔒 <b className="font-normal text-teal-400">kaspa-402.org</b></span>
+      </div>
+      <div className="p-5">
+        <div className="mb-1.5 flex items-center gap-2.5">
+          <h3 className="font-orbitron text-[14px] font-bold uppercase tracking-wide">Try it live — free</h3>
+          <span className="rounded-full border border-neon-purple/40 bg-neon-purple/15 px-2 py-px font-mono text-[10px] uppercase tracking-widest text-neon-purple">testnet · no wallet</span>
+        </div>
+        <p className="mb-3.5 text-[12.5px] text-gray-400">A real model call, metered in tKAS. No account, no API key.</p>
+        <div ref={input} className="min-h-[42px] rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2.5 font-mono text-[13px] leading-relaxed text-gray-100" />
+        <div className="mt-3 flex items-center gap-3">
+          <span ref={run} className="btn-kaspa inline-flex items-center gap-2 rounded-lg px-4 py-2 font-orbitron text-[11.5px] font-bold uppercase tracking-wide text-[#04121a]">
+            <span ref={spin} className="h-3 w-3 animate-spin rounded-full border-2 border-[#04121a]/40 border-t-[#04121a]" style={{ display: 'none' }} />
+            Run free →
+          </span>
+          <span className="font-mono text-[11px] text-gray-500">kaspa-expert · metered per token</span>
+        </div>
+        <div ref={ans} className="mt-4 overflow-hidden rounded-lg border border-teal-400/15 bg-gray-950/70 px-3.5 transition-all duration-300" style={{ maxHeight: 0 }}>
+          <div ref={anstext} className="text-[14px] leading-relaxed text-gray-200" />
+        </div>
+        <div ref={settle} className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-kaspa/30 bg-kaspa/5 px-3.5 py-2.5 transition-all duration-500" style={{ opacity: 0, transform: 'translateY(8px)' }}>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-kaspa text-[12px] font-bold text-[#04121a] shadow-glow-kaspa">✓</span>
+          <span className="font-mono text-[12.5px] text-kaspa">settled per call · Kaspa L1 covenant</span>
+          <span ref={amt} className="ml-auto font-mono text-[13px] text-teal-400 neon-text" />
+          <span className="w-full font-mono text-[11px] text-gray-500">no custodian · no facilitator · you paid exactly for the tokens you used</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Marketplace() {
   const [raw, setRaw] = useState([]);
   const [q, setQ] = useState('');
@@ -352,20 +423,25 @@ export default function Marketplace() {
       <main className="mx-auto max-w-6xl px-6 pb-20">
         {/* hero */}
         <section className="pt-16 pb-8">
-          <p className="mb-5 font-mono text-xs uppercase tracking-[0.28em] text-teal-400">k402 service exchange · settled on kaspa L1</p>
-          <h1 className="mb-5 max-w-[17ch] font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight text-balance sm:text-5xl">
-            The marketplace for <span className="gradient-text-kaspa">agent-payable</span> services
-          </h1>
-          <p className="mb-8 max-w-[60ch] text-[17px] leading-relaxed text-gray-400">
-            Discover a provider, open a payment channel straight to it, and settle per call — LLM inference,
-            chain data, zero-knowledge proofs, covenant tooling. <b className="font-semibold text-gray-100">The registry never holds funds.</b>{' '}
-            Reputation is settled volume, verified on-chain.
-          </p>
-          <div className="mb-10 flex flex-wrap gap-3">
-            <a href="#browse" className="btn-kaspa rounded-lg px-4 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Browse services</a>
-            <a href="#list" className="rounded-lg border border-gray-700 bg-gray-900/60 px-4 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-gray-100 transition hover:border-teal-400 hover:text-teal-400">List your service →</a>
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <div>
+              <p className="mb-5 font-mono text-xs uppercase tracking-[0.28em] text-teal-400">k402 service exchange · settled on kaspa L1</p>
+              <h1 className="mb-5 max-w-[17ch] font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight text-balance sm:text-5xl">
+                The marketplace for <span className="gradient-text-kaspa">agent-payable</span> services
+              </h1>
+              <p className="mb-8 max-w-[60ch] text-[17px] leading-relaxed text-gray-400">
+                Discover a provider, open a payment channel straight to it, and settle per call — LLM inference,
+                chain data, zero-knowledge proofs, covenant tooling. <b className="font-semibold text-gray-100">The registry never holds funds.</b>{' '}
+                Reputation is settled volume, verified on-chain.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a href="#browse" className="btn-kaspa rounded-lg px-4 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Browse services</a>
+                <a href="#list" className="rounded-lg border border-gray-700 bg-gray-900/60 px-4 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-gray-100 transition hover:border-teal-400 hover:text-teal-400">List your service →</a>
+              </div>
+            </div>
+            <DemoLoop />
           </div>
-          <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-teal-400/15 sm:grid-cols-4" style={{ gap: '1px', background: 'rgba(0,240,255,0.14)' }}>
+          <div className="mt-10 grid grid-cols-2 overflow-hidden rounded-2xl border border-teal-400/15 sm:grid-cols-4" style={{ gap: '1px', background: 'rgba(0,240,255,0.14)' }}>
             {[
               ['Services listed', raw.length],
               ['Settled to date', <span key="k"><span className="tabular-nums">{fmt(kasCount)}</span> <span className="text-teal-400 neon-text">KAS</span></span>],
