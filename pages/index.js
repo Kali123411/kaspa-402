@@ -4,6 +4,7 @@
 import Head from 'next/head';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MCP_URL, REGISTRY_POST, fmt, capInfo, CAT_ORDER, categoryOf } from '../lib/catalog';
+import RoutingCast from '../components/RoutingCast';
 
 function mapProvider(p) {
   const meta = p.meta || {};
@@ -498,6 +499,26 @@ export default function Marketplace() {
         {/* try it free */}
         <section className="pt-10">
           <TrialWidget />
+        </section>
+
+        {/* agents route + fail over */}
+        <section className="pt-14">
+          <div className="grid items-center gap-7 lg:grid-cols-2">
+            <div>
+              <span className="rounded-full border border-teal-400/25 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-teal-400">agents route themselves</span>
+              <h2 className="mt-4 font-orbitron text-[22px] font-bold uppercase tracking-tight">One call. The agent picks — and fails over.</h2>
+              <p className="mt-3 max-w-[54ch] text-sm leading-relaxed text-gray-400">
+                Independent providers — different keys, different hosts — list the same service.
+                <span className="text-gray-200"> pay_best</span> discovers them, pays the cheapest reputable one, and
+                <span className="text-gray-200"> fails over</span> the moment it drops. A cheap preflight skips dead
+                endpoints before opening an on-chain channel, so a payer never burns KAS on a provider that&apos;s down.
+              </p>
+              <pre className="mt-4 overflow-x-auto rounded-xl border border-gray-800 bg-gray-950/70 px-4 py-3 font-mono text-[12px] leading-relaxed text-gray-300">{`pip install k402
+res = await payer.pay_best("summarize", policy="cheapest")
+print(res.response.json(), "via", res.provider["payee_pubkey"][:8])`}</pre>
+            </div>
+            <RoutingCast />
+          </div>
         </section>
 
         {/* browse */}
