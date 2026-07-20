@@ -9,11 +9,14 @@
 //
 // You can also drop specific ids regardless of validity:
 //   node --env-file=.env.local scripts/purge-submissions.mjs --apply --id sub_mrt9055q --id sub_mrt9oawk
-import { validateListing } from '../lib/x402catalog.js';
 
 const KEY = 'x402:submissions';
 const apply = process.argv.includes('--apply');
 const ids = process.argv.reduce((a, v, i, arr) => (v === '--id' && arr[i + 1] ? [...a, arr[i + 1]] : a), []);
+
+// A stored submission is "bad" if it lacks a usable payTo — exactly the legacy rows getListings() already
+// hides. (Kept dependency-free on purpose: the purge only needs @upstash/redis, not the catalog build.)
+const hasPayTo = (l) => typeof l?.payTo === 'string' && l.payTo.trim().length > 0;
 
 // same generic credential discovery as lib/registry.js (plain or prefixed, e.g. STORAGE2_)
 function findRestCreds() {
@@ -40,7 +43,7 @@ const { Redis } = await import('@upstash/redis');
 const redis = new Redis(creds);
 
 const subs = (await redis.get(KEY)) || [];
-const isBad = (l) => (ids.length ? ids.includes(l.id) : false) || !validateListing(l).ok;
+const isBad = (l) => (ids.length && ids.includes(l.id)) || !hasPayTo(l);
 const keep = subs.filter((l) => !isBad(l));
 const drop = subs.filter((l) => isBad(l));
 
