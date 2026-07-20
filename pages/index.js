@@ -100,7 +100,7 @@ function ProviderCard({ p, maxKas, onUse, dead, deadDetail }) {
   );
 }
 
-const FIELD = 'w-full rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2 font-mono text-[13px] text-gray-100 outline-none transition focus:border-teal-400 focus:shadow-[0_0_0_3px_rgba(0,240,255,0.1)]';
+const FIELD = 'w-full rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2 font-mono text-[13px] text-gray-100 outline-none transition focus:border-teal-400 focus:shadow-[0_0_0_3px_rgba(255,255,255,0.1)]';
 const LABEL = 'font-mono text-[10.5px] uppercase tracking-wider text-gray-500';
 
 function CopyBtn({ text }) {
@@ -300,7 +300,7 @@ function TrialWidget() {
         usage on mainnet, open a funded session and pay in KAS.
       </p>
       <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={2}
-        className="w-full resize-y rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2.5 font-mono text-[13px] text-gray-100 outline-none focus:border-teal-400 focus:shadow-[0_0_0_3px_rgba(0,240,255,0.1)]" />
+        className="w-full resize-y rounded-lg border border-gray-700 bg-gray-900/80 px-3 py-2.5 font-mono text-[13px] text-gray-100 outline-none focus:border-teal-400 focus:shadow-[0_0_0_3px_rgba(255,255,255,0.1)]" />
       <div className="mt-3 flex items-center gap-3">
         <button onClick={run} disabled={busy}
           className="btn-kaspa rounded-lg px-4 py-2 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a] disabled:opacity-60">
@@ -336,7 +336,7 @@ function DemoLoop() {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const PROMPT = 'What consensus does Kaspa use, and why is it fast?';
     const ANSWER = 'Kaspa uses GHOSTDAG — a blockDAG generalization of Nakamoto consensus. Instead of one chain, it orders many blocks in parallel, reaching ~1-second finality at 10 blocks per second.';
-    const caret = '<span class="inline-block w-[7px] h-[15px] align-[-2px] bg-teal-400 animate-pulse" style="box-shadow:0 0 8px #00f0ff"></span>';
+    const caret = '<span class="inline-block w-[7px] h-[15px] align-[-2px] bg-teal-400 animate-pulse" style="box-shadow:0 0 8px #ffffff"></span>';
     const showAns = (on) => { const e = ans.current; if (!e) return; e.style.maxHeight = on ? '260px' : '0px'; e.style.paddingTop = on ? '13px' : '0px'; e.style.paddingBottom = on ? '13px' : '0px'; };
     const setAmt = (kas, usd) => { if (amt.current) amt.current.innerHTML = kas.toFixed(3) + ' KAS <small class="text-gray-500">· $' + usd.toFixed(4) + '</small>'; };
     async function type(el, text, sp) { for (let i = 0; i <= text.length && !cancelled; i++) { el.innerHTML = text.slice(0, i) + caret; await sleep(sp); } if (!cancelled && el) el.textContent = text; }
@@ -359,8 +359,8 @@ function DemoLoop() {
     return () => { cancelled = true; };
   }, []);
   return (
-    <div ref={win} className="glass overflow-hidden rounded-2xl border border-teal-400/15 shadow-glow-cyan transition-opacity duration-500" style={{ background: 'rgba(10,6,22,0.85)' }}>
-      <div className="flex items-center gap-2.5 border-b border-gray-700/60 px-3.5 py-2.5" style={{ background: 'rgba(21,16,38,0.6)' }}>
+    <div ref={win} className="glass overflow-hidden rounded-2xl border border-teal-400/15 shadow-glow-cyan transition-opacity duration-500" style={{ background: 'rgba(14,14,14,0.85)' }}>
+      <div className="flex items-center gap-2.5 border-b border-gray-700/60 px-3.5 py-2.5" style={{ background: 'rgba(20,20,20,0.6)' }}>
         <span className="flex gap-1.5">
           <i className="block h-2.5 w-2.5 rounded-full" style={{ background: '#ff5f57' }} />
           <i className="block h-2.5 w-2.5 rounded-full" style={{ background: '#febc2e' }} />
@@ -481,7 +481,7 @@ export default function Marketplace() {
             </div>
             <DemoLoop />
           </div>
-          <div className="mt-10 grid grid-cols-2 overflow-hidden rounded-2xl border border-teal-400/15 sm:grid-cols-4" style={{ gap: '1px', background: 'rgba(0,240,255,0.14)' }}>
+          <div className="mt-10 grid grid-cols-2 overflow-hidden rounded-2xl border border-teal-400/15 sm:grid-cols-4" style={{ gap: '1px', background: 'rgba(255,255,255,0.14)' }}>
             {[
               ['Services listed', raw.length],
               ['Settled to date', <span key="k"><span className="tabular-nums">{fmt(kasCount)}</span> <span className="text-teal-400 neon-text">KAS</span></span>],

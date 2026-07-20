@@ -1,24 +1,24 @@
-/* styles/globals.css — cyberpunk edition */
+/* styles/globals.css — monochrome edition */
 
-/* 1. Fonts: Orbitron (display), Inter (body), Share Tech Mono (data/metrics) */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+/* 1. Fonts: Geist (display), Inter (body), Geist Mono (data/metrics) */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono&display=swap');
 
 /* 2. Base Tailwind layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 3. Set Orbitron as your default font */
+/* 3. Set Geist as your default font */
 @layer base {
   html {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Geist', sans-serif;
   }
 
   /* Neon selection + scrollbar — small details that sell the theme */
   ::selection {
-    background: rgba(255, 46, 196, 0.45);
+    background: rgba(255,255,255, 0.45);
     color: #fff;
   }
 
@@ -27,15 +27,15 @@
     height: 10px;
   }
   .dark ::-webkit-scrollbar-track {
-    background: #0a0616;
+    background: #0a0a0a;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: #342e4e;
+    background: #2e2e2c;
     border-radius: 5px;
-    border: 2px solid #0a0616;
+    border: 2px solid #0a0a0a;
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: #00c9d8;
+    background: #d4d4d4;
   }
 }
 
@@ -51,10 +51,10 @@
   z-index: 9999;
   pointer-events: none;
   background-image:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(0, 240, 255, 0.07), transparent),
-    radial-gradient(ellipse 55% 40% at 85% 110%, rgba(255, 46, 196, 0.05), transparent),
-    linear-gradient(rgba(0, 240, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.028) 1px, transparent 1px),
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(255,255,255, 0.07), transparent),
+    radial-gradient(ellipse 55% 40% at 85% 110%, rgba(255,255,255, 0.05), transparent),
+    linear-gradient(rgba(255,255,255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255, 0.028) 1px, transparent 1px),
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.11) 0px, rgba(0, 0, 0, 0.11) 1px, transparent 1px, transparent 3px);
   background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px, 100% 3px;
 }
@@ -79,18 +79,18 @@
   .neon-text {
     text-shadow:
       0 0 6px currentColor,
-      0 0 24px rgba(0, 240, 255, 0.35);
+      0 0 24px rgba(255,255,255, 0.35);
   }
 
   .neon-text-pink {
     text-shadow:
       0 0 6px currentColor,
-      0 0 24px rgba(255, 46, 196, 0.4);
+      0 0 24px rgba(255,255,255, 0.4);
   }
 
   /* Gradient text — cyan → kaspa teal → hot pink shimmer */
   .gradient-text-kaspa {
-    background: linear-gradient(135deg, #00f0ff, #49EACB, #ff2ec4);
+    background: linear-gradient(135deg, #ffffff, #ffffff, #cfcfcf);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -108,28 +108,28 @@
     box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.3),
       0 10px 10px -5px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(0, 240, 255, 0.35),
-      0 0 40px rgba(0, 240, 255, 0.18),
-      0 0 60px rgba(255, 46, 196, 0.08);
+      0 0 0 1px rgba(255,255,255, 0.35),
+      0 0 40px rgba(255,255,255, 0.18),
+      0 0 60px rgba(255,255,255, 0.08);
   }
 
   /* Glass morphism — violet void tint with a cyan hairline */
   .glass {
-    background: rgba(10, 6, 22, 0.8);
+    background: rgba(14,14,14, 0.8);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 240, 255, 0.12);
+    border: 1px solid rgba(255,255,255, 0.12);
   }
 
   .glass-light {
-    background: rgba(21, 16, 38, 0.7);
+    background: rgba(20,20,20, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
 
   /* Enhanced button styles */
   .btn-kaspa {
-    background: linear-gradient(135deg, #49EACB, #00c9d8);
+    background: linear-gradient(135deg, #ffffff, #d4d4d4);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -151,31 +151,31 @@
   }
 
   .btn-kaspa:hover {
-    background: linear-gradient(135deg, #00f0ff, #49EACB);
+    background: linear-gradient(135deg, #ffffff, #ffffff);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 240, 255, 0.35), 0 0 40px rgba(0, 240, 255, 0.15);
+    box-shadow: 0 10px 25px rgba(255,255,255, 0.35), 0 0 40px rgba(255,255,255, 0.15);
   }
 
   /* Loading skeleton on the void palette */
   .skeleton {
-    background: linear-gradient(90deg, #151026 25%, #342e4e 50%, #151026 75%);
+    background: linear-gradient(90deg, #0f0f0f 25%, #2e2e2c 50%, #0f0f0f 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 
   /* Enhanced search input */
   .search-input {
-    background: rgba(21, 16, 38, 0.8);
-    border: 1px solid rgba(73, 64, 103, 0.5);
+    background: rgba(20,20,20, 0.8);
+    border: 1px solid rgba(120,120,120, 0.5);
     transition: all 0.3s ease;
   }
 
   .search-input:focus {
-    background: rgba(21, 16, 38, 0.9);
-    border-color: #00f0ff;
+    background: rgba(20,20,20, 0.9);
+    border-color: #ffffff;
     box-shadow:
-      0 0 0 3px rgba(0, 240, 255, 0.1),
-      0 0 20px rgba(0, 240, 255, 0.12);
+      0 0 0 3px rgba(255,255,255, 0.1),
+      0 0 20px rgba(255,255,255, 0.12);
   }
 
   /* Custom checkbox styling */
@@ -183,17 +183,17 @@
     appearance: none;
     width: 1.25rem;
     height: 1.25rem;
-    border: 2px solid #494067;
+    border: 2px solid #4a4a48;
     border-radius: 0.25rem;
-    background-color: #151026;
+    background-color: #0f0f0f;
     transition: all 0.2s;
     position: relative;
     cursor: pointer;
   }
 
   .checkbox-kaspa:checked {
-    background-color: #00f0ff;
-    border-color: #00f0ff;
+    background-color: #ffffff;
+    border-color: #ffffff;
   }
 
   .checkbox-kaspa:checked::after {
@@ -201,13 +201,13 @@
     position: absolute;
     top: -2px;
     left: 2px;
-    color: #0a0616;
+    color: #0a0a0a;
     font-size: 14px;
     font-weight: bold;
   }
 
   .checkbox-kaspa:hover {
-    border-color: #00f0ff;
+    border-color: #ffffff;
   }
 }
 
@@ -232,10 +232,10 @@
 
 @keyframes pulse-glow {
   from {
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+    box-shadow: 0 0 20px rgba(255,255,255, 0.35);
   }
   to {
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 30px rgba(255,255,255, 0.7);
   }
 }
 

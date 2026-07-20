@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FAILOVER_CAST, CAST_DURATION } from '../lib/failoverCast';
 
-const PAL = { 31: '#ff6b63', 32: '#43d18a', 36: '#4aa8ff', 245: '#8a94a2', 256: { 44: '#00f0ff', 245: '#8a94a2' } };
+const PAL = { 31: '#ff6b63', 32: '#43d18a', 36: '#4aa8ff', 245: '#8a94a2', 256: { 44: '#ffffff', 245: '#8a94a2' } };
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function ansiToHtml(s) {
@@ -74,7 +74,7 @@ export default function RoutingCast() {
       </div>
       <pre ref={ref} className="m-0 h-[380px] overflow-hidden whitespace-pre-wrap break-words bg-gray-950/60 px-4 py-3.5 font-mono text-[12.5px] leading-relaxed text-gray-300" />
       <style jsx global>{`
-        .rc-cursor { display:inline-block; width:7px; height:14px; margin-bottom:-2px; background:#00f0ff; animation:rcblink 1s steps(1) infinite; }
+        .rc-cursor { display:inline-block; width:7px; height:14px; margin-bottom:-2px; background:#ffffff; animation:rcblink 1s steps(1) infinite; }
         @keyframes rcblink { 50% { opacity:0; } }
         @media (prefers-reduced-motion: reduce) { .rc-cursor { animation:none; } }
       `}</style>
