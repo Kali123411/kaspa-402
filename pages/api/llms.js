@@ -1,55 +1,40 @@
-// pages/api/llms.js — the machine-readable catalog, served at /llms.txt (via a rewrite).
-// One fetch gives an agent/LLM the whole marketplace: how to pay, the discovery API, and every
-// live service (capability, description, price, endpoint, schemes, reputation), grouped by category.
-import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, CAT_ORDER, categoryOf, fetchServices, deadEndpoints } from '../../lib/catalog';
+// pages/api/llms.js — the machine-readable catalog (text), served at /llms.txt.
+// One fetch tells an agent the whole marketplace: how to pay via x402 v2, and every listed service.
+import { getListings } from '../../lib/registry';
+import { capInfo } from '../../lib/catalog';
+
+const SITE = 'https://kaspa-402.org';
+const SOMPI = 1e8;
+const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
 
 export default async function handler(req, res) {
-  const all = await fetchServices();
-  // drop endpoints the health sweep confirmed dead — same as /llms.json (fail-open on any error)
-  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
-  const base = req.headers.host ? `${proto}://${req.headers.host}` : SITE;
-  const dead = await deadEndpoints(base);
-  const providers = all.filter((p) => !dead.has(p.endpoint));
-
+  const listings = await getListings();
   const L = [];
-  L.push('# k402 service exchange — kaspa-402.org');
+  L.push('# Kaspa x402 marketplace');
   L.push('');
-  L.push('> Agent-payable services, settled per call on Kaspa L1. No account, no API key, no signup.');
-  L.push('> The registry never holds funds; reputation is chain-verified settled volume (KAS).');
+  L.push('A directory of x402-payable services settled on Kaspa L1, built on the Kaspa x402 v2 standard.');
+  L.push('Pay per call — no account, no API key.');
   L.push('');
-  L.push('## How an agent pays');
+  L.push('## How to pay (x402 v2)');
+  L.push('- Client: npm i @kaspa-x402/client');
+  L.push('- Call the resource; on HTTP 402 the client reads the PAYMENT-REQUIRED header, pays on Kaspa (exact or batch-settlement), and retries with PAYMENT-SIGNATURE.');
+  L.push('- Networks: kaspa:testnet-10 (validation target) · kaspa:mainnet');
+  L.push('- Standard: https://kaspa-x402.org');
   L.push('');
-  L.push('- MCP (easiest): add the hosted server, then discover and pay from your agent:');
-  L.push(`    ${PAY.mcp}`);
-  L.push('    # tools: registry_search(capability=...), generate(...), summarize(...), etc.');
-  L.push(`- Prepaid session: ${PAY.session}`);
-  L.push(`- Payment channel (trustless): ${PAY.channel}`);
+  L.push(`## Services (${listings.length})`);
   L.push('');
-  L.push('## Discovery API');
-  L.push('');
-  L.push(`- All services (JSON): GET ${DISCOVERY.services}`);
-  L.push(`- Filter: GET ${DISCOVERY.filter}`);
-  L.push(`- One provider: GET ${DISCOVERY.provider}`);
-  L.push(`- This catalog as JSON: GET ${SITE}/llms.json`);
-  L.push('');
-  L.push(`## Services (${providers.length} live)`);
-  L.push('');
-  for (const cat of CAT_ORDER) {
-    const items = providers.filter((p) => categoryOf(p.capability) === cat);
-    if (!items.length) continue;
-    L.push(`### ${cat}`);
-    L.push('');
-    for (const p of items) {
-      const rep = (p.reputation && p.reputation.settled_kas) || 0;
-      const desc = (p.description || '').replace(/\s+/g, ' ').trim() || 'agent-payable service';
-      L.push(`- **${p.capability}** — ${desc}`);
-      L.push(`  price: $${p.price_usd}/call · endpoint: ${p.endpoint} · schemes: ${(p.schemes || []).join(', ')} · reputation: ${rep} KAS settled`);
-      L.push(`  manifest: ${SITE}/skill/${encodeURIComponent(p.capability)}.md`);
-    }
+  for (const l of listings) {
+    const info = capInfo(l.capability);
+    L.push(`### ${l.serviceName}${l.verified ? '' : ' (unverified submission)'}`);
+    L.push((l.description || info.what || '').replace(/\s+/g, ' ').trim());
+    L.push(`- resource: ${l.resource}`);
+    L.push(`- pay: ${l.scheme} on ${l.network} — ${l.amountSompi} sompi (${kas(l.amountSompi)} KAS)${l.payTo ? `, payTo ${l.payTo}` : ''}`);
+    if (l.capability) L.push(`- manifest: ${SITE}/skill/${encodeURIComponent(l.capability)}.md`);
     L.push('');
   }
-  L.push('---');
-  L.push('Protocol: https://github.com/Kali123411/k402/blob/main/PROTOCOL.md · client: pip install k402');
+  L.push('## Discovery');
+  L.push(`- JSON: ${SITE}/llms.json  ·  Registry: ${SITE}/api/registry/list`);
+  L.push(`- Submit a service: POST ${SITE}/api/registry/submit (must pass a live x402 v2 probe)`);
 
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');

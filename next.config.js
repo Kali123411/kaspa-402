@@ -1,5 +1,6 @@
 // next.config.js — standalone k402 exchange site
 module.exports = {
+  transpilePackages: ['@kaspa-x402/core'],
   reactStrictMode: true,
   async rewrites() {
     // Machine-readable catalog + per-service manifests at clean, conventional URLs for agents/LLMs.

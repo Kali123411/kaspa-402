@@ -1,50 +1,52 @@
-// pages/api/llmsjson.js — the machine-readable catalog as structured JSON, served at /llms.json.
-// The programmatic twin of /llms.txt: same content, but a shape a consumer can parse without regex.
-import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, capInfo, categoryOf, fetchServices, deadEndpoints } from '../../lib/catalog';
+// pages/api/llmsjson.js — the machine-readable catalog (structured), served at /llms.json.
+// The x402 v2 marketplace: every listed service as an x402 resource + how an agent pays it.
+import { getListings } from '../../lib/registry';
+import { capInfo } from '../../lib/catalog';
+
+const SITE = 'https://kaspa-402.org';
+const SOMPI = 1e8;
+const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
 
 export default async function handler(req, res) {
-  const all = await fetchServices();
-  // drop endpoints the health sweep confirmed dead — agents shouldn't be handed a dead endpoint
-  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
-  const base = req.headers.host ? `${proto}://${req.headers.host}` : SITE;
-  const dead = await deadEndpoints(base);
-  const providers = all.filter((p) => !dead.has(p.endpoint));
-
-  const services = providers.map((p) => {
-    const info = capInfo(p.capability);
+  const listings = await getListings();
+  const services = listings.map((l) => {
+    const info = capInfo(l.capability);
     return {
-      capability: p.capability,
-      category: categoryOf(p.capability),
-      description: (p.description || '').replace(/\s+/g, ' ').trim() || info.what,
-      price_usd: p.price_usd,
-      endpoint: p.endpoint,
-      schemes: p.schemes || [],
-      network: p.network || 'mainnet',
-      payee_pubkey: p.payee_pubkey,
-      reputation_kas: (p.reputation && p.reputation.settled_kas) || 0,
-      channel_terms: p.channel_terms || null,
+      serviceName: l.serviceName,
+      capability: l.capability || null,
+      description: (l.description || '').replace(/\s+/g, ' ').trim() || info.what,
+      resource: l.resource,
+      scheme: l.scheme,
+      network: l.network,
+      amount_sompi: String(l.amountSompi),
+      price_kas: kas(l.amountSompi),
+      asset: 'KAS',
+      payTo: l.payTo || null,
+      tags: l.tags || [],
+      verified: !!l.verified,
+      source: l.source || 'seed',
       request_example: info.send || null,
       response_example: info.get || null,
-      manifest: `${SITE}/skill/${encodeURIComponent(p.capability)}.md`,
+      manifest: l.capability ? `${SITE}/skill/${encodeURIComponent(l.capability)}.md` : null,
     };
   });
 
-  const body = {
-    name: 'k402 service exchange',
-    url: SITE,
-    description: 'Agent-payable services, settled per call on Kaspa L1. No account, no API key, no signup. The registry never holds funds; reputation is chain-verified settled volume (KAS).',
-    settlement: 'Kaspa L1 — covenant payment channels, prepaid sessions, or per-call UTXO',
-    protocol: 'https://github.com/Kali123411/k402/blob/main/PROTOCOL.md',
-    client: 'pip install k402',
-    mcp: { transport: 'http', url: MCP_URL, add: PAY.mcp },
-    pay: PAY,
-    discovery: DISCOVERY,
-    count: services.length,
-    excluded_unreachable: all.length - services.length,
-    services,
-  };
-
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
-  res.status(200).json(body);
+  res.status(200).json({
+    name: 'Kaspa x402 marketplace',
+    url: SITE,
+    description: 'A directory of x402-payable services settled on Kaspa L1. Built on the Kaspa x402 v2 standard — pay per call, no account, no API key.',
+    standard: 'https://kaspa-x402.org',
+    protocol: 'x402 v2',
+    networks: ['kaspa:testnet-10', 'kaspa:mainnet'],
+    pay: {
+      client: 'npm i @kaspa-x402/client',
+      how: 'Call the resource; on HTTP 402 the client reads the PAYMENT-REQUIRED header, pays on Kaspa (exact or batch-settlement), and retries with PAYMENT-SIGNATURE. Use DirectModeClient.paidFetch(url).',
+      docs: 'https://www.npmjs.com/package/@kaspa-x402/client',
+    },
+    submit: `${SITE}/api/registry/submit`,
+    count: services.length,
+    services,
+  });
 }

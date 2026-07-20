@@ -1,87 +1,54 @@
 // pages/api/skill/[cap].js — a per-capability manifest ("SKILL.md"), served at /skill/<cap>.md.
-// The fullest agentic-market-style interpretation: one fetch tells an agent exactly what a service
-// does, what to send/get, how to pay it, and which live providers offer it (cheapest first).
-import { GATEWAY, MCP_URL, SITE, PAY, DISCOVERY, capInfo, categoryOf, fetchServices } from '../../../lib/catalog';
+// One fetch tells an agent what the capability does, how to pay via x402 v2, and which services offer it.
+import { getListings } from '../../../lib/registry';
+import { capInfo, categoryOf } from '../../../lib/catalog';
+
+const SITE = 'https://kaspa-402.org';
+const SOMPI = 1e8;
+const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
 
 export default async function handler(req, res) {
   const cap = String(req.query.cap || '').replace(/\.md$/, '');
-  const all = await fetchServices();
-  const providers = all
-    .filter((p) => p.capability === cap)
-    .sort((a, b) => (a.price_usd || 0) - (b.price_usd || 0));
+  const listings = (await getListings())
+    .filter((l) => (l.capability || '') === cap)
+    .sort((a, b) => Number(a.amountSompi) - Number(b.amountSompi));
   const info = capInfo(cap);
-  const cheapest = providers.length ? Math.min(...providers.map((p) => p.price_usd)) : null;
 
   const L = [];
-  L.push(`# k402 skill: ${cap}`);
+  L.push(`# Kaspa x402 skill: ${cap}`);
   L.push('');
   L.push(`> ${info.what}`);
   L.push('');
   L.push(`- Category: ${categoryOf(cap)}`);
-  L.push(`- Settlement: Kaspa L1 (per call, no account or API key)`);
-  L.push(providers.length
-    ? `- Live providers: ${providers.length}${cheapest != null ? ` — from $${cheapest}/call` : ''}`
-    : `- Live providers: none right now — check ${DISCOVERY.services}?capability=${encodeURIComponent(cap)}`);
+  L.push('- Settlement: Kaspa L1 via x402 v2 (pay per call, no account or API key)');
+  L.push(listings.length ? `- Live services: ${listings.length}` : '- Live services: none listed yet');
   L.push('');
-
   if (info.send) {
-    L.push('## Input');
-    L.push('');
-    L.push('```json');
-    L.push(info.send);
-    L.push('```');
-    L.push('');
-    L.push('## Output');
-    L.push('');
-    L.push('```json');
-    L.push(info.get);
-    L.push('```');
-    L.push('');
+    L.push('## Input'); L.push(''); L.push('```json'); L.push(info.send); L.push('```'); L.push('');
+    L.push('## Output'); L.push(''); L.push('```json'); L.push(info.get); L.push('```'); L.push('');
   }
-
-  L.push('## How to call');
-  L.push('');
-  L.push('### 1. MCP (easiest — the agent pays itself)');
+  L.push('## How to call (x402 v2)');
+  L.push('```bash');
+  L.push('npm i @kaspa-x402/client');
   L.push('```');
-  L.push(PAY.mcp);
-  L.push(`# then: use the k402 "${cap}" service to ...`);
-  L.push('```');
-  L.push('');
-  L.push('### 2. Prepaid session');
-  L.push('```');
-  L.push(`curl -X POST ${GATEWAY}/onboard/request        # -> a Kaspa deposit address`);
-  L.push(`# fund it once with KAS, then call the endpoint with header  X-Session: <session>`);
+  L.push('```js');
+  L.push("import { DirectModeClient } from '@kaspa-x402/client';");
+  L.push('// configure with your Kaspa funding provider + signer (see @kaspa-x402/client docs), then:');
+  L.push(`const r = await client.paidFetch(${listings[0] ? JSON.stringify(listings[0].resource) : '"<service resource url>"'});`);
+  L.push('// on HTTP 402 the client reads PAYMENT-REQUIRED, pays on Kaspa, and retries automatically.');
   L.push('```');
   L.push('');
-  L.push('### 3. Payment channel (trustless, high volume)');
-  L.push('```python');
-  L.push('pip install k402');
-  L.push('from k402 import ChannelPayer');
-  L.push(`providers = await payer.discover(${JSON.stringify(cap)})   # this + similar providers`);
-  L.push('r = await payer.pay(providers[0], "", { ... })    # opens a covenant channel, pays per call');
-  L.push('```');
-  L.push('');
-
-  if (providers.length) {
-    L.push(`## Providers (${providers.length}, cheapest first)`);
+  if (listings.length) {
+    L.push(`## Services (${listings.length}, cheapest first)`);
     L.push('');
-    L.push('| price/call | endpoint | schemes | reputation (KAS) | payee |');
+    L.push('| service | resource | scheme | network | price |');
     L.push('| --- | --- | --- | --- | --- |');
-    for (const p of providers) {
-      const rep = (p.reputation && p.reputation.settled_kas) || 0;
-      const payee = String(p.payee_pubkey || '').slice(0, 12);
-      L.push(`| $${p.price_usd} | ${p.endpoint} | ${(p.schemes || []).join(', ')} | ${rep} | ${payee}… |`);
-    }
+    for (const l of listings) L.push(`| ${l.serviceName} | ${l.resource} | ${l.scheme} | ${l.network} | ${l.amountSompi} sompi (${kas(l.amountSompi)} KAS) |`);
     L.push('');
   }
-
-  L.push('## Discovery API');
-  L.push('');
-  L.push(`- This capability (JSON): GET ${DISCOVERY.services}?capability=${encodeURIComponent(cap)}`);
-  L.push(`- Full catalog: ${SITE}/llms.txt  ·  ${SITE}/llms.json`);
-  L.push('');
-  L.push('---');
-  L.push(`Human page: ${SITE}/skill/${encodeURIComponent(cap)}  ·  Protocol: https://github.com/Kali123411/k402/blob/main/PROTOCOL.md`);
+  L.push('## Discovery');
+  L.push(`- Full catalog: ${SITE}/llms.txt · ${SITE}/llms.json`);
+  L.push('- Standard: https://kaspa-x402.org');
 
   res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
