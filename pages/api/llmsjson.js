@@ -18,6 +18,10 @@ export default async function handler(req, res) {
       resource: l.resource,
       scheme: l.scheme,
       network: l.network,
+      price_model: Number(l.priceUsd) > 0 ? 'usd-pegged' : 'fixed',
+      price_usd: Number(l.priceUsd) > 0 ? Number(l.priceUsd) : null,
+      // For usd-pegged services amount_sompi/price_kas are the current dust FLOOR; the exact amount is
+      // set by the live 402 offer at the spot KAS/USD rate. Always pay what the PAYMENT-REQUIRED header states.
       amount_sompi: String(l.amountSompi),
       price_kas: kas(l.amountSompi),
       asset: 'KAS',

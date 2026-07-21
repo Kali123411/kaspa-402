@@ -6,6 +6,7 @@ import { capInfo, categoryOf } from '../../../lib/catalog';
 const SITE = 'https://kaspa-402.org';
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
+const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call, in KAS at spot (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi (${kas(l.amountSompi)} KAS)`; };
 
 export default async function handler(req, res) {
   const cap = String(req.query.cap || '').replace(/\.md$/, '');
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
     L.push('');
     L.push('| service | resource | scheme | network | price |');
     L.push('| --- | --- | --- | --- | --- |');
-    for (const l of listings) L.push(`| ${l.serviceName} | ${l.resource} | ${l.scheme} | ${l.network} | ${l.amountSompi} sompi (${kas(l.amountSompi)} KAS) |`);
+    for (const l of listings) L.push(`| ${l.serviceName} | ${l.resource} | ${l.scheme} | ${l.network} | ${priceLabel(l)} |`);
     L.push('');
   }
   L.push('## Discovery');

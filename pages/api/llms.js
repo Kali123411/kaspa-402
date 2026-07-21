@@ -6,6 +6,7 @@ import { capInfo } from '../../lib/catalog';
 const SITE = 'https://kaspa-402.org';
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
+const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call, paid in KAS at the live rate (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi (${kas(l.amountSompi)} KAS)`; };
 
 export default async function handler(req, res) {
   const listings = await getListings();
@@ -28,7 +29,7 @@ export default async function handler(req, res) {
     L.push(`### ${l.serviceName}${l.verified ? '' : ' (unverified submission)'}`);
     L.push((l.description || info.what || '').replace(/\s+/g, ' ').trim());
     L.push(`- resource: ${l.resource}`);
-    L.push(`- pay: ${l.scheme} on ${l.network} — ${l.amountSompi} sompi (${kas(l.amountSompi)} KAS)${l.payTo ? `, payTo ${l.payTo}` : ''}`);
+    L.push(`- pay: ${l.scheme} on ${l.network} — ${priceLabel(l)}${l.payTo ? `, payTo ${l.payTo}` : ''}`);
     if (l.capability) L.push(`- manifest: ${SITE}/skill/${encodeURIComponent(l.capability)}.md`);
     L.push('');
   }

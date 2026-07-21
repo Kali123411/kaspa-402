@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
+// USD-pegged services settle in KAS at the live rate (amountSompi is the dust floor); fixed services show KAS.
+const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call · in KAS at spot (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi · ${kas(l.amountSompi)} KAS`; };
 const short = (s) => (s && s.length > 34 ? s.slice(0, 16) + '…' + s.slice(-8) : s);
 const FIELD = 'rounded-xl border border-teal-400/20 bg-gray-950/70 px-4 py-2.5 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-teal-400/60';
 
@@ -22,7 +24,7 @@ function ServiceCard({ l }) {
       <div className="mt-1 flex flex-wrap gap-2 font-mono text-[11px]">
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-teal-400">{l.scheme}</span>
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-400">{l.network}</span>
-        <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-300">{l.amount_sompi} sompi · {l.price_kas} KAS</span>
+        <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-300">{priceLabel(l)}</span>
         {(l.tags || []).map((t) => <span key={t} className="rounded border border-gray-800 px-2 py-0.5 text-gray-500">{t}</span>)}
       </div>
       <div className="mt-1 font-mono text-[11.5px] text-gray-500">

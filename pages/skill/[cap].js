@@ -7,6 +7,7 @@ import { capInfo, categoryOf } from '../../lib/catalog';
 
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
+const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call · in KAS at spot (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi · ${kas(l.amountSompi)} KAS`; };
 
 export default function Skill() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Skill() {
   useEffect(() => {
     if (!cap) return;
     fetch('/api/registry/list').then((r) => r.json())
-      .then((d) => setServices((d.listings || []).filter((l) => (l.capability || '') === cap).sort((a, b) => Number(a.amount_sompi) - Number(b.amount_sompi))))
+      .then((d) => setServices((d.listings || []).filter((l) => (l.capability || '') === cap).sort((a, b) => Number(a.amountSompi) - Number(b.amountSompi))))
       .catch(() => {});
   }, [cap]);
   const info = capInfo(cap);
@@ -48,7 +49,7 @@ export default function Skill() {
               className="glass card-hover flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-400/15 p-4">
               <div><div className="font-orbitron text-[14px] font-bold text-gray-100">{l.serviceName}</div>
                 <div className="font-mono text-[11.5px] text-gray-500">{l.resource}</div></div>
-              <div className="font-mono text-[12px] text-gray-400">{l.scheme} · {l.network} · {l.amount_sompi} sompi ({kas(l.amount_sompi)} KAS)</div>
+              <div className="font-mono text-[12px] text-gray-400">{l.scheme} · {l.network} · {priceLabel(l)}</div>
             </a>
           ))}
           {services.length === 0 ? <p className="font-mono text-[13px] text-gray-500">No services listed for this capability yet.</p> : null}
