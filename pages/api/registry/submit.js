@@ -2,7 +2,7 @@
 // light validation AND its endpoint really speaks x402 v2 (live probe = the same gate as /validate),
 // so the directory never lists a service that doesn't actually work.
 import { assertPublicUrl, probe } from '../../../lib/probe';
-import { validateListing, validateLiveOffer, reconcileListingWithOffer } from '../../../lib/x402catalog';
+import { validateListing, validateLiveOffer, reconcileListingWithOffer, meetsPriceFloor, MIN_AMOUNT_SOMPI } from '../../../lib/x402catalog';
 import { addSubmission, getListings } from '../../../lib/registry';
 
 export const config = { maxDuration: 15 };
@@ -34,6 +34,11 @@ export default async function handler(req, res) {
   // listings that misrepresent their network/recipient/price (the live service is the source of truth).
   const rec = reconcileListingWithOffer(l, live.offer);
   if (!rec.ok) return res.status(400).json({ ok: false, error: `listing does not match the live service: ${rec.error}` });
+
+  // Price floor: the endpoint's real per-call price must meet the marketplace minimum (anti-dust/spam).
+  if (!meetsPriceFloor(rec.authoritative)) {
+    return res.status(400).json({ ok: false, error: `price ${Number(rec.authoritative.amountSompi) / 1e8} KAS is below the ${MIN_AMOUNT_SOMPI / 1e8} KAS marketplace minimum` });
+  }
 
   // No duplicate endpoints (same resource + network already listed).
   const existing = await getListings().catch(() => []);
