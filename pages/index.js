@@ -12,24 +12,29 @@ const short = (s) => (s && s.length > 34 ? s.slice(0, 16) + '…' + s.slice(-8) 
 const FIELD = 'rounded-xl border border-teal-400/20 bg-gray-950/70 px-4 py-2.5 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-teal-400/60';
 
 function ServiceCard({ l }) {
+  const isBase = l.kind === 'base';
+  const baseUsd = isBase && l.base ? `$${Number(l.base.usd).toFixed(Number(l.base.usd) < 0.01 ? 3 : 2)}` : null;
   return (
-    <article className="glass card-hover flex flex-col gap-3 rounded-2xl border border-teal-400/15 p-5">
+    <article className={`glass card-hover flex flex-col gap-3 rounded-2xl border p-5 ${isBase ? 'border-sky-400/20' : 'border-teal-400/15'}`}>
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-orbitron text-[15px] font-bold tracking-tight text-gray-100">{l.serviceName}</h3>
-        <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${l.verified ? 'border-teal-400/40 text-teal-400' : 'border-amber-400/40 text-amber-400'}`}>
-          {l.verified ? 'verified' : 'submitted'}
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${isBase ? 'border-sky-400/40 text-sky-300' : l.verified ? 'border-teal-400/40 text-teal-400' : 'border-amber-400/40 text-amber-400'}`}>
+          {isBase ? 'via router' : l.verified ? 'verified' : 'submitted'}
         </span>
       </div>
       {l.description ? <p className="text-[13.5px] leading-relaxed text-gray-400">{l.description}</p> : null}
       <div className="mt-1 flex flex-wrap gap-2 font-mono text-[11px]">
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-teal-400">{l.scheme}</span>
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-400">{l.network}</span>
+        {isBase ? <span className="rounded border border-sky-500/30 bg-sky-500/5 px-2 py-0.5 text-sky-300">→ {baseUsd} on Base</span> : null}
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-300">{priceLabel(l)}</span>
         {(l.tags || []).map((t) => <span key={t} className="rounded border border-gray-800 px-2 py-0.5 text-gray-500">{t}</span>)}
       </div>
       <div className="mt-1 font-mono text-[11.5px] text-gray-500">
         <div className="truncate">resource: <a href={l.resource} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400">{l.resource}</a></div>
-        {l.payTo ? <div className="truncate">payTo: <span className="text-gray-400">{short(l.payTo)}</span></div> : null}
+        {isBase && l.base ? (
+          <div className="truncate">settles on: <span className="text-sky-300">{l.base.host}</span> <span className="text-gray-600">· {l.base.network}</span></div>
+        ) : l.payTo ? <div className="truncate">payTo: <span className="text-gray-400">{short(l.payTo)}</span></div> : null}
       </div>
       <a href={`/validate?u=${encodeURIComponent(l.resource)}`} className="mt-1 self-start font-mono text-[11.5px] text-teal-400 hover:underline">verify it →</a>
     </article>
@@ -103,6 +108,9 @@ export default function Marketplace() {
     });
   }, [listings, q, net]);
 
+  const kaspaSvcs = useMemo(() => shown.filter((l) => l.kind !== 'base'), [shown]);
+  const baseSvcs = useMemo(() => shown.filter((l) => l.kind === 'base'), [shown]);
+
   return (
     <>
       <Head>
@@ -117,6 +125,10 @@ export default function Marketplace() {
             Every service here speaks the <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">Kaspa x402</a> standard.
             An agent calls a resource, gets an HTTP <span className="font-mono text-gray-200">402</span>, and pays per call on Kaspa L1 —
             no account, no API key, no custodian. Settled on <span className="font-mono text-gray-200">kaspa:testnet-10</span> today, <span className="font-mono text-gray-200">kaspa:mainnet</span> as the standard hardens.
+          </p>
+          <p className="mt-3 text-[15px] leading-relaxed text-gray-400">
+            Two directions: <span className="text-teal-400">Kaspa-native</span> services you pay in KAS, and <span className="text-sky-300">Base-native</span> services you can now pay for in KAS too —
+            the <a href="https://github.com/Kali123411/kaspa-x402-router" target="_blank" rel="noopener noreferrer" className="text-sky-300 hover:underline">router</a> settles the Base leg for you.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="#browse" className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Browse services →</a>
@@ -140,8 +152,33 @@ export default function Marketplace() {
               </select>
             </div>
           </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {shown.map((l) => <ServiceCard key={l.id || l.resource} l={l} />)}
+          <div className="mt-8 space-y-12">
+            {kaspaSvcs.length > 0 ? (
+              <div>
+                <div className="flex flex-wrap items-baseline gap-3 border-b border-teal-400/15 pb-2">
+                  <h3 className="font-orbitron text-[15px] font-bold uppercase tracking-tight text-teal-400">Kaspa-native</h3>
+                  <span className="font-mono text-[11.5px] text-gray-500">pay in KAS · settled on Kaspa L1 · {kaspaSvcs.length}</span>
+                </div>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {kaspaSvcs.map((l) => <ServiceCard key={l.id || l.resource} l={l} />)}
+                </div>
+              </div>
+            ) : null}
+            {baseSvcs.length > 0 ? (
+              <div>
+                <div className="flex flex-wrap items-baseline gap-3 border-b border-sky-400/20 pb-2">
+                  <h3 className="font-orbitron text-[15px] font-bold uppercase tracking-tight text-sky-300">Base-native · via the router</h3>
+                  <span className="font-mono text-[11.5px] text-gray-500">pay in KAS · router settles USDC on Base · {baseSvcs.length}</span>
+                </div>
+                <p className="mt-3 max-w-3xl text-[13px] leading-relaxed text-gray-500">
+                  These services live on Base. You still pay in KAS — the <a href="https://github.com/Kali123411/kaspa-x402-router" target="_blank" rel="noopener noreferrer" className="text-sky-300 hover:underline">kaspa-x402-router</a> pays
+                  the service’s USDC on Base for you and returns the result, with an on-chain receipt for each leg.
+                </p>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {baseSvcs.map((l) => <ServiceCard key={l.id || l.resource} l={l} />)}
+                </div>
+              </div>
+            ) : null}
           </div>
           {!loading && shown.length === 0 ? (
             <p className="mt-6 rounded-xl border border-gray-800 bg-gray-950/40 px-5 py-4 font-mono text-[13px] text-gray-500">
