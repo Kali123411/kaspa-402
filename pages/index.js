@@ -133,6 +133,7 @@ export default function Marketplace() {
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="#browse" className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Browse services →</a>
             <a href="/validate" className="rounded-lg border border-teal-400/40 px-5 py-2.5 font-mono text-[12.5px] text-teal-400 hover:bg-teal-400/10">Validate your service</a>
+            <a href="/private" className="rounded-lg border border-violet-400/40 px-5 py-2.5 font-mono text-[12.5px] text-violet-300 hover:bg-violet-400/10">Pay privately →</a>
           </div>
         </section>
 
