@@ -11,6 +11,10 @@ module.exports = {
         { source: '/llms.json', destination: '/api/llmsjson' },
         { source: '/skill/:cap.md', destination: '/api/skill/:cap' },
       ],
+      afterFiles: [
+        // ETH⇄Kaspa bridge GUI (static vanilla app under public/bridge/) at the clean /bridge URL.
+        { source: '/bridge', destination: '/bridge/index.html' },
+      ],
     };
   },
 };
