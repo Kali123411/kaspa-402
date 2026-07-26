@@ -115,8 +115,18 @@ function refreshBalances() {
 
 // wETH balance — canonical KCC20 covenant notes minted by proof. No wallet indexes silverscript-KCC20 yet,
 // so we scope the bridge's own mints to the connected owner pubkey and verify each note UTXO is still held.
+// Live source: the relayer's /notes endpoint if configured, else the baked config list. Set once at load.
+async function loadWethNotes() {
+  const base = CFG.relayer;
+  if (!base) { state.wethMints = (CFG.weth && CFG.weth.mints) || []; return; }
+  try {
+    const r = await fetch(base.replace(/\/$/, "") + "/notes");
+    if (r.ok) { const d = await r.json(); if (Array.isArray(d.notes)) { state.wethMints = d.notes; renderWethPanel(); refreshWethBalance(); return; } }
+  } catch {}
+  state.wethMints = (CFG.weth && CFG.weth.mints) || [];   // fallback if the relayer is unreachable
+}
 function wethScope() {
-  const mints = (CFG.weth && CFG.weth.mints) || [];
+  const mints = state.wethMints || (CFG.weth && CFG.weth.mints) || [];
   const pk = state.kasPk ? xonly32(state.kasPk).slice(2).toLowerCase() : null;
   const mine = mints.filter(m => (pk && (m.recipient || "").toLowerCase() === pk) || (state.kasAddr && m.recipientAddr === state.kasAddr));
   return { mints, mine, pk };
@@ -258,7 +268,7 @@ function init() {
   $("flowToggle").addEventListener("click", function (e) { const b = e.target.closest("button"); if (!b) return; [...this.children].forEach(c => c.classList.remove("on")); b.classList.add("on"); state.dir = b.dataset.flow; render(); renderSteps(); });
   if (window.ethereum) window.ethereum.on && window.ethereum.on("accountsChanged", () => location.reload());
   if (window.kasware) window.kasware.on && window.kasware.on("accountsChanged", () => location.reload());
-  render(); renderSteps(); renderWethPanel();
+  render(); renderSteps(); renderWethPanel(); loadWethNotes();
 }
 
 const FLOW = {
