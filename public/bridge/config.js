@@ -47,6 +47,16 @@ window.BRIDGE_CONFIG = {
         mintTxid:  "538f87dbb24a769b3fd37a381c1506052e5605cb6958460c91db13c9e9a2a414",
         ethDepositId: 0, ethBlock: 25614483,
         ethTxid: "0x865154ca2af65aa03b6aded292b8f0d7d8ea7ad84f940605f4d8bbe917914647"
+      },
+      {
+        amountEth: "0.0005", units: "500000000000000",
+        recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
+        recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
+        noteAddr:  "kaspa:pr0eszqyqjq7k39r0nk3f977mqqqd2gy6wkff4drr6t6gnm3caak7ft5gn762",
+        noteTxid:  "75eb244f2e6beff352fe0c8cc4543b66d6c99c5cd9a99100974ccd2d8ffe8d00", noteIdx: 1,
+        mintTxid:  "75eb244f2e6beff352fe0c8cc4543b66d6c99c5cd9a99100974ccd2d8ffe8d00",
+        ethDepositId: 1, ethBlock: 25615186,
+        ethTxid: "0xe88a24a63dc15f48592a7048b8e262a8648f721fdfd3f91307bede93d3bd1a9e"
       }
     ]
   },
