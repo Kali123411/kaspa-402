@@ -234,7 +234,7 @@ function render() {
   $("fromTok").textContent = from.tok; $("toTok").textContent = to.tok;
   $("fromChain").textContent = from.name;
   $("toChain").textContent = state.dir === "e2k" ? "Kaspa · covenant-native token (KCC20)" : "Ethereum · native ETH from escrow";
-  const fc = $("fromChip"), tc = $("toChip"); fc.className = "chip " + from.chip; fc.textContent = from.sym; tc.className = "chip " + to.chip; tc.textContent = to.sym;
+  const fc = $("fromChip"), tc = $("toChip"); fc.className = "chip " + from.chip; tc.className = "chip " + to.chip; // ETH-diamond SVG stays put; class sets purple (eth) / teal (wETH)
   $("rate").textContent = state.dir === "e2k" ? "1 ETH → 1 wETH" : "1 wETH → 1 ETH";
   $("recipLabel").textContent = state.dir === "e2k" ? "Kaspa recipient (x-only pubkey — autofilled from KasWare)" : "Ethereum recipient (0x — autofilled from MetaMask)";
   $("recip").placeholder = state.dir === "e2k" ? "0x… 32-byte pubkey" : "0x…";

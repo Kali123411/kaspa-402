@@ -47,8 +47,10 @@
   .card h2 .tag{margin-left:auto;font-size:11px;font-weight:700;color:var(--kaspa);background:color-mix(in srgb,var(--kaspa) 12%,transparent);border:1px solid color-mix(in srgb,var(--kaspa) 30%,transparent);padding:3px 8px;border-radius:999px}
   .leg{background:var(--raised);border:1px solid var(--border);border-radius:13px;padding:13px 14px}
   .leg .row1{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:9px}
-  .chip{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#04121a}
-  .chip.eth{background:linear-gradient(135deg,var(--eth),#aab1ff)} .chip.kas{background:linear-gradient(135deg,var(--kaspa),#a9f6e6)}
+  .chip{width:24px;height:24px;border-radius:7px;display:grid;place-items:center}
+  .chip svg{width:13px;height:auto;display:block}
+  .chip.eth{background:color-mix(in srgb,var(--eth) 15%,transparent);color:var(--eth)}
+  .chip.kas{background:color-mix(in srgb,var(--kaspa) 15%,transparent);color:var(--kaspa)}
   .amt{display:flex;align-items:center;gap:10px}
   .amt input{flex:1;min-width:0;background:none;border:none;color:var(--text);font-size:26px;font-weight:650;font-family:var(--mono);font-variant-numeric:tabular-nums;outline:none;padding:0}
   .amt input::placeholder{color:var(--faint)}
@@ -127,13 +129,13 @@
         <h2>Transfer <span class="tag" id="dirtag">ETH → Kaspa</span></h2>
         <div class="leg">
           <div class="row1"><span>From</span><span id="escrowTvl">—</span></div>
-          <div class="amt"><input id="amount" inputmode="decimal" placeholder="0.0" value="0.01" aria-label="Amount"><span class="token"><span class="chip eth" id="fromChip">Ξ</span><span id="fromTok">ETH</span></span></div>
+          <div class="amt"><input id="amount" inputmode="decimal" placeholder="0.0" value="0.01" aria-label="Amount"><span class="token"><span class="chip eth" id="fromChip"><svg viewBox="0 0 256 417" aria-hidden="true"><path fill="currentColor" fill-opacity=".55" d="M127.96 0 125.17 9.5v275.67l2.79 2.79 127.96-75.64z"/><path fill="currentColor" d="M127.96 0 0 212.32l127.96 75.64z"/><path fill="currentColor" fill-opacity=".55" d="M127.96 312.19l-1.57 1.92v98.2l1.57 4.59L256 236.59z"/><path fill="currentColor" d="M127.96 416.9v-104.71L0 236.59z"/><path fill="currentColor" fill-opacity=".22" d="M127.96 287.96l127.96-75.64-127.96-58.16z"/><path fill="currentColor" fill-opacity=".55" d="M0 212.32l127.96 75.64V154.16z"/></svg></span><span id="fromTok">ETH</span></span></div>
           <div class="sub"><span id="fromChain">Ethereum</span><span id="fromBal"></span></div>
         </div>
         <button class="swapbtn" id="swap" title="Swap direction">⇅</button>
         <div class="leg">
           <div class="row1"><span>To (you receive)</span><span id="rate">1 ETH → 1 wETH</span></div>
-          <div class="amt"><input id="recv" value="0.01" readonly aria-label="Received"><span class="token"><span class="chip kas" id="toChip">K</span><span id="toTok">wETH</span></span></div>
+          <div class="amt"><input id="recv" value="0.01" readonly aria-label="Received"><span class="token"><span class="chip kas" id="toChip"><svg viewBox="0 0 256 417" aria-hidden="true"><path fill="currentColor" fill-opacity=".55" d="M127.96 0 125.17 9.5v275.67l2.79 2.79 127.96-75.64z"/><path fill="currentColor" d="M127.96 0 0 212.32l127.96 75.64z"/><path fill="currentColor" fill-opacity=".55" d="M127.96 312.19l-1.57 1.92v98.2l1.57 4.59L256 236.59z"/><path fill="currentColor" d="M127.96 416.9v-104.71L0 236.59z"/><path fill="currentColor" fill-opacity=".22" d="M127.96 287.96l127.96-75.64-127.96-58.16z"/><path fill="currentColor" fill-opacity=".55" d="M0 212.32l127.96 75.64V154.16z"/></svg></span><span id="toTok">wETH</span></span></div>
           <div class="sub"><span id="toChain">Kaspa · covenant-native token (KCC20)</span><span id="toBal"></span></div>
         </div>
         <div class="field"><label id="recipLabel">Kaspa recipient (autofilled from KasWare)</label><input class="addr" id="recip" placeholder="0x… 32-byte pubkey" spellcheck="false"></div>
