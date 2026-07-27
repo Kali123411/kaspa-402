@@ -26,29 +26,32 @@ window.BRIDGE_CONFIG = {
     burnRegistryCovid: "1cca9cfec96e2f06da2a23d6363b511a9cafaf0d59da89003f0da24c0cc30bc9",
     wethTemplateHash:  "36205a78ae657a7f1db798f6c52925ca82aca7361df71ef6a8202ce05aa7ec5f",
     // mainnet covenants (2026-07-26): canonical KCC20 wETH + the mint-direction light client + authority
-    wethCovid:         "a8b21d3050d2072e267ef1a31ffaf405955502b837710883193f8113ac146140",
-    bridgeCovid:       "523af31d2064937c94a6c8535bdc2cbc8318c4d912e292c390965f9d86303eff",
-    mintAuthorityCovid:"f3bc2b89943e83e2c2821ca3df9e5c359f73689fa0e230b836c1219ebe61295c",
+    wethCovid:         "8b6a35222c6ab907f0d669d8e46d6cad7f395f3758a7b8270c7c384f1378b656",
+    bridgeCovid:       "58231a18cca8acfb5d58fbc6b1170eeb42268139be74e0ed3ce5784005cdca99",
+    mintAuthorityCovid:"acebb33bcac42b46c50683f21ca2387cff781e2400e8444f032315a491ecf822",
     explorer: "https://explorer.kaspa.org"
   },
   // Minted wETH — canonical, proof-gated KCC20 notes (covid A), each 1:1 backed by a proven ETH deposit.
   // No external wallet indexes silverscript-KCC20 covenant notes yet, so the bridge surfaces its own mints
   // here and does a LIVE on-chain check that each note UTXO is still held (unspent) at its covenant address.
   weth: {
-    tokenCovid:  "a8b21d3050d2072e267ef1a31ffaf405955502b837710883193f8113ac146140",
-    minterCovid: "51277d92e2b3ed9f3b084ff99a8ef1e606289909031bb8dbfda08826a8f944ab",
+    tokenCovid:  "8b6a35222c6ab907f0d669d8e46d6cad7f395f3758a7b8270c7c384f1378b656",
+    minterCovid: "acebb33bcac42b46c50683f21ca2387cff781e2400e8444f032315a491ecf822",
     // Re-issued 2026-07-27 on silverscript 2a3961c (adds #143 template-hash hardening + #154 leader-entrypoint
-    // hardening) so the note template matches the current canonical KCC20 standard the DEX validates against.
-    // The prior token (covid 4b3be42e, template 8130334e) was on the pre-#143/#154 base; its notes are retired
-    // (their ETH backing was already withdrawn via the return leg). This genesis note is operator-held.
+    // hardening) so the note template (36205a78) matches the canonical KCC20 standard the DEX validates against.
+    // FULLY bridge-integrated: this note was MINTED by the redeployed stack (fresh bridge 58231a18 -> minter
+    // acebb33b -> token 8b6a3522) from a real SP1 Helios storage proof of ETH deposit #0 — proof-gated 1:1, not
+    // operator-seeded. The prior token (4b3be42e, template 8130334e) is retired.
     mints: [
       {
-        amountEth: "0.0007", units: "700000000000000", reissue: true,
+        amountEth: "0.0002", units: "200000000000000",
         recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
         recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
-        noteAddr:  "kaspa:pzycdx74p5scx9vkcp2646c8j0u809gej4l5ny82la0k344qa73vcy87zfpy7",
-        noteTxid:  "8e1b1640214608e37d5fee986e5f5b2a129bae6f4273d2170a45b10d39d499e4", noteIdx: 0,
-        mintTxid:  "8e1b1640214608e37d5fee986e5f5b2a129bae6f4273d2170a45b10d39d499e4"
+        noteAddr:  "kaspa:prjphf289mdlz4wtl2ssygap99keu78yp8gyn047ww6ssjzggfz9cq3m3egap",
+        noteTxid:  "a976087b0fc8e3191f0b91142fb48bf84941900d288c795cccdf0197eca61d19", noteIdx: 1,
+        mintTxid:  "a976087b0fc8e3191f0b91142fb48bf84941900d288c795cccdf0197eca61d19",
+        ethDepositId: 0, ethBlock: 25614483,
+        ethTxid: "0x865154ca2af65aa03b6aded292b8f0d7d8ea7ad84f940605f4d8bbe917914647"
       }
     ]
   },
