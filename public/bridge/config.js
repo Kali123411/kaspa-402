@@ -1,6 +1,6 @@
 // Kaspa-402 Bridge frontend — network + contract configuration.
-// Point these at wherever the contracts actually live. The ETH escrow is currently deployed on Sepolia
-// (mainnet deploy is gated on the audit); the Kaspa burn registry is live on mainnet. Edit for other targets.
+// Both legs are LIVE on mainnet: the EthKaspaEscrow on Ethereum L1, the wETH token + burn registry on Kaspa.
+// The return leg (Kaspa->ETH) is proven end-to-end — a real wETH burn unlocked ETH via SP1 Groth16 (tx 0xc9f28b7e).
 window.BRIDGE_CONFIG = {
   eth: {
     chainId: "0x1",               // Ethereum L1 mainnet — EthKaspaEscrow deployed 2026-07-26
@@ -23,7 +23,7 @@ window.BRIDGE_CONFIG = {
   kaspa: {
     network: "kaspa_mainnet",     // KasWare network id
     apiBase: "https://api.kaspa.org",
-    burnRegistryCovid: "47977b9779971738b8f8542d6dc730728197c5e5834b779def751cb3acb3efa0",
+    burnRegistryCovid: "1cca9cfec96e2f06da2a23d6363b511a9cafaf0d59da89003f0da24c0cc30bc9",
     wethTemplateHash:  "8130334e8a562f91e60107c74bbd38005c788a06a6f01a40fdb0998d6819b93b",
     // mainnet covenants (2026-07-26): canonical KCC20 wETH + the mint-direction light client + authority
     wethCovid:         "383080a7a4880d86356e47e5676e6121e1f2605f71fa17f3b1f0bf7caadd2e30",
