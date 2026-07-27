@@ -166,7 +166,9 @@ function renderWethPanel() {
         <dt>owner</dt><dd class="${isMine ? "mine" : ""}" title="${m.recipientAddr}">${isMine ? "you · " : ""}${shorten(m.recipientAddr, 8)}</dd>
         <dt>note</dt><dd><a href="${kx(m.noteTxid)}" target="_blank" rel="noopener" title="${m.noteTxid}:${m.noteIdx}">${shorten(m.noteTxid)}:${m.noteIdx} ↗</a></dd>
         <dt>mint tx</dt><dd><a href="${kx(m.mintTxid)}" target="_blank" rel="noopener" title="${m.mintTxid}">${shorten(m.mintTxid)} ↗</a></dd>
-        <dt>backing</dt><dd><a href="${CFG.eth.explorer}/tx/${m.ethTxid}" target="_blank" rel="noopener" title="ETH deposit #${m.ethDepositId} — ${m.ethTxid}">ETH deposit #${m.ethDepositId} ↗</a></dd>
+        ${m.ethTxid
+          ? `<dt>backing</dt><dd><a href="${CFG.eth.explorer}/tx/${m.ethTxid}" target="_blank" rel="noopener" title="ETH deposit #${m.ethDepositId} — ${m.ethTxid}">ETH deposit #${m.ethDepositId} ↗</a></dd>`
+          : `<dt>template</dt><dd><a href="${kx(m.mintTxid)}" target="_blank" rel="noopener" title="DEX-canonical KCC20 (silverscript 2a3961c) — genesis ${m.mintTxid}">DEX-canonical · genesis ${shorten(m.mintTxid)} ↗</a></dd>`}
       </dl></div>`;
   }).join("");
   show.forEach(async (m, i) => {

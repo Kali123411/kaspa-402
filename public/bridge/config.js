@@ -24,9 +24,9 @@ window.BRIDGE_CONFIG = {
     network: "kaspa_mainnet",     // KasWare network id
     apiBase: "https://api.kaspa.org",
     burnRegistryCovid: "1cca9cfec96e2f06da2a23d6363b511a9cafaf0d59da89003f0da24c0cc30bc9",
-    wethTemplateHash:  "8130334e8a562f91e60107c74bbd38005c788a06a6f01a40fdb0998d6819b93b",
+    wethTemplateHash:  "36205a78ae657a7f1db798f6c52925ca82aca7361df71ef6a8202ce05aa7ec5f",
     // mainnet covenants (2026-07-26): canonical KCC20 wETH + the mint-direction light client + authority
-    wethCovid:         "383080a7a4880d86356e47e5676e6121e1f2605f71fa17f3b1f0bf7caadd2e30",
+    wethCovid:         "a8b21d3050d2072e267ef1a31ffaf405955502b837710883193f8113ac146140",
     bridgeCovid:       "523af31d2064937c94a6c8535bdc2cbc8318c4d912e292c390965f9d86303eff",
     mintAuthorityCovid:"f3bc2b89943e83e2c2821ca3df9e5c359f73689fa0e230b836c1219ebe61295c",
     explorer: "https://explorer.kaspa.org"
@@ -35,28 +35,20 @@ window.BRIDGE_CONFIG = {
   // No external wallet indexes silverscript-KCC20 covenant notes yet, so the bridge surfaces its own mints
   // here and does a LIVE on-chain check that each note UTXO is still held (unspent) at its covenant address.
   weth: {
-    tokenCovid:  "4b3be42eb544f7fe214266bb9058a58d00e7e9dcce3081eca5c34673dff6a2ea",
+    tokenCovid:  "a8b21d3050d2072e267ef1a31ffaf405955502b837710883193f8113ac146140",
     minterCovid: "51277d92e2b3ed9f3b084ff99a8ef1e606289909031bb8dbfda08826a8f944ab",
+    // Re-issued 2026-07-27 on silverscript 2a3961c (adds #143 template-hash hardening + #154 leader-entrypoint
+    // hardening) so the note template matches the current canonical KCC20 standard the DEX validates against.
+    // The prior token (covid 4b3be42e, template 8130334e) was on the pre-#143/#154 base; its notes are retired
+    // (their ETH backing was already withdrawn via the return leg). This genesis note is operator-held.
     mints: [
       {
-        amountEth: "0.0002", units: "200000000000000",
+        amountEth: "0.0007", units: "700000000000000", reissue: true,
         recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
         recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
-        noteAddr:  "kaspa:prjphf289mdlz4wtl2ssygap99keu78yp8gyn047ww6ssjzggfz9cq3m3egap",
-        noteTxid:  "538f87dbb24a769b3fd37a381c1506052e5605cb6958460c91db13c9e9a2a414", noteIdx: 1,
-        mintTxid:  "538f87dbb24a769b3fd37a381c1506052e5605cb6958460c91db13c9e9a2a414",
-        ethDepositId: 0, ethBlock: 25614483,
-        ethTxid: "0x865154ca2af65aa03b6aded292b8f0d7d8ea7ad84f940605f4d8bbe917914647"
-      },
-      {
-        amountEth: "0.0005", units: "500000000000000",
-        recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
-        recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
-        noteAddr:  "kaspa:pr0eszqyqjq7k39r0nk3f977mqqqd2gy6wkff4drr6t6gnm3caak7ft5gn762",
-        noteTxid:  "75eb244f2e6beff352fe0c8cc4543b66d6c99c5cd9a99100974ccd2d8ffe8d00", noteIdx: 1,
-        mintTxid:  "75eb244f2e6beff352fe0c8cc4543b66d6c99c5cd9a99100974ccd2d8ffe8d00",
-        ethDepositId: 1, ethBlock: 25615186,
-        ethTxid: "0xe88a24a63dc15f48592a7048b8e262a8648f721fdfd3f91307bede93d3bd1a9e"
+        noteAddr:  "kaspa:pzycdx74p5scx9vkcp2646c8j0u809gej4l5ny82la0k344qa73vcy87zfpy7",
+        noteTxid:  "8e1b1640214608e37d5fee986e5f5b2a129bae6f4273d2170a45b10d39d499e4", noteIdx: 0,
+        mintTxid:  "8e1b1640214608e37d5fee986e5f5b2a129bae6f4273d2170a45b10d39d499e4"
       }
     ]
   },
