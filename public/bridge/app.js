@@ -1,9 +1,10 @@
 /* Kaspa-402 Bridge — functional frontend logic.
    ETH side: MetaMask + ethers, real EthKaspaEscrow.lock().
    KAS side: KasWare (window.kasware) — connect, x-only pubkey (used as the ETH lock recipient), balance.
-   The KAS->ETH covenant burn is CONSTRUCTED here but broadcast hands off to the covenant-aware signer:
-   KasWare's public API (sendKaspa/signMessage/KRC20) does not build/sign arbitrary covenant transactions,
-   so the burn tx is prepared + the record shown for the covenant burn bin (covenant/deploy/burn_registry_burn).
+   The KAS->ETH covenant burn is a TWO-PARTY co-spend: the note owner authorizes destroying their wETH, and the
+   covenant governance authorizes the supply change. KasWare's public API can prove note ownership (signMessage)
+   but does not yet sign covenant transactions, so the burn is prepared here and executed operator-assisted; the
+   ETH unlock then follows once the Kaspa finality proof (~1-3h) is generated.
 */
 const CFG = window.BRIDGE_CONFIG;
 const $ = (id) => document.getElementById(id);
@@ -222,10 +223,11 @@ async function doBurn() {
   // KasWare has no covenant-tx API; prove ownership via signMessage, then hand off the burn to the covenant signer.
   let sig = null;
   try { sig = await window.kasware.signMessage(`kaspa-402 bridge burn ${amtStr} wETH -> ${ethRecipient} nonce ${nonce}`); } catch {}
-  showResult("Burn prepared" + (sig ? " · signed ✓" : ""),
-    `The burn record is constructed below. KasWare cannot yet sign covenant transactions, so the wETH note + registry `
-    + `co-spend is broadcast by the covenant signer (<code>covenant/deploy/burn_registry_burn</code>). After it confirms, `
-    + `the sparse-anchor proof binds its <b>acceptance</b> and ETH unlocks to ${shorten(ethRecipient, 6)}.`
+  showResult("Burn prepared" + (sig ? " · ownership signed ✓" : ""),
+    `The burn record is constructed below. The wETH burn is a two-party covenant co-spend (your note + the `
+    + `covenant governance); browser wallets can't yet sign covenant transactions, so it's executed `
+    + `operator-assisted. After the burn confirms on Kaspa, a sparse-anchor light-client proof binds its `
+    + `<b>acceptance</b> (~1-3h) and the escrow unlocks ETH to ${shorten(ethRecipient, 6)}, once per nonce.`
     + `<pre class="rec">${JSON.stringify(record, null, 2)}</pre>`);
 }
 

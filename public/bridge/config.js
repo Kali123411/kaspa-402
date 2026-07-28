@@ -1,6 +1,11 @@
 // Kaspa-402 Bridge frontend — network + contract configuration.
-// Both legs are LIVE on mainnet: the EthKaspaEscrow on Ethereum L1, the wETH token + burn registry on Kaspa.
-// The return leg (Kaspa->ETH) is proven end-to-end — a real wETH burn unlocked ETH via SP1 Groth16 (tx 0xc9f28b7e).
+// Live on Kaspa mainnet: the wETH KCC20 token, the proof-gated mint, and the value-absorption burn registry.
+// Mint (ETH->Kaspa) is end-to-end on mainnet: a real ETH deposit -> SP1 Helios proof -> canonical wETH note
+//   (reference mint tx bea05e92742c2ad475925e499a91541ef459601bca51952e67fbc1a1ee902e12).
+// Return leg (Kaspa->ETH): the wETH burn + exact-value registry absorb is live on mainnet (reference burn tx
+//   d1938ddf41ac4e3019515c846ac76cb91df3ccb7cc1a959a331c3154afa3d44b). The burn is a TWO-PARTY co-sign (the
+//   note owner + the covenant governance), and the ETH unlock is gated on a ~1-3h Kaspa finality proof, so the
+//   return leg is operator-assisted (initiated + proven off-chain), not yet self-serve from the browser.
 window.BRIDGE_CONFIG = {
   eth: {
     chainId: "0x1",               // Ethereum L1 mainnet — EthKaspaEscrow deployed 2026-07-26
@@ -23,42 +28,39 @@ window.BRIDGE_CONFIG = {
   kaspa: {
     network: "kaspa_mainnet",     // KasWare network id
     apiBase: "https://api.kaspa.org",
-    burnRegistryCovid: "1cca9cfec96e2f06da2a23d6363b511a9cafaf0d59da89003f0da24c0cc30bc9",
+    // LIVE Tier-2 mainnet stack (2026-07-28). Covid provenance: reproducible from each covenant's launch proof.
+    burnRegistryCovid: "2fda4298b781bd389f15cde2b4bd9cfec4b2886daa3d9c9ea585e2de7d2955cd",
     wethTemplateHash:  "36205a78ae657a7f1db798f6c52925ca82aca7361df71ef6a8202ce05aa7ec5f",
-    // mainnet covenants (2026-07-26): canonical KCC20 wETH + the mint-direction light client + authority
-    wethCovid:         "8b6a35222c6ab907f0d669d8e46d6cad7f395f3758a7b8270c7c384f1378b656",
+    wethCovid:         "6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e",
     bridgeCovid:       "58231a18cca8acfb5d58fbc6b1170eeb42268139be74e0ed3ce5784005cdca99",
-    mintAuthorityCovid:"acebb33bcac42b46c50683f21ca2387cff781e2400e8444f032315a491ecf822",
+    mintAuthorityCovid:"b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
     explorer: "https://explorer.kaspa.org"
   },
   // Minted wETH — canonical, proof-gated KCC20 notes (covid A), each 1:1 backed by a proven ETH deposit.
   // No external wallet indexes silverscript-KCC20 covenant notes yet, so the bridge surfaces its own mints
   // here and does a LIVE on-chain check that each note UTXO is still held (unspent) at its covenant address.
   weth: {
-    tokenCovid:  "8b6a35222c6ab907f0d669d8e46d6cad7f395f3758a7b8270c7c384f1378b656",
-    minterCovid: "acebb33bcac42b46c50683f21ca2387cff781e2400e8444f032315a491ecf822",
-    // Re-issued 2026-07-27 on silverscript 2a3961c (adds #143 template-hash hardening + #154 leader-entrypoint
-    // hardening) so the note template (36205a78) matches the canonical KCC20 standard the DEX validates against.
-    // FULLY bridge-integrated: this note was MINTED by the redeployed stack (fresh bridge 58231a18 -> minter
-    // acebb33b -> token 8b6a3522) from a real SP1 Helios storage proof of ETH deposit #0 — proof-gated 1:1, not
-    // operator-seeded. The prior token (4b3be42e, template 8130334e) is retired.
+    tokenCovid:  "6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e",
+    minterCovid: "b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
+    // Canonical, DEX-compliant KCC20 wETH (note template 36205a78), each note proof-gated 1:1 against a real
+    // SP1 Helios storage proof of an ETH deposit — minted by the live Tier-2 stack (bridge 58231a18 ->
+    // minter b8f2231e -> token 6e0d2649). The frontend live-checks each note UTXO is still held (unspent).
     mints: [
       {
         amountEth: "0.0002", units: "200000000000000",
         recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
         recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
         noteAddr:  "kaspa:prjphf289mdlz4wtl2ssygap99keu78yp8gyn047ww6ssjzggfz9cq3m3egap",
-        noteTxid:  "a976087b0fc8e3191f0b91142fb48bf84941900d288c795cccdf0197eca61d19", noteIdx: 1,
-        mintTxid:  "a976087b0fc8e3191f0b91142fb48bf84941900d288c795cccdf0197eca61d19",
-        ethDepositId: 0, ethBlock: 25614483,
-        ethTxid: "0x865154ca2af65aa03b6aded292b8f0d7d8ea7ad84f940605f4d8bbe917914647"
+        noteTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade", noteIdx: 1,
+        mintTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade",
+        ethDepositId: 1, ethBlock: null, ethTxid: null
       }
     ]
   },
   // baked-in bridge fee (Kasplex-style flat fee). KAS-side leg = a 0.5-KAS fee output in the burn tx;
   // ETH-side leg = the escrow's immutable feeFlat (wei), taken on lock + unlock.
   fee: {
-    flatKas: 0.5, ethFeeWei: "0", burnService: "http://localhost:8790",
+    flatKas: 0.5, ethFeeWei: "0", burnService: null,   // return leg is operator-assisted (no browser self-serve burn)
     kaspaAddress: "kaspa:qz7v9j9dddsqams8tswzgvadau00drmjkv3ux7p2q24j4xrd5wyscdmnzdcd9",
     // x-only pubkey decoded from the fee address (version 0 P2PK) — the burn bin's FEE_PUBKEY
     feePubkey: "bcc2c8ad6b600eee075c1c2433adef1ef68f72b323c3782a02ab2a986da3890c",
