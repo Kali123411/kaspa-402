@@ -1,10 +1,12 @@
 /* Kaspa-402 Bridge — functional frontend logic.
    ETH side: MetaMask + ethers, real EthKaspaEscrow.lock().
    KAS side: KasWare (window.kasware) — connect, x-only pubkey (used as the ETH lock recipient), balance.
-   The KAS->ETH covenant burn is a TWO-PARTY co-spend: the note owner authorizes destroying their wETH, and the
-   covenant governance authorizes the supply change. KasWare's public API can prove note ownership (signMessage)
-   but does not yet sign covenant transactions, so the burn is prepared here and executed operator-assisted; the
-   ETH unlock then follows once the Kaspa finality proof (~1-3h) is generated.
+   The KAS->ETH covenant burn is PERMISSIONLESS (keyless): only the note owner signs their own wETH note, and the
+   minter burn leg needs NO governance key — it's gated by a structural anti-mint check (the sole minter-authority
+   output carries zero value and >=1 note is destroyed, so a burn can only reduce supply). KasWare's public API can
+   prove note ownership (signMessage) but does not yet sign covenant transactions, so the burn is prepared here and
+   submitted out-of-band; a ~1-3h sparse-anchor finality proof (inherent to trustless finality, not a permission)
+   then lets the escrow release the ETH.
 */
 const CFG = window.BRIDGE_CONFIG;
 const $ = (id) => document.getElementById(id);
@@ -224,10 +226,10 @@ async function doBurn() {
   let sig = null;
   try { sig = await window.kasware.signMessage(`kaspa-402 bridge burn ${amtStr} wETH -> ${ethRecipient} nonce ${nonce}`); } catch {}
   showResult("Burn prepared" + (sig ? " · ownership signed ✓" : ""),
-    `The burn record is constructed below. The wETH burn is a two-party covenant co-spend (your note + the `
-    + `covenant governance); browser wallets can't yet sign covenant transactions, so it's executed `
-    + `operator-assisted. After the burn confirms on Kaspa, a sparse-anchor light-client proof binds its `
-    + `<b>acceptance</b> (~1-3h) and the escrow unlocks ETH to ${shorten(ethRecipient, 6)}, once per nonce.`
+    `The burn record is constructed below. The wETH burn is <b>permissionless</b> — only your note signature is `
+    + `needed (the minter burn leg is keyless, gated by a structural anti-mint check). Browser wallets can't yet `
+    + `sign covenant transactions, so it's submitted out-of-band. After the burn confirms on Kaspa, a sparse-anchor `
+    + `light-client proof binds its <b>acceptance</b> (~1-3h) and the escrow unlocks ETH to ${shorten(ethRecipient, 6)}, once per nonce.`
     + `<pre class="rec">${JSON.stringify(record, null, 2)}</pre>`);
 }
 
