@@ -172,13 +172,21 @@ function renderWethPanel() {
         ${m.ethTxid
           ? `<dt>backing</dt><dd><a href="${CFG.eth.explorer}/tx/${m.ethTxid}" target="_blank" rel="noopener" title="ETH deposit #${m.ethDepositId} — ${m.ethTxid}">ETH deposit #${m.ethDepositId} ↗</a></dd>`
           : `<dt>template</dt><dd><a href="${kx(m.mintTxid)}" target="_blank" rel="noopener" title="DEX-canonical KCC20 (silverscript 2a3961c) — genesis ${m.mintTxid}">DEX-canonical · genesis ${shorten(m.mintTxid)} ↗</a></dd>`}
+        ${m.burnTxid
+          ? `<dt>burn tx</dt><dd><a href="${kx(m.burnTxid)}" target="_blank" rel="noopener" title="value-absorption burn — the note is destroyed, the registry absorbs the exact amount — ${m.burnTxid}">${shorten(m.burnTxid)} ↗</a></dd>` : ""}
+        ${m.unlockEthTxid
+          ? `<dt>unlock</dt><dd><a href="${CFG.eth.explorer}/tx/${m.unlockEthTxid}" target="_blank" rel="noopener" title="ETH released on mainnet against the burn's finality proof — ${m.unlockEthTxid}">ETH released ↗</a></dd>` : ""}
       </dl></div>`;
   }).join("");
   show.forEach(async (m, i) => {
     const el = list.querySelector(`[data-i="${i}"] [data-live]`); if (!el) return;
     const held = await noteHeld(m);
-    el.className = "live " + (held === true ? "ok" : held === false ? "spent" : "loading");
-    el.textContent = held === true ? "held on-chain ✓" : held === false ? "spent" : "unverified";
+    // a spent note with a recorded burn is the SUCCESS path (destroyed via the value-absorption registry)
+    const burned = held === false && m.burnTxid;
+    el.className = "live " + (held === true ? "ok" : burned ? "ok" : held === false ? "spent" : "loading");
+    el.textContent = held === true ? "held on-chain ✓"
+      : burned ? (m.unlockEthTxid ? "burned → ETH unlocked ✓" : "burned ✓")
+      : held === false ? "spent" : "unverified";
   });
 }
 

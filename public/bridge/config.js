@@ -1,18 +1,16 @@
 // Kaspa-402 Bridge frontend — network + contract configuration.
-// Live on Kaspa mainnet: the wETH KCC20 token, the proof-gated mint, and the value-absorption burn registry.
-// Mint (ETH->Kaspa) is end-to-end on mainnet: a real ETH deposit -> SP1 Helios proof -> canonical wETH note
-//   (reference mint tx bea05e92742c2ad475925e499a91541ef459601bca51952e67fbc1a1ee902e12).
-// Return leg (Kaspa->ETH): PERMISSIONLESS and closed end-to-end on mainnet. The wETH burn needs NO governance
-//   key — only the note owner signs their own note; the minter burn leg is gated by a structural anti-mint check.
-//   Reference permissionless burn tx dfbeb7c97ca4b07d99afb2f643928f874c8e702a5382cd30ce414f1c2c5ba7f1, whose
-//   sparse-anchor finality proof an Ethereum escrow verifies to release the ETH (mainnet unlock tx
-//   0x50017f2f374e420ff7b6f2150faf65175b0f36cd239761a3691afad633b73c74). The ~1-3h proof is inherent to trustless
-//   finality (not a permission), so today it's proof-then-submit, not yet one-click from the browser.
+// Both legs are LIVE on mainnet. The full loop is closed END TO END, PERMISSIONLESSLY (2026-07-29):
+// ETH lock -> SP1 Helios proof -> KCC20 wETH mint -> KEYLESS burn (no operator sig) -> sparse-anchor
+// finality proof -> ETH released on Ethereum mainnet (unlock tx 0x50017f2f, Tier-2 escrow).
 window.BRIDGE_CONFIG = {
   eth: {
-    chainId: "0x1",               // Ethereum L1 mainnet — EthKaspaEscrow deployed 2026-07-26
+    chainId: "0x1",               // Ethereum L1 mainnet
     chainName: "Ethereum",
+    // Deposit/lock escrow — the mint covenants prove THIS contract's storage slots (deposits #1..#5).
     escrow: "0x51328cC5995EDE52968A444d605659cFC3e3A571",
+    // Tier-2 unlock escrow (canonical for the return leg) — verifies the sparse-anchor finality proof of a
+    // Tier-2/permissionless burn and releases ETH. Proven live: unlock tx 0x50017f2f… (2026-07-29).
+    unlockEscrow: "0x3c79d59595535E30A7f3B33CEB1A6CA2A06d4F3d",
     sp1Verifier: "0xDF87326CF4942605d8166B0413832b235Ec6a87a",
     explorer: "https://etherscan.io",
     // minimal ABI — only what the frontend calls / reads
@@ -30,27 +28,32 @@ window.BRIDGE_CONFIG = {
   kaspa: {
     network: "kaspa_mainnet",     // KasWare network id
     apiBase: "https://api.kaspa.org",
-    // LIVE PERMISSIONLESS mainnet stack (2026-07-29): keyless burn leg. Covid provenance: reproducible from each
-    // covenant's launch proof. (Tier-1/Tier-2 owner-signed stacks were the prior, superseded return-leg design.)
-    burnRegistryCovid: "2a1c3afad4e42edcf7161cb1bc1c64db15669223773a3a7b5d851360f9e833bb",
+    // Canonical Tier-2 stack (2026-07-28, launch-proof verified — covenant/launch/ in the repo):
+    burnRegistryCovid: "2fda4298b781bd389f15cde2b4bd9cfec4b2886daa3d9c9ea585e2de7d2955cd",
+    // canonical kcc20 note template (2a3961c compile) — what wallets/DEX validate against; the registry's
+    // own masked-state param (wethTmpl) is 8278cbec….
     wethTemplateHash:  "36205a78ae657a7f1db798f6c52925ca82aca7361df71ef6a8202ce05aa7ec5f",
-    wethCovid:         "fd45f41b194644ff2eeaff3186a1d4d3c8648bc54b84e9aaabcc0bbebbd9cd07",
+    wethCovid:         "6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e",
     bridgeCovid:       "58231a18cca8acfb5d58fbc6b1170eeb42268139be74e0ed3ce5784005cdca99",
-    mintAuthorityCovid:"a544f84b60afdd364888349411a2d4100fc1a5cb6093a7a6caeb4423b04d343e",
+    mintAuthorityCovid:"b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
+    // PERMISSIONLESS stack v2 (2026-07-29, canonical): same mint gate, but the burn leg is KEYLESS —
+    // authorized by a structural anti-mint constraint (OpCovOutputCount==1), no governance signature.
+    permMinterCovid:   "a544f84b60afdd364888349411a2d4100fc1a5cb6093a7a6caeb4423b04d343e",
+    permWethCovid:     "fd45f41b194644ff2eeaff3186a1d4d3c8648bc54b84e9aaabcc0bbebbd9cd07",
     explorer: "https://explorer.kaspa.org"
   },
-  // Minted wETH — canonical, proof-gated KCC20 notes (covid A), each 1:1 backed by a proven ETH deposit.
+  // Minted wETH — canonical, proof-gated KCC20 notes, each 1:1 backed by a proven ETH deposit.
   // No external wallet indexes silverscript-KCC20 covenant notes yet, so the bridge surfaces its own mints
   // here and does a LIVE on-chain check that each note UTXO is still held (unspent) at its covenant address.
+  // Notes burned via the value-absorption registry carry burnTxid (+ unlockEthTxid once ETH was released).
   weth: {
     tokenCovid:  "6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e",
     minterCovid: "b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
-    // Canonical, DEX-compliant KCC20 wETH (note template 36205a78), each note proof-gated 1:1 against a real
-    // SP1 Helios storage proof of an ETH deposit. This displayed note is a still-held proof-gated mint (bridge
-    // 58231a18 -> minter b8f2231e -> token 6e0d2649); the permissionless stack's own demo note was destroyed by
-    // the keyless burn that closed the return leg. The frontend live-checks each note UTXO is still held (unspent).
+    // Current canonical stack (Tier-2 registry + merged proof-gated minter). The 2026-07-26/27 stack
+    // (token 8b6a3522 / minter acebb33b) is retired; its mints predate the value-absorption burn.
     mints: [
       {
+        // still-held proof-gated mint (bridge 58231a18 -> minter b8f2231e -> token 6e0d2649)
         amountEth: "0.0002", units: "200000000000000",
         recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
         recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
@@ -58,6 +61,32 @@ window.BRIDGE_CONFIG = {
         noteTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade", noteIdx: 1,
         mintTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade",
         ethDepositId: 1, ethBlock: null, ethTxid: null
+      },
+      {
+        amountEth: "0.0001", units: "100000000000000",
+        recipient:     "b3efc756356e556a0963de13ae47427dcf9b68ee8783ce13f36f3d842bd00f32",
+        recipientAddr: "kaspa:qze7l36kx4h926sfv00p8tj8gf7ulxmga6rc8nsn7dhnmppt6q8nyg5sr0xjy",
+        noteAddr:  "kaspa:pqgdhtxknq6lzy9rjw6qm0ktl6hlw5l0rtvswnxmrjyulsuqdrf9q65tgknqf",
+        noteTxid:  "bea05e92742c2ad475925e499a91541ef459601bca51952e67fbc1a1ee902e12", noteIdx: 1,
+        mintTxid:  "bea05e92742c2ad475925e499a91541ef459601bca51952e67fbc1a1ee902e12",
+        ethDepositId: 3, ethBlock: 25627787,
+        ethTxid: "0xfe82f53c84e39870be939bc2a36977487644a0db8b613ecac620b706ef60e7b8",
+        // Tier-2 value-absorption burn: the note was DESTROYED, the registry absorbed the exact amount.
+        burnTxid: "d1938ddf41ac4e3019515c846ac76cb91df3ccb7cc1a959a331c3154afa3d44b"
+      },
+      {
+        amountEth: "0.0001", units: "100000000000000",
+        recipient:     "b3efc756356e556a0963de13ae47427dcf9b68ee8783ce13f36f3d842bd00f32",
+        recipientAddr: "kaspa:qze7l36kx4h926sfv00p8tj8gf7ulxmga6rc8nsn7dhnmppt6q8nyg5sr0xjy",
+        noteAddr:  "kaspa:pqgdhtxknq6lzy9rjw6qm0ktl6hlw5l0rtvswnxmrjyulsuqdrf9q65tgknqf",
+        noteTxid:  "237704556fc75401a7b7fc4b38237eeb35902a402730d66616908693bfa777b7", noteIdx: 1,
+        mintTxid:  "237704556fc75401a7b7fc4b38237eeb35902a402730d66616908693bfa777b7",
+        ethDepositId: 5, ethBlock: 25635045,
+        ethTxid: "0x3e3f975979c31dd8b8627a20690d47fbd3bb3d7996a6475a36ca36335740fc79",
+        // The PERMISSIONLESS demo cycle: KEYLESS burn (no operator signature) -> sparse-anchor finality
+        // proof -> ETH released on mainnet. The complete loop, permissionless end to end.
+        burnTxid: "dfbeb7c97ca4b07d99afb2f643928f874c8e702a5382cd30ce414f1c2c5ba7f1",
+        unlockEthTxid: "0x50017f2f374e420ff7b6f2150faf65175b0f36cd239761a3691afad633b73c74"
       }
     ]
   },
