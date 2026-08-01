@@ -119,10 +119,10 @@ window.BRIDGE_CONFIG = {
     // burnService: the KEYLESS burn service (frontend/burn-service/) that builds the covenant co-spend.
     // It holds no private key — your wallet signs the burn via signPskt and the service engine-verifies
     // before broadcasting. null = feature disabled.
-    // SAME-ORIGIN path (recommended): the Cloudflare tunnel routes /burn-api/* on this hostname to the
-    // service, so there is no CORS and no mixed-content block. An absolute http:// URL will NOT work from
-    // the HTTPS site — browsers block it.
-    flatKas: 0.5, ethFeeWei: "0", burnService: "/burn-api",
+    // The site is served by VERCEL, so a Cloudflare-tunnel path route on this hostname cannot intercept
+    // it — the API needs its own tunnel hostname. That makes it cross-origin, so the service must allow
+    // this page's origin (ALLOW_ORIGIN). It MUST be https:// — an HTTPS page cannot call plain HTTP.
+    flatKas: 0.5, ethFeeWei: "0", burnService: "https://burn-api.kaspa-402.org",
     kaspaAddress: "kaspa:qz7v9j9dddsqams8tswzgvadau00drmjkv3ux7p2q24j4xrd5wyscdmnzdcd9",
     // x-only pubkey decoded from the fee address (version 0 P2PK) — the burn bin's FEE_PUBKEY
     feePubkey: "bcc2c8ad6b600eee075c1c2433adef1ef68f72b323c3782a02ab2a986da3890c",
