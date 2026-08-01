@@ -38,20 +38,39 @@ window.BRIDGE_CONFIG = {
     mintAuthorityCovid:"b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
     // PERMISSIONLESS stack v2 (2026-07-29, canonical): same mint gate, but the burn leg is KEYLESS —
     // authorized by a structural anti-mint constraint (OpCovOutputCount==1), no governance signature.
-    permMinterCovid:   "a544f84b60afdd364888349411a2d4100fc1a5cb6093a7a6caeb4423b04d343e",
-    permWethCovid:     "fd45f41b194644ff2eeaff3186a1d4d3c8648bc54b84e9aaabcc0bbebbd9cd07",
+    // PERMISSIONLESS v3 (canonical): the first minter that binds the deposit proof to a specific escrow
+    // (AUDIT-READINESS §7.8). v2 (a544f84b/fd45f41b) is superseded — it accepted a proof of ANY contract.
+    permMinterCovid:   "a331756148cebc527f4df866dd518173e19babf2262d8b8eb417879ce28492ad",
+    permWethCovid:     "0bb9a10e262fcc8ac06bc9735c86279686cdfc9bfef90a4b3d90a11ba5dcb39f",
     explorer: "https://explorer.kaspa.org"
   },
   // Minted wETH — canonical, proof-gated KCC20 notes, each 1:1 backed by a proven ETH deposit.
   // No external wallet indexes silverscript-KCC20 covenant notes yet, so the bridge surfaces its own mints
   // here and does a LIVE on-chain check that each note UTXO is still held (unspent) at its covenant address.
   // Notes burned via the value-absorption registry carry burnTxid (+ unlockEthTxid once ETH was released).
+  //
+  // `permissionless: true` marks a note minted by the PERMISSIONLESS stack — only those can be burned
+  // self-serve from this page (that minter's burn leg needs no governance signature). Notes from the
+  // earlier stack require an operator co-signature and are shown but not burnable here.
+  // `noteValueSompi` is the note UTXO's KAS value (not the wETH amount) — needed to build the co-spend.
   weth: {
     tokenCovid:  "6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e",
     minterCovid: "b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20",
     // Current canonical stack (Tier-2 registry + merged proof-gated minter). The 2026-07-26/27 stack
     // (token 8b6a3522 / minter acebb33b) is retired; its mints predate the value-absorption burn.
     mints: [
+      {
+        // v3 stack, minted through the FIXED §7.8 gate — this is the note the self-serve burn uses
+        amountEth: "0.0002", units: "200000000000000",
+        recipient:     "d94d02625649d3bc428158fb2a42e3b53703e3fa19e67c6996e69ff79cb61f71",
+        recipientAddr: "kaspa:qrv56qnz2eya80zzs9v0k2jzuw6nwqlrlgv7vlrfjmnflauukc0hzffhan3rm",
+        noteAddr:  "kaspa:prjphf289mdlz4wtl2ssygap99keu78yp8gyn047ww6ssjzggfz9cq3m3egap",
+        noteTxid:  "2c7e0462981ee212bdbe321f4ba8212d6de200b52520dd806d8d23344d94ea59", noteIdx: 1,
+        noteValueSompi: 30000000, permissionless: true,
+        mintTxid:  "2c7e0462981ee212bdbe321f4ba8212d6de200b52520dd806d8d23344d94ea59",
+        ethDepositId: 1, ethBlock: 25655594,
+        ethTxid: "0xc04de5e211f44fb5425e4963310c83b164cc72d8b4170cc5e0242979393f403a"
+      },
       {
         // still-held proof-gated mint (bridge 58231a18 -> minter b8f2231e -> token 6e0d2649)
         amountEth: "0.0002", units: "200000000000000",
@@ -60,7 +79,10 @@ window.BRIDGE_CONFIG = {
         noteAddr:  "kaspa:prjphf289mdlz4wtl2ssygap99keu78yp8gyn047ww6ssjzggfz9cq3m3egap",
         noteTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade", noteIdx: 1,
         mintTxid:  "a0fef7c448449e69453b0e09239b65c873dfccef85ab2fa9c162d6385313eade",
-        ethDepositId: 1, ethBlock: null, ethTxid: null
+        ethDepositId: 1, ethBlock: null, ethTxid: null,
+        // burned 2026-07-31 (note-owner signature came from KasWare signPskt) to clear the double claim
+        // left by the ETH recovery; registry accRoot b7ed91ce -> ecce1f67.
+        burnTxid: "7b57862f16fa52d1e724464601b8a6bceb19853e9f17c8fd4b30dd2b167b8535"
       },
       {
         amountEth: "0.0001", units: "100000000000000",
@@ -80,6 +102,7 @@ window.BRIDGE_CONFIG = {
         recipientAddr: "kaspa:qze7l36kx4h926sfv00p8tj8gf7ulxmga6rc8nsn7dhnmppt6q8nyg5sr0xjy",
         noteAddr:  "kaspa:pqgdhtxknq6lzy9rjw6qm0ktl6hlw5l0rtvswnxmrjyulsuqdrf9q65tgknqf",
         noteTxid:  "237704556fc75401a7b7fc4b38237eeb35902a402730d66616908693bfa777b7", noteIdx: 1,
+        noteValueSompi: 40000000, permissionless: true,
         mintTxid:  "237704556fc75401a7b7fc4b38237eeb35902a402730d66616908693bfa777b7",
         ethDepositId: 5, ethBlock: 25635045,
         ethTxid: "0x3e3f975979c31dd8b8627a20690d47fbd3bb3d7996a6475a36ca36335740fc79",
@@ -93,7 +116,13 @@ window.BRIDGE_CONFIG = {
   // baked-in bridge fee (Kasplex-style flat fee). KAS-side leg = a 0.5-KAS fee output in the burn tx;
   // ETH-side leg = the escrow's immutable feeFlat (wei), taken on lock + unlock.
   fee: {
-    flatKas: 0.5, ethFeeWei: "0", burnService: null,   // return leg is permissionless (keyless burn); proving is off-chain (~1-3h), so no one-click browser burn yet
+    // burnService: the KEYLESS burn service (frontend/burn-service/) that builds the covenant co-spend.
+    // It holds no private key — your wallet signs the burn via signPskt and the service engine-verifies
+    // before broadcasting. null = feature disabled.
+    // SAME-ORIGIN path (recommended): the Cloudflare tunnel routes /burn-api/* on this hostname to the
+    // service, so there is no CORS and no mixed-content block. An absolute http:// URL will NOT work from
+    // the HTTPS site — browsers block it.
+    flatKas: 0.5, ethFeeWei: "0", burnService: "/burn-api",
     kaspaAddress: "kaspa:qz7v9j9dddsqams8tswzgvadau00drmjkv3ux7p2q24j4xrd5wyscdmnzdcd9",
     // x-only pubkey decoded from the fee address (version 0 P2PK) — the burn bin's FEE_PUBKEY
     feePubkey: "bcc2c8ad6b600eee075c1c2433adef1ef68f72b323c3782a02ab2a986da3890c",

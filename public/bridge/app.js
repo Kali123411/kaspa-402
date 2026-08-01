@@ -1,12 +1,12 @@
 /* Kaspa-402 Bridge — functional frontend logic.
    ETH side: MetaMask + ethers, real EthKaspaEscrow.lock().
    KAS side: KasWare (window.kasware) — connect, x-only pubkey (used as the ETH lock recipient), balance.
-   The KAS->ETH covenant burn is PERMISSIONLESS (keyless): only the note owner signs their own wETH note, and the
-   minter burn leg needs NO governance key — it's gated by a structural anti-mint check (the sole minter-authority
-   output carries zero value and >=1 note is destroyed, so a burn can only reduce supply). KasWare's public API can
-   prove note ownership (signMessage) but does not yet sign covenant transactions, so the burn is prepared here and
-   submitted out-of-band; a ~1-3h sparse-anchor finality proof (inherent to trustless finality, not a permission)
-   then lets the escrow release the ETH.
+   The KAS->ETH covenant burn is PERMISSIONLESS (keyless) AND self-serve: the minter burn leg needs NO governance
+   key (structural anti-mint check — a burn can only reduce supply), and the note owner signs their own note IN THE
+   BROWSER via kasware.signPskt, which signs P2SH covenant inputs with a covenant-aware Toccata sighash (measured
+   2026-07-31). The burn-service builds the co-spend but holds NO KEYS and engine-verifies before broadcasting.
+   Afterwards a ~1-3h sparse-anchor finality proof (inherent to trustless finality, not a permission) lets the
+   escrow release the ETH — self-verifying, so anyone can produce and submit it.
 */
 const CFG = window.BRIDGE_CONFIG;
 const $ = (id) => document.getElementById(id);
@@ -221,24 +221,104 @@ async function doLock() {
 }
 
 /* ---------------- Kaspa -> ETH: burn ---------------- */
+// Pull the 64-byte schnorr signature out of a signed input's sig-script (canonical push: 0x41 ‖ sig ‖ type).
+function sigFromSignedTx(signedJson, idx) {
+  const t = typeof signedJson === "string" ? JSON.parse(signedJson) : signedJson;
+  const inp = (t.inputs || t.transaction?.inputs || [])[idx];
+  const ss = (inp && inp.signatureScript || "").replace(/^0x/, "");
+  if (!ss) return null;
+  if (ss.length >= 132 && ss.slice(0, 2) === "41") return ss.slice(2, 130);
+  if (ss.length === 130) return ss.slice(0, 128);
+  return null;
+}
+// A note is keyless-burnable only if the connected wallet owns it AND it was minted by the
+// permissionless stack (the older stack's minter still requires a governance signature).
+function burnableNote() {
+  const pk = state.kasPk ? xonly32(state.kasPk).slice(2).toLowerCase() : null;
+  if (!pk) return null;
+  return (CFG.weth.mints || []).find(m =>
+    (m.recipient || "").toLowerCase() === pk && m.permissionless && !m.burnTxid) || null;
+}
+
 async function doBurn() {
   if (!state.kasAddr) { toast("Connect KasWare first"); return; }
+  const svc = CFG.fee.burnService;
   let ethRecipient = $("recip").value.trim();
   if (!ethRecipient && state.eth) ethRecipient = state.eth.addr;
   if (!/^0x[0-9a-fA-F]{40}$/.test(ethRecipient)) { toast("Enter an Ethereum recipient (0x…40 hex) or connect MetaMask"); return; }
-  const amtStr = $("amount").value.trim();
-  // construct the burn record the registry will append + the ETH-side unlock will read
-  const nonce = "0x" + Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, "0")).join("");
-  const record = { ethRecipient, amount: amtStr + " wETH", nonce, registry: CFG.kaspa.burnRegistryCovid, wethTemplate: CFG.kaspa.wethTemplateHash };
-  // KasWare has no covenant-tx API; prove ownership via signMessage, then hand off the burn to the covenant signer.
-  let sig = null;
-  try { sig = await window.kasware.signMessage(`kaspa-402 bridge burn ${amtStr} wETH -> ${ethRecipient} nonce ${nonce}`); } catch {}
-  showResult("Burn prepared" + (sig ? " · ownership signed ✓" : ""),
-    `The burn record is constructed below. The wETH burn is <b>permissionless</b> — only your note signature is `
-    + `needed (the minter burn leg is keyless, gated by a structural anti-mint check). Browser wallets can't yet `
-    + `sign covenant transactions, so it's submitted out-of-band. After the burn confirms on Kaspa, a sparse-anchor `
-    + `light-client proof binds its <b>acceptance</b> (~1-3h) and the escrow unlocks ETH to ${shorten(ethRecipient, 6)}, once per nonce.`
-    + `<pre class="rec">${JSON.stringify(record, null, 2)}</pre>`);
+
+  if (!svc) return showResult("Burn service not configured",
+    `The return leg is <b>keyless</b> — your wallet signs the burn directly and no operator key is involved — but this `
+    + `page needs a burn-service endpoint to build the covenant transaction. Set <code>fee.burnService</code> in `
+    + `<code>config.js</code>. The service holds no keys (see <code>frontend/burn-service/</code>).`);
+
+  const note = burnableNote();
+  if (!note) return showResult("No keyless-burnable note for this wallet",
+    `Burning is keyless only for notes minted by the <b>permissionless</b> stack (minter `
+    + `<code>${shorten(CFG.kaspa.permMinterCovid, 6)}</code>), whose burn leg needs no governance signature. `
+    + `Notes from the earlier stack can't be burned this way. Lock ETH to mint a permissionless note first.`);
+
+  const step = (n, msg) => showResult(`Burning — step ${n}/4`, msg);
+  try {
+    // 1. the user funds their own fee from their own UTXO, and gets their own change
+    step(1, "Finding a funding UTXO at your Kaspa address…");
+    const us = await (await fetch(`${CFG.kaspa.apiBase}/addresses/${state.kasAddr}/utxos`)).json();
+    if (!us.length) throw new Error("no KAS UTXOs at your address to pay the network fee");
+    const fund = us.map(u => ({ txid: u.outpoint.transactionId, idx: Number(u.outpoint.index), amount: Number(u.utxoEntry.amount) }))
+                   .sort((a, b) => b.amount - a.amount)[0];
+
+    // 2. the service builds the co-spend — it holds no key and cannot move anything on its own.
+    //    NOTE: a burn destroys the WHOLE note (value absorption reads the amount from the note itself),
+    //    so the amount burned is the note's amount, not whatever is typed in the amount box.
+    step(2, `Building the burn co-spend — this burns your whole note of <b>${note.amountEth} wETH</b> `
+      + `(a burn destroys the note; the registry absorbs exactly its amount). The service holds no keys.`);
+    const pr = await fetch(`${svc.replace(/\/$/, "")}/prepare`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        noteTxid: note.noteTxid, noteIdx: note.noteIdx, noteValue: note.noteValueSompi || 40000000,
+        noteOwner: note.recipient, noteAmount: note.units,
+        ethRecipient: ethRecipient.replace(/^0x/, ""),
+        fundTxid: fund.txid, fundIdx: fund.idx, fundAmount: fund.amount,
+        fundOwner: xonly32(state.kasPk).slice(2),
+      }),
+    });
+    const p = await pr.json();
+    if (!pr.ok) throw new Error(p.error + (p.details ? ": " + p.details.join(", ") : ""));
+
+    // 3. your wallet signs. Index 0 is the LEADER input — it carries the note-owner signature (kcc20's
+    //    checkSigs runs in the leader script), index 4 is the funding input.
+    step(3, `Approve in KasWare — signing input ${p.signIndices.join(" and ")} `
+      + `(index 0 is the leader input that carries your note-owner signature).`);
+    const signed = await window.kasware.signPskt({
+      txJsonString: JSON.stringify(p.walletTx),
+      options: { signInputs: p.signIndices.map(index => ({ index, sighashType: 1 })) },
+    });
+    const sigUser = sigFromSignedTx(signed, 0), sigFund = sigFromSignedTx(signed, 4);
+    if (!sigUser || !sigFund) throw new Error("the wallet did not return signatures for both required inputs");
+
+    // 4. submit — the service engine-verifies every input before it will broadcast
+    step(4, "Verifying against the covenant engine and broadcasting…");
+    const sr = await fetch(`${svc.replace(/\/$/, "")}/submit`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ spec: p.spec, sigUser, sigFund }),
+    });
+    const r = await sr.json();
+    if (!sr.ok) throw new Error((r.error || "submit failed") + (r.detail ? " — " + r.detail.slice(-200) : ""));
+
+    const kx = `${CFG.kaspa.explorer}/txs/${r.txid}`;
+    showResult("Burn accepted ✓" + (r.dryRun ? " (dry run — not broadcast)" : ""),
+      `Your wETH note is destroyed and the registry absorbed the exact amount. <b>No operator key was involved</b> — `
+      + `you signed the burn yourself and the minter's burn leg is keyless.`
+      + `<div style="margin:10px 0"><a href="${kx}" target="_blank" rel="noopener">${shorten(r.txid)} ↗</a></div>`
+      + `Next: the burn buries (~64 blocks), then a sparse-anchor finality proof (~1–3 h) authorizes `
+      + `<code>unlock</code> on Ethereum, releasing ETH to ${shorten(ethRecipient, 6)} once per nonce. That proof is `
+      + `self-verifying, so anyone can produce and submit it.`
+      + `<pre class="rec">${JSON.stringify(r.burnRecord, null, 2)}</pre>`);
+  } catch (e) {
+    showResult("Burn failed", `${String(e.message || e)}`
+      + `<p class="d" style="margin:8px 0 0">Nothing was broadcast unless a transaction id is shown above. The service `
+      + `refuses to broadcast any transaction that fails local covenant-engine verification.</p>`);
+  }
 }
 
 /* ---------------- UI wiring ---------------- */
@@ -293,7 +373,7 @@ const FLOW = {
     ["04", "Receive wETH", "The wETH covenant mints your amount 1:1 to your Kaspa address. Supply equals locked ETH by construction."]
   ],
   k2e: [
-    ["01", "Burn wETH", "You burn wETH into the registry covenant, which appends {recipient, amount, nonce} to an accumulator."],
+    ["01", "Burn wETH", "You sign the burn in your own wallet — no operator key. The note is destroyed and the registry absorbs the exact amount, recording {recipient, amount, nonce}."],
     ["02", "Prove Kaspa", "The sparse-anchor light client PoW-verifies k=49 anchors and binds the burn's acceptance (accepted_id_merkle_root)."],
     ["03", "Verify on Ethereum", "SP1's stock verifier checks the Groth16 proof in the escrow; it enforces its own depth + work thresholds."],
     ["04", "Unlock ETH", "The escrow releases ETH to your recipient (autofilled from MetaMask), once per burn nonce (replay-proof)."]
