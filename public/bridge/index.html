@@ -119,6 +119,11 @@
 </div></header>
 
 <main><div class="wrap">
+<div id="bridgeStatus" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:12.5px"></div>
+<style>#bridgeStatus .chip{border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:4px 11px;color:var(--muted)}
+#bridgeStatus .chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--border))}
+#bridgeStatus .chip.no{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--border))}
+#bridgeStatus .chip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}</style>
   <div class="hgrid">
     <div>
       <p class="eyebrow">Bridge assets</p>
@@ -168,26 +173,24 @@
       </div>
       <div class="panel">
         <h3>On-chain, right now</h3>
-        <p class="d">The full loop is closed end-to-end on mainnet, permissionlessly: a KEYLESS wETH burn (no operator signature) whose sparse-anchor finality proof released ETH on Ethereum L1.</p>
+        <p class="d">The full loop is closed end-to-end on mainnet, permissionlessly: a KEYLESS wETH burn (no operator signature) whose sparse-anchor finality proof released ETH on Ethereum L1 — including the trust anchor itself, which is now advanced by proof rather than by an owner key.</p>
         <div class="proof" id="proof">
-          <div class="prow"><span class="k">ETH deposit escrow · Ethereum L1</span><a class="v" href="https://etherscan.io/address/0x51328cC5995EDE52968A444d605659cFC3e3A571" target="_blank" rel="noopener" title="0x51328cC5995EDE52968A444d605659cFC3e3A571 — the lock/deposit escrow the mint proofs bind — verify on Etherscan">0x51328cC599…3A571 ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">ETH unlock escrow (Tier-2) · Ethereum L1</span><a class="v" href="https://etherscan.io/address/0x3c79d59595535E30A7f3B33CEB1A6CA2A06d4F3d" target="_blank" rel="noopener" title="0x3c79d59595535E30A7f3B33CEB1A6CA2A06d4F3d — verifies the sparse-anchor finality proof of a Tier-2 burn and releases ETH — verify on Etherscan">0x3c79d595…6d4F3d ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">Bridge light client · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/d7d720e92c944290071fbbf6061f1a2c9c47e61a31d5c294cb51c0d5a6d73f0d" target="_blank" rel="noopener" title="covid 58231a18cca8acfb5d58fbc6b1170eeb42268139be74e0ed3ce5784005cdca99 — genesis box d7d720e9…:0, launch-proof verified">covid 58231a18…05cdca99 ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">wETH minter (proof-gated) · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/e76b0e19933eda9e4f5637df0ddbff022a14b2d9ed74e9f6ce01abf859cfe001" target="_blank" rel="noopener" title="covid b8f2231e2733800647d788ead59ebb42c52ca379622e9c93feb3a2354ab73d20 — genesis box e76b0e19…:0, launch-proof verified">covid b8f2231e…54ab73d20 ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">wETH token (KCC20) · Kaspa</span><a class="v" href="https://kascov.io/#/mainnet/tokens" target="_blank" rel="noopener" title="covid 6e0d2649c4b29136ea96a0757ba3dd52a640fc3a52c35df16741a91156f1321e — DEX-canonical KCC20 (template 36205a78), launch-proof verified">covid 6e0d2649…56f1321e ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">Burn registry (Tier-2) · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/eb620fc15727d227976baea697c07c15e7f452171389860a4d518bcb2e5f8a90" target="_blank" rel="noopener" title="covid 2fda4298b781bd389f15cde2b4bd9cfec4b2886daa3d9c9ea585e2de7d2955cd — value-absorption accumulator: a burn destroys the note and records {ethRecipient, amount, nonce} at the EXACT amount">covid 2fda4298…7d2955cd ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">Permissionless minter · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/ad6cbde35c1cefb9749245cc35d7ecf7ca065abb563987d1adc81665c62ed929" target="_blank" rel="noopener" title="covid a544f84b60afdd364888349411a2d4100fc1a5cb6093a7a6caeb4423b04d343e — the burn leg is KEYLESS: authorized by a structural anti-mint constraint, no governance signature; genesis box ad6cbde3…:0, launch-proof verified">covid a544f84b…b04d343e ↗</a><span class="ok">✓ live</span></div>
-          <div class="prow"><span class="k">Keyless burn · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/dfbeb7c97ca4b07d99afb2f643928f874c8e702a5382cd30ce414f1c2c5ba7f1" target="_blank" rel="noopener" title="dfbeb7c97ca4b07d99afb2f643928f874c8e702a5382cd30ce414f1c2c5ba7f1 — permissionless wETH burn, NO operator signature; the registry absorbed the exact amount">dfbeb7c97c…2c5ba7f1 ↗</a><span class="ok">✓ accepted</span></div>
-          <div class="prow"><span class="k">Accepting block · Kaspa</span><a class="v" href="https://explorer.kaspa.org/blocks/51ee0b8e4c02e15650734d1406374c1d238c1c07fcbc3aa77076c8e70f7be6ec" target="_blank" rel="noopener" title="51ee0b8e4c02e15650734d1406374c1d238c1c07fcbc3aa77076c8e70f7be6ec — the burn's ACCEPTANCE (aimr) is bound in-circuit, buried under 64 headers">51ee0b8e4c…0f7be6ec ↗</a><span class="ok">✓ buried ×64</span></div>
-          <div class="prow"><span class="k">ETH unlock · Ethereum L1</span><a class="v" href="https://etherscan.io/tx/0x50017f2f374e420ff7b6f2150faf65175b0f36cd239761a3691afad633b73c74" target="_blank" rel="noopener" title="0x50017f2f374e420ff7b6f2150faf65175b0f36cd239761a3691afad633b73c74 — SP1 Groth16 verified on the Tier-2 escrow, ETH released against the KEYLESS burn's finality proof">0x50017f2f…3b73c74 ↗</a><span class="ok">✓ ETH released</span></div>
+          <div class="prow"><span class="k">Bridge escrow (both legs) · Ethereum L1</span><a class="v" href="https://etherscan.io/address/0xf71207ba86005832C38cdB34Fb9171de2B2538EA" target="_blank" rel="noopener" title="0xf71207ba86005832C38cdB34Fb9171de2B2538EA — locks ETH and verifies the sparse-anchor finality proof that releases it; owner is a 2-of-3 Safe with no recurring duties">0xf71207ba…2538EA ↗</a><span class="ok">✓ live</span></div>
+          <div class="prow"><span class="k">wETH minter (proof-gated, keyless burn) · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/1d883fa51f952116f80a2b5e01e9cf37a55f1210b7006de626f6fd2904f782c4" target="_blank" rel="noopener" title="covid 0b9df0884251370e15bf13eab6ae4b7b5edd7da4d2a27a2e925be0d896433906 — mints only against an SP1 proof of THIS escrow's storage; its burn leg needs no governance signature">covid 0b9df088…96433906 ↗</a><span class="ok">✓ live</span></div>
+          <div class="prow"><span class="k">wETH token (KCC20) · Kaspa</span><a class="v" href="https://kascov.io/#/mainnet/tokens" target="_blank" rel="noopener" title="covid 4b65cbda0aa170563d1f3e5421445a1a2e507ff20dc11179b0d6b657ddb09728 — DEX-canonical KCC20 (template 36205a78), 1:1 backed by locked ETH">covid 4b65cbda…ddb09728 ↗</a><span class="ok">✓ live</span></div>
+          <div class="prow"><span class="k">Burn registry (token-bound) · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/e632301dbb5bd088d388a5c9ab9a844a1e1169acde2009c5028696d9b3c26651" target="_blank" rel="noopener" title="covid d75af3fac77ef3f9ff36c5f0a23b9502f31a944d41d496f8dc32f84cd09af9e4 — absorbs the EXACT burned amount and is bound to this token's covid, so only backed wETH can be burned here">covid d75af3fa…d09af9e4 ↗</a><span class="ok">✓ live</span></div>
+          <div class="prow"><span class="k">Keyless burn · Kaspa</span><a class="v" href="https://explorer.kaspa.org/txs/8f8c0d526563d982e44a3693648207a60e3dc926e0e62584bd9f5c08767d476f" target="_blank" rel="noopener" title="8f8c0d526563d982e44a3693648207a60e3dc926e0e62584bd9f5c08767d476f — permissionless wETH burn, NO operator signature; the registry absorbed the exact amount">8f8c0d5265…767d476f ↗</a><span class="ok">✓ accepted</span></div>
+          <div class="prow"><span class="k">Accepting block · Kaspa</span><a class="v" href="https://explorer.kaspa.org/blocks/b356504475450f8f4edbf18d7bb0e6da9b5d575706e70d5f292d040c27e80f16" target="_blank" rel="noopener" title="b356504475450f8f4edbf18d7bb0e6da9b5d575706e70d5f292d040c27e80f16 — the burn's ACCEPTANCE (aimr) is bound in-circuit, then buried under 94,000 selected-chain blocks">b356504475…0c27e80f16 ↗</a><span class="ok">✓ buried ×94k</span></div>
+          <div class="prow"><span class="k">Checkpoint refresh (permissionless) · Ethereum L1</span><a class="v" href="https://etherscan.io/tx/0xfbab1edde8befdadc411138b2ba8efea1e23bde54ab10bd5fcf74382d85ccce6" target="_blank" rel="noopener" title="0xfbab1edde8befdadc411138b2ba8efea1e23bde54ab10bd5fcf74382d85ccce6 — the escrow's trust anchor advanced by PROOF alone: anyone can submit it, no owner key, no multisig ceremony">0xfbab1edd…d85ccce6 ↗</a><span class="ok">✓ proof-gated</span></div>
+          <div class="prow"><span class="k">ETH unlock · Ethereum L1</span><a class="v" href="https://etherscan.io/tx/0x990858ea2c8b620d7e4b289d1845eceec09695cb9672b1fc33985b7092fa9acc" target="_blank" rel="noopener" title="0x990858ea2c8b620d7e4b289d1845eceec09695cb9672b1fc33985b7092fa9acc — SP1 Groth16 verified on-chain, ETH released against the KEYLESS burn's finality proof">0x990858ea…92fa9acc ↗</a><span class="ok">✓ ETH released</span></div>
         </div>
         <p class="d" style="margin:12px 2px 0;font-size:11.5px;color:var(--faint)">Both sides live on mainnet: the ETH escrow on Ethereum L1, the wETH token + covenants on Kaspa. Unaudited — use your own funds only.</p>
       </div>
       <div class="metrics">
         <div class="metric"><div class="n">1:1</div><div class="l">wETH backed by locked ETH</div></div>
-        <div class="metric"><div class="n">~4.9s</div><div class="l">finality (49 blocks)</div></div>
+        <div class="metric"><div class="n">49</div><div class="l">PoW anchors sampled per proof<span style="display:block;color:var(--faint);font-size:10.5px;margin-top:2px">λ=50 at β=0.33; the return leg also waits ~16h of burial</span></div></div>
         <div class="metric"><div class="n">2<span style="color:var(--muted)">⁻⁵⁰</span></div><div class="l">reversal probability</div></div>
-        <div class="metric"><div class="n">0</div><div class="l">custodians / multisig</div></div>
+        <div class="metric"><div class="n">0</div><div class="l">keys in the value path<span style="display:block;color:var(--faint);font-size:10.5px;margin-top:2px">mint, burn, unlock and the trust anchor are all proof-gated; a 2-of-3 Safe holds only exceptional governance</span></div></div>
       </div>
     </div>
   </div>
@@ -207,8 +210,8 @@
 </div></footer>
 <div class="toast" id="toast">Copied</div>
 
-<script src="/bridge/ethers.umd.min.js"></script>
-<script src="/bridge/config.js"></script>
-<script src="/bridge/app.js"></script>
+<script src="ethers.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

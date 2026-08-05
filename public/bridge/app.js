@@ -118,6 +118,31 @@ function refreshBalances() {
 
 // wETH balance — canonical KCC20 covenant notes minted by proof. No wallet indexes silverscript-KCC20 yet,
 // so we scope the bridge's own mints to the connected owner pubkey and verify each note UTXO is still held.
+// Bridge status strip: relayer health, checkpoint age (the v1.1 permissionless-refresh heartbeat),
+// pending claims. Renders into #bridgeStatus if the element exists (added by index.html v1.1).
+async function refreshBridgeStatus() {
+  const el = $("bridgeStatus"); if (!el || !CFG.relayer) return;
+  const base = CFG.relayer.replace(/\/$/, "");
+  try {
+    const [h, ck, claims] = await Promise.all([
+      fetch(`${base}/health`).then((r) => r.json()),
+      fetch(`${base}/checkpoint`).then((r) => r.json()),
+      fetch(`${base}/claims`).then((r) => r.json()),
+    ]);
+    const ageH = ck.lastRefreshAt ? ((Date.now() - Date.parse(ck.lastRefreshAt)) / 3600e3) : null;
+    const fresh = ageH != null && ageH < 12;
+    const pend = Object.values(claims || {}).filter((c) => c.state === "queued").length;
+    const provers = (ck.provers || []).map((p) => `${p.name}(${p.mode}${p.busy ? "·busy" : ""})`).join(", ");
+    el.innerHTML =
+      `<span class="chip ${h.healthy ? "ok" : "no"}">relayer ${h.healthy ? "healthy" : "degraded"} · ${h.role}</span> `
+      + `<span class="chip ${fresh ? "ok" : "warn"}" title="trusted ${ck.trusted?.slice(0, 12)}… — refreshed by PROOF, no owner">`
+      + `checkpoint ${ageH != null ? ageH.toFixed(1) + "h" : "?"} old</span> `
+      + `<span class="chip">${pend} claim${pend === 1 ? "" : "s"} queued</span> `
+      + `<span class="chip" title="prover pool">${provers}</span>`;
+  } catch { el.innerHTML = `<span class="chip warn">relayer unreachable — read-only on-chain view</span>`; }
+}
+setInterval(refreshBridgeStatus, 30_000);
+
 // Live source: the relayer's /notes endpoint if configured, else the baked config list. Set once at load.
 async function loadWethNotes() {
   const base = CFG.relayer;
@@ -310,15 +335,98 @@ async function doBurn() {
       `Your wETH note is destroyed and the registry absorbed the exact amount. <b>No operator key was involved</b> — `
       + `you signed the burn yourself and the minter's burn leg is keyless.`
       + `<div style="margin:10px 0"><a href="${kx}" target="_blank" rel="noopener">${shorten(r.txid)} ↗</a></div>`
-      + `Next: the burn buries (~64 blocks), then a sparse-anchor finality proof (~1–3 h) authorizes `
-      + `<code>unlock</code> on Ethereum, releasing ETH to ${shorten(ethRecipient, 6)} once per nonce. That proof is `
-      + `self-verifying, so anyone can produce and submit it.`
+      + (r.job ? `<div id="proofBox"></div>` :
+         `Next: the burn buries, then a sparse-anchor finality proof authorizes <code>unlock</code> on Ethereum, `
+         + `releasing ETH to ${shorten(ethRecipient, 6)} once per nonce.`)
       + `<pre class="rec">${JSON.stringify(r.burnRecord, null, 2)}</pre>`);
+    if (r.job) trackProof(svc, r.job.nonce, ethRecipient);
+    // v1.1: also queue the burial-gated claim with the relayer (permissionless refresh + unlock)
+    if (!r.dryRun && r.txid && r.burnRecord) {
+      const q = await queueClaim({
+        burnTxid: r.txid,
+        acceptingBlock: r.acceptingBlock || r.burnRecord.acceptingBlock || "",
+        recip: (r.burnRecord.ethRecipient || ethRecipient).replace(/^0x/, "").toLowerCase(),
+        amount: String(r.burnRecord.amount || note.units),
+        nonce: (r.burnRecord.nonce || "").replace(/^0x/, ""),
+        prevAccRoot: r.burnRecord.prevAccRoot || undefined,
+      });
+      if (q && !q.error) toast("Claim queued — the relayer unlocks your ETH automatically once buried (~16h)");
+    }
   } catch (e) {
     showResult("Burn failed", `${String(e.message || e)}`
       + `<p class="d" style="margin:8px 0 0">Nothing was broadcast unless a transaction id is shown above. The service `
       + `refuses to broadcast any transaction that fails local covenant-engine verification.</p>`);
   }
+}
+
+
+/* ---------------- finality-proof progress ----------------
+   The burn is only half the story: a sparse-anchor proof of its ACCEPTANCE has to be produced before the
+   escrow will release ETH. That takes tens of minutes, so show what is happening rather than a blank wait.
+   The estimate is a budget, not a promise — it is recomputed from the server's real stage timings. */
+const STAGE_LABEL = {
+  burial:  "Waiting for the burn to bury under enough Kaspa blocks",
+  extract: "Extracting the acceptance witness from a Kaspa node",
+  window:  "Building the selected-chain window (120 headers)",
+  prove:   "Generating the zero-knowledge finality proof",
+  verify:  "Verifying the proof against the on-chain SP1 verifier",
+};
+function fmtLeft(sec) {
+  if (sec <= 0) return "any moment";
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return m >= 60 ? `~${Math.floor(m / 60)}h ${m % 60}m` : m ? `~${m}m ${String(s).padStart(2, "0")}s` : `~${s}s`;
+}
+async function queueClaim(burn) {
+  // Register the burn with the relayer: it gates on real burial (chain blocks + blue work), builds the
+  // witness-minimal finality proof, refreshes the checkpoint if needed, and submits the unlock.
+  if (!CFG.relayer) return null;
+  try {
+    const r = await fetch(`${CFG.relayer.replace(/\/$/, "")}/claim`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(burn) });
+    return await r.json();
+  } catch (e) { return { error: e.message }; }
+}
+async function trackProof(svc, nonce, ethRecipient) {
+  const box = $("proofBox"); if (!box) return;
+  let left = null, tick = null;
+  const render = (j) => {
+    const steps = (j.steps || []).map((st) => {
+      const mark = st.state === "done" ? "✓" : st.state === "running" ? "◌" : st.state === "failed" ? "✗" : "·";
+      const cls = st.state === "done" ? "ok" : st.state === "failed" ? "no" : "";
+      const secs = st.seconds != null ? ` <span style="color:var(--faint)">${st.seconds}s</span>` : "";
+      return `<div class="prow" style="padding:4px 2px"><span class="k" style="width:22px" class="${cls}">${mark}</span>`
+           + `<span class="v" style="font-family:inherit">${STAGE_LABEL[st.name] || st.name}${secs}</span></div>`;
+    }).join("");
+    const head = j.state === "ready"
+      ? `<b class="ok">Proof ready ✓</b> — your ETH release is authorized.`
+      : j.state === "failed"
+      ? `<b class="no">Proving failed.</b> Your burn is safely on-chain; the proof can be re-run — nothing is lost.`
+      : `<b>Proving your release…</b> <span style="float:right;font-variant-numeric:tabular-nums">${fmtLeft(left ?? j.remainingSeconds)} remaining</span>`;
+    box.innerHTML = `<div style="margin:12px 0 6px">${head}</div>${steps}`
+      + (j.state === "ready"
+          ? `<p class="d" style="margin:8px 0 0">The proof is verified on-chain. Releasing the ETH to `
+            + `${shorten(ethRecipient, 6)} is fully <b>permissionless</b> in v1.1 — the relayer keeps the escrow `
+            + `checkpoint fresh by proof (no owner involved) and submits the unlock once the burn is buried `
+            + `(~16h). Track it in the claim queue below.</p>`
+          : j.state === "failed"
+          ? `<p class="d" style="margin:8px 0 0">${(j.error || "").slice(0, 200)}</p>`
+          : `<p class="d" style="margin:8px 0 0">You can close this page — the proof continues on the server, and `
+            + `your burn record (nonce above) is what authorizes the release.</p>`);
+  };
+  const poll = async () => {
+    try {
+      const j = await (await fetch(`${svc.replace(/\/$/, "")}/status?nonce=${nonce}`)).json();
+      if (j.error) return;
+      left = j.remainingSeconds; render(j);
+      if (j.state === "ready" || j.state === "failed") { clearInterval(tick); return true; }
+    } catch {}
+    return false;
+  };
+  await poll();
+  tick = setInterval(() => { if (left != null && left > 0) left--; const b = $("proofBox"); if (b && left != null) {
+    const span = b.querySelector("span[style*='tabular-nums']"); if (span) span.textContent = `${fmtLeft(left)} remaining`; } }, 1000);
+  const loop = setInterval(async () => { if (await poll()) clearInterval(loop); }, 15000);
 }
 
 /* ---------------- UI wiring ---------------- */
@@ -381,4 +489,4 @@ const FLOW = {
 };
 function renderSteps() { const el = $("steps"); el.innerHTML = ""; FLOW[state.dir].forEach(s => { const d = document.createElement("div"); d.className = "step"; d.innerHTML = `<div class="n">${s[0]}</div><h4>${s[1]}</h4><p>${s[2]}</p>`; el.appendChild(d); }); }
 
-window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("DOMContentLoaded", () => { init(); refreshBridgeStatus(); });
