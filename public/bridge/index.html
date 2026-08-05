@@ -25,13 +25,13 @@
   .banner .dot{width:7px;height:7px;border-radius:50%;background:var(--warn);flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--warn) 22%,transparent)}
   .statusbar{background:var(--surface2);border-bottom:1px solid var(--border)}
   .statusbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 20px;font-size:12.5px}
-  .statusbar .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:3px 11px;color:var(--muted);text-decoration:none;white-space:nowrap}
-  .statusbar a.chip:hover{border-color:var(--border2);color:var(--text)}
-  .statusbar .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--faint);flex:none}
-  .statusbar .chip.ok::before{background:var(--ok)} .statusbar .chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
-  .statusbar .chip.warn::before{background:var(--warn)} .statusbar .chip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,var(--border))}
-  .statusbar .chip.no::before{background:var(--danger)} .statusbar .chip.no{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,var(--border))}
-  .statusbar .chip.link::before{display:none}
+  .statusbar .sbchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:3px 11px;color:var(--muted);text-decoration:none;white-space:nowrap}
+  .statusbar a.sbchip:hover{border-color:var(--border2);color:var(--text)}
+  .statusbar .sbchip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--faint);flex:none}
+  .statusbar .sbchip.ok::before{background:var(--ok)} .statusbar .sbchip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
+  .statusbar .sbchip.warn::before{background:var(--warn)} .statusbar .sbchip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,var(--border))}
+  .statusbar .sbchip.no::before{background:var(--danger)} .statusbar .sbchip.no{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,var(--border))}
+  .statusbar .sbchip.link::before{display:none}
   .banner span.reg{color:color-mix(in srgb,var(--warn) 82%,var(--text));font-weight:500}
   header{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--border)}
   header .wrap{display:flex;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
@@ -127,7 +127,7 @@
   <button class="iconbtn" id="theme" title="Toggle theme">◐</button>
 </div></header>
 
-<div class="statusbar"><div class="wrap" id="bridgeStatus"><span class="chip">Checking bridge status…</span></div></div>
+<div class="statusbar"><div class="wrap" id="bridgeStatus"><span class="sbchip">Checking bridge status…</span></div></div>
 
 <main><div class="wrap">
   <div class="hgrid">

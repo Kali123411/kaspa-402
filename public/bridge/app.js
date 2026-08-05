@@ -134,15 +134,15 @@ async function refreshBridgeStatus() {
     const anchorOk = ageH != null && ageH < 12;
     const chips = [];
     chips.push(h.healthy
-      ? `<span class="chip ok" title="Deposits are being proven and minted, and burns are being released, without operator action.">Bridge operating</span>`
-      : `<span class="chip no" title="Automated processing is degraded. Funds are unaffected — the contracts are permissionless and anyone can submit a proof.">Processing degraded</span>`);
-    chips.push(`<span class="chip ${anchorOk ? "ok" : "warn"}" title="The escrow's Kaspa trust anchor is advanced by proof alone — no operator key. Last advanced ${ageH != null ? ageH.toFixed(1) + " hours" : "unknown"} ago.">`
+      ? `<span class="sbchip ok" title="Deposits are being proven and minted, and burns are being released, without operator action.">Bridge operating</span>`
+      : `<span class="sbchip no" title="Automated processing is degraded. Funds are unaffected — the contracts are permissionless and anyone can submit a proof.">Processing degraded</span>`);
+    chips.push(`<span class="sbchip ${anchorOk ? "ok" : "warn"}" title="The escrow's Kaspa trust anchor is advanced by proof alone — no operator key. Last advanced ${ageH != null ? ageH.toFixed(1) + " hours" : "unknown"} ago.">`
       + `Trust anchor ${ageH != null ? (ageH < 1 ? "current" : ageH.toFixed(0) + "h old") : "unknown"}</span>`);
     if (ck.lastRefreshTx)
-      chips.push(`<a class="chip link" href="${CFG.eth.explorer}/tx/${ck.lastRefreshTx}" target="_blank" rel="noopener" title="The last proof that advanced the anchor, verified on Ethereum">latest proof ↗</a>`);
+      chips.push(`<a class="sbchip link" href="${CFG.eth.explorer}/tx/${ck.lastRefreshTx}" target="_blank" rel="noopener" title="The last proof that advanced the anchor, verified on Ethereum">latest proof ↗</a>`);
     el.innerHTML = chips.join(" ");
   } catch {
-    el.innerHTML = `<span class="chip warn" title="The status service is unreachable. This does not affect your funds: the contracts are permissionless, and the page still reads the chains directly.">Status service unreachable — on-chain data still live</span>`;
+    el.innerHTML = `<span class="sbchip warn" title="The status service is unreachable. This does not affect your funds: the contracts are permissionless, and the page still reads the chains directly.">Status service unreachable — on-chain data still live</span>`;
   }
 }
 setInterval(refreshBridgeStatus, 30_000);
