@@ -120,7 +120,8 @@
 
 <main><div class="wrap">
 <div id="bridgeStatus" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;font-size:12.5px"></div>
-<style>#bridgeStatus .chip{border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:4px 11px;color:var(--muted)}
+<style>#bridgeStatus .chip{border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:4px 11px;color:var(--muted);text-decoration:none}
+#bridgeStatus a.chip:hover{border-color:var(--border2);color:var(--text)}
 #bridgeStatus .chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--border))}
 #bridgeStatus .chip.no{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--border))}
 #bridgeStatus .chip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--border))}</style>
