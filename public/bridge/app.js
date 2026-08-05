@@ -139,7 +139,7 @@ async function refreshBridgeStatus() {
     chips.push(`<span class="chip ${anchorOk ? "ok" : "warn"}" title="The escrow's Kaspa trust anchor is advanced by proof alone — no operator key. Last advanced ${ageH != null ? ageH.toFixed(1) + " hours" : "unknown"} ago.">`
       + `Trust anchor ${ageH != null ? (ageH < 1 ? "current" : ageH.toFixed(0) + "h old") : "unknown"}</span>`);
     if (ck.lastRefreshTx)
-      chips.push(`<a class="chip" href="${CFG.eth.explorer}/tx/${ck.lastRefreshTx}" target="_blank" rel="noopener" title="The last proof that advanced the anchor, verified on Ethereum">latest proof ↗</a>`);
+      chips.push(`<a class="chip link" href="${CFG.eth.explorer}/tx/${ck.lastRefreshTx}" target="_blank" rel="noopener" title="The last proof that advanced the anchor, verified on Ethereum">latest proof ↗</a>`);
     el.innerHTML = chips.join(" ");
   } catch {
     el.innerHTML = `<span class="chip warn" title="The status service is unreachable. This does not affect your funds: the contracts are permissionless, and the page still reads the chains directly.">Status service unreachable — on-chain data still live</span>`;
