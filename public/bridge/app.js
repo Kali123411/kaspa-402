@@ -261,7 +261,8 @@ function sigFromSignedTx(signedJson, idx) {
 function burnableNote() {
   const pk = state.kasPk ? xonly32(state.kasPk).slice(2).toLowerCase() : null;
   if (!pk) return null;
-  return (CFG.weth.mints || []).find(m =>
+  const mints = state.wethMints || (CFG.weth && CFG.weth.mints) || [];
+  return mints.find(m =>
     (m.recipient || "").toLowerCase() === pk && m.permissionless && !m.burnTxid) || null;
 }
 
