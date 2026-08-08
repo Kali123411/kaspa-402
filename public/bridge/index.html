@@ -111,6 +111,18 @@
   .step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px} .step .n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--kaspa);margin-bottom:8px} .step h4{margin:0 0 6px;font-size:14px} .step p{margin:0;color:var(--muted);font-size:12.5px}
   footer{border-top:1px solid var(--border);margin-top:44px} footer .wrap{display:flex;gap:16px;align-items:center;padding:22px 20px;color:var(--faint);font-size:12.5px;flex-wrap:wrap}
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--raised);border:1px solid var(--border2);color:var(--text);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;transition:.22s;pointer-events:none;z-index:50} .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .feewarn{margin:10px 0 0;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.45}
+  .feewarn.info{background:rgba(73,208,176,.10);border:1px solid rgba(73,208,176,.35)}
+  .feewarn.warn{background:rgba(240,160,32,.12);border:1px solid rgba(240,160,32,.45)}
+  .feewarn.bad{background:rgba(255,92,87,.13);border:1px solid rgba(255,92,87,.5)}
+  .feewarn b{font-weight:700}
+  .feetable{margin:12px 0 0;font-size:13px}
+  .feetable summary{cursor:pointer;opacity:.85;padding:6px 0}
+  .feetable table{width:100%;border-collapse:collapse;margin:8px 0}
+  .feetable th,.feetable td{padding:5px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+  .feetable th{opacity:.6;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  .feetable tr.bad td{color:#ff9b98} .feetable tr.warn td{color:#f0c073} .feetable tr.good td{color:#7fe3c4}
+  .ft-note{opacity:.7;font-size:12px;margin:6px 0}
 </style>
 </head>
 <body>
@@ -156,6 +168,28 @@
           <div class="r"><span>Bridge fee</span><b id="feeText">0.5 KAS</b></div>
           <div class="r"><span>Settlement proof</span><b>SP1 Groth16 · verified on-chain</b></div>
         </div>
+        <div id="feeWarn" class="feewarn" hidden></div>
+        <details class="feetable">
+          <summary>Return-leg fee schedule — why small amounts are uneconomic</summary>
+          <p class="ft-note">Locking ETH is <b>free</b> and mints 1:1. The bridge fee is charged only when you
+             come back (burn wETH → unlock ETH), and it is a <b>flat floor</b> of 0.0001&nbsp;ETH until your
+             amount passes 0.1&nbsp;ETH — after which it becomes 0.1%. Small transfers therefore pay a very
+             large percentage.</p>
+          <table>
+            <thead><tr><th>You bridge</th><th>Return fee</th><th>Fee %</th><th>You get back</th></tr></thead>
+            <tbody>
+              <tr class="bad"><td>0.0001 ETH</td><td>0.0001</td><td>100%</td><td><b>fails — cannot return</b></td></tr>
+              <tr class="warn"><td>0.0002 ETH</td><td>0.0001</td><td>50%</td><td>0.0001</td></tr>
+              <tr class="warn"><td>0.001 ETH</td><td>0.0001</td><td>10%</td><td>0.0009</td></tr>
+              <tr><td>0.005 ETH</td><td>0.0001</td><td>2%</td><td>0.0049</td></tr>
+              <tr><td>0.01 ETH</td><td>0.0001</td><td>1%</td><td>0.0099</td></tr>
+              <tr class="good"><td>0.1 ETH</td><td>0.0001</td><td>0.1%</td><td>0.0999</td></tr>
+              <tr class="good"><td>1 ETH</td><td>0.001</td><td>0.1%</td><td>0.999</td></tr>
+            </tbody>
+          </table>
+          <p class="ft-note">The floor exists because every unlock verifies a Groth16 proof on Ethereum, and
+             that gas cost does not shrink with your transfer size.</p>
+        </details>
         <button class="cta" id="cta">Connect MetaMask</button>
         <div class="ctahint">Your funds only · unaudited — do not bridge value you can't afford to lose</div>
         <div id="result"></div>

@@ -460,11 +460,67 @@ function render() {
   $("route").textContent = state.dir === "e2k" ? "Lock ETH → SP1 Helios proof → mint wETH" : "Burn wETH → sparse-anchor proof → unlock ETH";
   calc(); refreshBalances(); updateCTA();
 }
-function calc() { const v = parseFloat($("amount").value || "0"); $("recv").value = (isNaN(v) ? 0 : v).toLocaleString(undefined, { maximumFractionDigits: 6 }); }
+// The unlock fee is max(minFee, amount * feeBps / 10000) — a FLAT floor until the bps rate
+// overtakes it at minFee/feeBps (0.1 ETH at the current 0.0001 / 10bps). Computed in wei to
+// match the escrow exactly rather than in floating point.
+function unlockFeeWei(amountWei) {
+  const bps = BigInt(CFG.fee.feeBps || 0), minFee = BigInt(CFG.fee.minFeeWei || "0");
+  let fee = (amountWei * bps) / 10000n;
+  if (fee < minFee) fee = minFee;
+  return fee;
+}
+const feeEth = (wei) => Number(ethers.formatEther(wei)).toLocaleString(undefined, { maximumFractionDigits: 6 });
+
+function calc() {
+  const raw = ($("amount").value || "").trim();
+  let amountWei = 0n;
+  try { amountWei = raw ? ethers.parseEther(raw) : 0n; } catch { amountWei = 0n; }
+
+  const fee = unlockFeeWei(amountWei);
+  const warn = $("feeWarn");
+  const returning = state.dir === "k2e";     // burn wETH -> unlock ETH: the fee is charged NOW
+
+  // Locking is fee-free and mints 1:1; the fee lands on the return leg. Showing amount 1:1 for
+  // BOTH directions overstated what a user actually gets back when bridging out.
+  const net = returning ? (amountWei > fee ? amountWei - fee : 0n) : amountWei;
+  $("recv").value = amountWei === 0n ? "0" : feeEth(net);
+
+  if (!warn) return;
+  if (amountWei === 0n) { warn.hidden = true; return; }
+
+  const pct = Number((fee * 10000n) / (amountWei === 0n ? 1n : amountWei)) / 100;
+  warn.hidden = false;
+
+  if (amountWei <= fee) {
+    // The important one: this does not fail now, it fails at the END of the ~16h burial wait.
+    warn.className = "feewarn bad";
+    warn.innerHTML = `<b>This amount can never be bridged back.</b> The return fee is
+      ${feeEth(fee)} ETH, which is ${pct >= 100 ? "the whole" : "more than the"} transfer, so the
+      unlock would revert. ${returning ? "" : "You could lock it, but the wETH would be stranded on Kaspa. "}
+      Bridge more than ${feeEth(fee)} ETH.`;
+  } else if (pct >= 20) {
+    warn.className = "feewarn bad";
+    warn.innerHTML = `<b>Fee is ${pct.toFixed(1)}% of your transfer.</b> The return fee is a flat
+      ${feeEth(fee)} ETH floor, so small amounts pay a very large share. You would get back
+      ${feeEth(amountWei - fee)} ETH. Consider 0.005 ETH or more.`;
+  } else if (pct >= 5) {
+    warn.className = "feewarn warn";
+    warn.innerHTML = `Return fee ${feeEth(fee)} ETH = <b>${pct.toFixed(1)}%</b> of this transfer.
+      The floor is flat, so the percentage falls as the amount rises.`;
+  } else {
+    warn.className = "feewarn info";
+    warn.innerHTML = `Return fee ${feeEth(fee)} ETH (<b>${pct.toFixed(2)}%</b>).
+      ${returning ? `You receive ${feeEth(amountWei - fee)} ETH.`
+                  : `Locking is free and mints 1:1; this is what returning would cost.`}`;
+  }
+}
 
 function init() {
   $("finText").textContent = `~${CFG.finality.seconds}s · ${CFG.finality.k}-block burial (λ=${CFG.finality.lambda}, β=${CFG.finality.beta})`;
-  if ($("feeText")) $("feeText").textContent = `${CFG.fee.flatKas} KAS flat`;
+  if ($("feeText")) {
+    const mf = Number(ethers.formatEther(BigInt(CFG.fee.minFeeWei || "0")));
+    $("feeText").textContent = `lock free · return max(${mf} ETH, ${(CFG.fee.feeBps||0)/100}%)`;
+  }
   $("amount").addEventListener("input", calc);
   $("swap").onclick = () => { state.dir = state.dir === "e2k" ? "k2e" : "e2k"; render(); renderSteps(); };
   $("ethConnect").onclick = () => (state.eth ? disconnectMetaMask() : connectMetaMask());
