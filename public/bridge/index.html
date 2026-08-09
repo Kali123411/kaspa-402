@@ -172,17 +172,19 @@
         <details class="feetable">
           <summary>Return-leg fee schedule — why small amounts are uneconomic</summary>
           <p class="ft-note">Locking ETH is <b>free</b> and mints 1:1. The bridge fee is charged only when you
-             come back (burn wETH → unlock ETH), and it is a <b>flat floor</b> of 0.0001&nbsp;ETH until your
-             amount passes 0.1&nbsp;ETH — after which it becomes 0.1%. Small transfers therefore pay a very
-             large percentage.</p>
+             come back (burn wETH → unlock ETH). It is the greater of a <b>flat 0.0001&nbsp;ETH floor</b>, a
+             <b>0.1% rate</b>, and a <b>gas-responsive prover floor</b> — because every unlock verifies a
+             Groth16 proof on Ethereum, and whoever proves it must not do so at a loss. When Ethereum gas is
+             expensive that floor rises, so the quoted fee above updates with live gas.</p>
+          <p class="ft-note">Deposits below <b>0.02&nbsp;ETH are rejected by the contract</b>. That minimum
+             exists so a deposit can always afford its own return trip — an earlier version allowed dust that
+             could never be bridged back, and the failure only surfaced after the ~16&nbsp;hour burial wait.</p>
           <table>
             <thead><tr><th>You bridge</th><th>Return fee</th><th>Fee %</th><th>You get back</th></tr></thead>
             <tbody>
-              <tr class="bad"><td>0.0001 ETH</td><td>0.0001</td><td>100%</td><td><b>fails — cannot return</b></td></tr>
-              <tr class="warn"><td>0.0002 ETH</td><td>0.0001</td><td>50%</td><td>0.0001</td></tr>
-              <tr class="warn"><td>0.001 ETH</td><td>0.0001</td><td>10%</td><td>0.0009</td></tr>
-              <tr><td>0.005 ETH</td><td>0.0001</td><td>2%</td><td>0.0049</td></tr>
-              <tr><td>0.01 ETH</td><td>0.0001</td><td>1%</td><td>0.0099</td></tr>
+              <tr class="bad"><td>under 0.02 ETH</td><td>—</td><td>—</td><td><b>rejected on-chain</b></td></tr>
+              <tr class="warn"><td>0.02 ETH (minimum)</td><td>0.0001</td><td>0.5%</td><td>0.0199</td></tr>
+              <tr><td>0.05 ETH</td><td>0.0001</td><td>0.2%</td><td>0.0499</td></tr>
               <tr class="good"><td>0.1 ETH</td><td>0.0001</td><td>0.1%</td><td>0.0999</td></tr>
               <tr class="good"><td>1 ETH</td><td>0.001</td><td>0.1%</td><td>0.999</td></tr>
             </tbody>

@@ -463,10 +463,35 @@ function render() {
 // The unlock fee is max(minFee, amount * feeBps / 10000) — a FLAT floor until the bps rate
 // overtakes it at minFee/feeBps (0.1 ETH at the current 0.0001 / 10bps). Computed in wei to
 // match the escrow exactly rather than in floating point.
+// Live basefee, refreshed periodically. The contract computes its prover floor from
+// block.basefee AT UNLOCK TIME, and proverFloor() CANNOT be read reliably via eth_call -- most
+// nodes report basefee 0 in a simulation context, which would make the UI quote a fee of ~0 and
+// understate the real cost whenever gas is expensive. So the floor is estimated client-side from
+// the live gas price using the same formula the contract uses.
+let liveBaseFeeWei = 0n;
+async function refreshBaseFee() {
+  try {
+    const p = new ethers.JsonRpcProvider(CFG.eth.rpc);
+    const b = await p.getBlock("latest");
+    if (b && b.baseFeePerGas != null) liveBaseFeeWei = BigInt(b.baseFeePerGas);
+  } catch { /* keep the last known value; a stale basefee is better than a zero one */ }
+}
+
+function proverFloorWei() {
+  const gasEst = BigInt(CFG.eth.unlockGasEstimate || 0);
+  const marginBps = BigInt(CFG.eth.proverFloorMarginBps || 10000);
+  const proverBps = BigInt(CFG.fee.proverBps || 8000);
+  if (!gasEst || !liveBaseFeeWei) return 0n;
+  const gasCost = liveBaseFeeWei * gasEst;
+  return ((gasCost * 10000n) / proverBps) * marginBps / 10000n;
+}
+
 function unlockFeeWei(amountWei) {
   const bps = BigInt(CFG.fee.feeBps || 0), minFee = BigInt(CFG.fee.minFeeWei || "0");
   let fee = (amountWei * bps) / 10000n;
   if (fee < minFee) fee = minFee;
+  const floor = proverFloorWei();          // gas-responsive: proving must never run at a loss
+  if (fee < floor) fee = floor;
   return fee;
 }
 const feeEth = (wei) => Number(ethers.formatEther(wei)).toLocaleString(undefined, { maximumFractionDigits: 6 });
@@ -491,6 +516,16 @@ function calc() {
   const pct = Number((fee * 10000n) / (amountWei === 0n ? 1n : amountWei)) / 100;
   warn.hidden = false;
 
+  const minLock = BigInt(CFG.eth.minLockWei || "0");
+  if (!returning && minLock && amountWei < minLock) {
+    // v1.3 enforces this ON-CHAIN: lock() reverts AmountBelowMinimum. Saying so here means the
+    // user learns it before signing rather than from a failed transaction.
+    warn.className = "feewarn bad";
+    warn.innerHTML = `<b>Below the ${feeEth(minLock)} ETH minimum.</b> The contract will reject this
+      deposit (<code>AmountBelowMinimum</code>). The minimum exists because every unlock verifies a
+      Groth16 proof on Ethereum, and that cost does not shrink with your transfer size.`;
+    return;
+  }
   if (amountWei <= fee) {
     // The important one: this does not fail now, it fails at the END of the ~16h burial wait.
     warn.className = "feewarn bad";
@@ -522,6 +557,8 @@ function init() {
     $("feeText").textContent = `lock free · return max(${mf} ETH, ${(CFG.fee.feeBps||0)/100}%)`;
   }
   $("amount").addEventListener("input", calc);
+  refreshBaseFee().then(calc);
+  setInterval(() => refreshBaseFee().then(calc), 60_000);   // gas moves; the quoted fee must follow
   $("swap").onclick = () => { state.dir = state.dir === "e2k" ? "k2e" : "e2k"; render(); renderSteps(); };
   $("ethConnect").onclick = () => (state.eth ? disconnectMetaMask() : connectMetaMask());
   $("kasConnect").onclick = () => (state.kasAddr ? disconnectKasWare() : connectKasWare());

@@ -1,5 +1,7 @@
 // Kaspa-402 Bridge frontend — network + contract configuration.
-// v1.2 STACK (CERTIFIED on mainnet 2026-08-05). Two properties this version proves on-chain:
+// v1.3 STACK (deployed 2026-08-09). setCheckpoint REMOVED: no key can move the trust anchor,
+// only proofs can. Fee now carries a gas-responsive prover floor; lock() enforces a 0.02 ETH minimum.
+// Superseded v1.2 (CERTIFIED 2026-08-05). Two properties this version proves on-chain:
 //   1. Checkpoint freshness is PERMISSIONLESS — the escrow's Kaspa trust anchor advances by proof alone
 //      (updateCheckpoint 0x7288617e…), with no owner key and no multisig ceremony.
 //   2. Proving is PERMISSIONLESSLY PAID — the prover's payout address is committed INSIDE the proof and
@@ -13,10 +15,19 @@ window.BRIDGE_CONFIG = {
     chainName: "Ethereum",
     // The v1.2 witness-minimal EthKaspaEscrow (vkey 0x00a612ae…): deposits AND burn-proof unlocks.
     // Owner: 2-of-3 Safe 0xF522B33C… (no recurring owner duties — refresh is permissionless).
-    escrow: "0x55C4A294d6359d66d77618235D167fb56F6F0e28",
-    unlockEscrow: "0x55C4A294d6359d66d77618235D167fb56F6F0e28",   // same contract (one escrow serves both legs)
+    escrow: "0xAc06E6b58AaB602269f305114c1F74Fec3cc6Db2",
+    unlockEscrow: "0xAc06E6b58AaB602269f305114c1F74Fec3cc6Db2",   // same contract (one escrow serves both legs)
     sp1Verifier: "0x81867073A06386636E729d79B1a2596EE404B07a",
     vkey: "0x00a612aea242e315bc69d2f52f11c02536f584a0c19be1ac9298b60fa883cc03",
+    // v1.3: lock() REFUSES deposits below this. Enforced on-chain, not just in the UI -- it is
+    // what makes the stranded-dust failure structurally impossible rather than merely warned about.
+    minLockWei: "20000000000000000",   // 0.02 ETH
+    // v1.3: the fee also has a GAS-RESPONSIVE floor computed from block.basefee at unlock time, so a
+    // permissionless prover never proves at a loss. NOTE: proverFloor() cannot be read reliably via
+    // eth_call (basefee is 0 in many simulation contexts), so the UI estimates it from the live gas
+    // price instead of calling the contract.
+    unlockGasEstimate: 400000,
+    proverFloorMarginBps: 12000,
     explorer: "https://etherscan.io",
     rpc: "https://ethereum-rpc.publicnode.com",
     escrowAbi: [
@@ -32,13 +43,17 @@ window.BRIDGE_CONFIG = {
       "function minAnchors() view returns (uint32)",
       "function minWork() view returns (uint256)",
       "function feeBps() view returns (uint256)",
+      "function minLockWei() view returns (uint256)",
+      "function proverFloor() view returns (uint256)",
+      "function registryCovid() view returns (bytes32)",
       "function minFee() view returns (uint256)",
       "function unlocked(bytes32) view returns (bool)",
       "event Locked(uint64 indexed id, bytes32 indexed recipient, uint256 amount)",
       "event Unlocked(bytes32 indexed nonce, address indexed ethRecipient, uint256 amount)",
       "event CheckpointRefreshed(bytes32 indexed oldCheckpoint, bytes32 indexed newCheckpoint, uint32 advanceDepth)"
     ],
-    // the certified v1.2 loop (surfaced on the page as provenance):
+    // v1.3 provenance: populated after the first mint on this stack. The v1.2 loop below belongs
+    // to the RETIRED escrow 0x55C4A294 and is kept only as historical evidence of the design.
     provenLockTx:    "0x18d2bf479f15a26ce17c4151ae16817e396b50039dad8a64846ef68f81235316",
     provenMintTx:    "cf159952e5af547586de83a03c690722dc95abcd654d7e52b24ccb404b6c9090",
     provenBurnTx:    "db50a9e625c0cea805fb40001134c34458aa606f3cadef82ffb2a654c9348c42",
@@ -49,9 +64,9 @@ window.BRIDGE_CONFIG = {
     network: "kaspa_mainnet",     // KasWare network id
     apiBase: "https://api.kaspa.org",
     // v1.2 canonical Kaspa stack (token-covid-bound §7.8 registry; mainnet, 2026-08-05):
-    burnRegistryCovid: "f0566d36143e41eb634ccc7f98b290fd7cb0b53068d2e0d2c7b4adae8dcfe1ba",
-    wethCovid:         "2651f0bc87fe917723b17a11500da31edb6a4fe41509f76ae43863fe1ae16996",
-    permMinterCovid:   "19e3a670babddbc8c890f4ff53e5562e3b0c058a0d7251ee7844035d214ef0e1",
+    burnRegistryCovid: "2ac9e8885f6955a3c18fb5b7c416fe9c9de64fc53755b2d0dbcbd312adf5684a",
+    wethCovid:         "88437964648fed0b1e1f78b2c912ddfa11029322d5f673318765fd7f1565284a",
+    permMinterCovid:   "077d17aaee611ffdcf6dccd19057252cf4d6f862732b1512fe3d1c400d6b7cb1",
     bridgeCovid:       "f0f7ab8c85ebcc3755c961926d8d05a3e6f3785a554d48cb49d64dc5b2ae274c",
     // canonical kcc20 note template + the registry's masked-state read params
     wethTemplateHash:  "36205a78ae657a7f1db798f6c52925ca82aca7361df71ef6a8202ce05aa7ec5f",
@@ -62,8 +77,8 @@ window.BRIDGE_CONFIG = {
   // Minted wETH notes: the RELAYER is authoritative (GET {relayer}/notes — live chainstate). The baked
   // list stays EMPTY; the page still live-checks each note's UTXO on-chain before showing "held".
   weth: {
-    tokenCovid:  "2651f0bc87fe917723b17a11500da31edb6a4fe41509f76ae43863fe1ae16996",
-    minterCovid: "19e3a670babddbc8c890f4ff53e5562e3b0c058a0d7251ee7844035d214ef0e1",
+    tokenCovid:  "88437964648fed0b1e1f78b2c912ddfa11029322d5f673318765fd7f1565284a",
+    minterCovid: "077d17aaee611ffdcf6dccd19057252cf4d6f862732b1512fe3d1c400d6b7cb1",
     mints: []
   },
   // Fee model: bps + floor ON UNLOCK ONLY (lock is fee-free; minted 1:1). proverBps of it goes to the
