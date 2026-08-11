@@ -237,6 +237,13 @@ async function doLock() {
   state.eth.signer = signer; state.escrow = new ethers.Contract(CFG.eth.escrow, CFG.eth.escrowAbi, signer);
   try {
     setBusy(true, "Confirm in MetaMask…");
+    // Fail CLOSED at the call site, not merely by hiding a button. A cached page, a stale
+    // bundle, or a user with the console open must not be able to reach lock() on a dead escrow.
+    const _cfg = (window.BRIDGE_CONFIG && window.BRIDGE_CONFIG.eth) || {};
+    if (_cfg.depositsDisabled) {
+      throw new Error(_cfg.depositsDisabledReason
+        || "Deposits are disabled: this escrow cannot release funds. Do not send ETH.");
+    }
     const tx = await state.escrow.lock(recipient, { value });
     setBusy(true, "Locking ETH…");
     const rc = await tx.wait();
@@ -264,10 +271,14 @@ function sigFromSignedTx(signedJson, idx) {
 // permissionless stack (the older stack's minter still requires a governance signature).
 function burnableNote() {
   const pk = state.kasPk ? xonly32(state.kasPk).slice(2).toLowerCase() : null;
-  if (!pk) return null;
+  if (!pk && !state.kasAddr) return null;
   const mints = state.wethMints || (CFG.weth && CFG.weth.mints) || [];
-  return mints.find(m =>
-    (m.recipient || "").toLowerCase() === pk && m.permissionless && !m.burnTxid) || null;
+  // Ownership match: the relayer serves recipient as 0x-prefixed x-only, but `pk` is 0x-stripped —
+  // normalise both, and also accept a recipientAddr match (same OR-logic as wethScope).
+  const owns = (m) =>
+    (pk && (m.recipient || "").replace(/^0x/, "").toLowerCase() === pk) ||
+    (state.kasAddr && m.recipientAddr === state.kasAddr);
+  return mints.find(m => owns(m) && m.permissionless && !m.burnTxid) || null;
 }
 
 async function doBurn() {

@@ -15,6 +15,16 @@ window.BRIDGE_CONFIG = {
     chainName: "Ethereum",
     // The v1.2 witness-minimal EthKaspaEscrow (vkey 0x00a612ae…): deposits AND burn-proof unlocks.
     // Owner: 2-of-3 Safe 0xF522B33C… (no recurring owner duties — refresh is permissionless).
+    // DEPOSITS DISABLED — this escrow can no longer advance its trust anchor.
+    //
+    // Its checkpoint aged past T_C_max (144,000 chain blocks), so no valid proof can be produced
+    // for updateCheckpoint OR unlock, and v1.3 has no owner override by design. ETH sent here
+    // CANNOT be recovered — 0.02 ETH is already stranded exactly this way.
+    // See POSTMORTEM-2026-08-10.md. Do NOT clear this until a v1.4 escrow is deployed AND the
+    // minWork/runway calibration is fixed, or it will happen again.
+    depositsDisabled: true,
+    depositsDisabledReason: "This bridge is offline. The escrow's trust anchor can no longer be "
+      + "advanced, so deposited ETH could not be redeemed. Do not send funds.",
     escrow: "0xAc06E6b58AaB602269f305114c1F74Fec3cc6Db2",
     unlockEscrow: "0xAc06E6b58AaB602269f305114c1F74Fec3cc6Db2",   // same contract (one escrow serves both legs)
     sp1Verifier: "0x81867073A06386636E729d79B1a2596EE404B07a",
