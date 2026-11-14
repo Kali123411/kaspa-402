@@ -214,6 +214,7 @@ export default function Marketplace() {
           <a href="/validate" className="hover:text-teal-400">validate</a>
           <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">standard ↗</a>
           <a href="https://github.com/elldeeone/kaspa-x402" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">SDK ↗</a>
+          <a href="https://kaspa-app.vercel.app/kusd" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">kUSD stablecoin ↗</a>
           <span className="ml-auto text-gray-600">unaudited · testnet-first · not financial advice</span>
         </footer>
       </main>
