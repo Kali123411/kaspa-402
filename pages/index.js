@@ -131,7 +131,7 @@ export default function Marketplace() {
           <p className="mt-3 text-[15px] leading-relaxed text-gray-400">
             Services here settle in <span className="text-teal-400">KAS</span>, most on <span className="font-mono text-gray-300">kaspa:mainnet</span>;
             <span className="text-sky-300"> Base-native</span> services are paid in KAS too, the <a href={LINKS.router} target="_blank" rel="noopener noreferrer" className="text-sky-300 hover:underline">router</a> settling the Base leg.
-            Services priced in agent money, <span className="text-gray-200">kUSD</span>, live on {MARKET_NAME} on <span className="font-mono text-gray-300">kaspa:testnet-10</span> today.
+            Services priced in agent money, <span className="text-gray-200">kUSD</span>, live on the {MARKET_NAME} on <span className="font-mono text-gray-300">kaspa:testnet-10</span> today.
           </p>
           <p className="mt-4 rounded-xl border border-gray-800 bg-gray-950/40 px-4 py-3 text-[13.5px] leading-relaxed text-gray-400">{WHY_AGENTS}</p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -216,7 +216,7 @@ export default function Marketplace() {
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-gray-400">
             Ship an x402 v2 endpoint with <a href="https://www.npmjs.com/package/@kaspa-x402/server" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">@kaspa-x402/server</a>, then submit it here.
             It only appears once it has answered a live, unpaid 402 probe: that gate is the anti-spam rule, and any agent can repeat the same check before paying.
-            To sell for kUSD, list on {MARKET_NAME} instead — a listing there is signed by your payee key and costs 10¢ of kUSD through k402 (<a href={LINKS.k402Protocol} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">how</a>).
+            To sell for kUSD, list on the {MARKET_NAME} instead — a listing there is signed by your payee key and costs 10¢ of kUSD through k402 (<a href={LINKS.k402Protocol} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">how</a>).
           </p>
           <div className="mt-5"><SubmitForm onAdded={load} /></div>
         </section>
@@ -291,7 +291,7 @@ export default function Marketplace() {
             <a href={LAYERS[1].repo} target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">k402 ↗</a>
             <a href="https://github.com/elldeeone/kaspa-x402" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">@kaspa-x402 SDK ↗</a>
           </div>
-          <p className="mt-3 text-[11.5px] text-gray-600">kUSD and {MARKET_NAME}: {DISCLAIMERS.research} {DISCLAIMERS.advice} Mainnet listings here settle real KAS; nothing on this site is audited.</p>
+          <p className="mt-3 text-[11.5px] text-gray-600">kUSD and the {MARKET_NAME}: {DISCLAIMERS.research} {DISCLAIMERS.advice} Mainnet listings here settle real KAS; nothing on this site is audited.</p>
         </footer>
       </main>
     </>

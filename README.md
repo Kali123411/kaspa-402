@@ -8,7 +8,7 @@ three layers of one product (see [`RESCOPE.md`](RESCOPE.md)):
 | --- | --- | --- |
 | Money | kUSD — covenant-native USD stablecoin built for agents | [kaspa-app.vercel.app/kusd](https://kaspa-app.vercel.app/kusd) · [repo](https://github.com/Kali123411/kUSD) |
 | Rails | k402 (Kaspa x402 v2) — this site | [kaspa-402.org](https://kaspa-402.org) · [repo](https://github.com/Kali123411/k402) |
-| Market | the kUSD agent market (name pending) — discovery, settlement-verified reputation, SpendPolicy | [kaspa-app.vercel.app/kusd/market](https://kaspa-app.vercel.app/kusd/market) |
+| Market | Kaspa Agent Market (KAM) — discovery, settlement-verified reputation, SpendPolicy | [kaspa-app.vercel.app/kusd/market](https://kaspa-app.vercel.app/kusd/market) |
 
 Standalone Next.js site (Pages Router) for **[kaspa-402.org](https://kaspa-402.org)**, deployed on Vercel.
 
@@ -75,7 +75,7 @@ Vercel: import the repo; `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` e
 
 ## Disclaimers
 
-kUSD and the kUSD agent market: **TN10 testnet research software. Not audited. Not a product. Not for real value.**
+kUSD and the Kaspa Agent Market: **TN10 testnet research software. Not audited. Not a product. Not for real value.**
 Not financial advice. Today all five kUSD oracle operator keys are held by the deployer; independent operators are
 a pre-mainnet gate. Mainnet listings on this site settle real KAS; nothing on this site is audited.
 
