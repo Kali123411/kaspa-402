@@ -1,54 +1,21 @@
-// pages/api/registry/submit.js — open submissions (option 2). A listing is accepted only if it passes
-// light validation AND its endpoint really speaks x402 v2 (live probe = the same gate as /validate),
-// so the directory never lists a service that doesn't actually work.
-import { assertPublicUrl, probe } from '../../../lib/probe';
-import { validateListing, validateLiveOffer, reconcileListingWithOffer, meetsPriceFloor, MIN_AMOUNT_SOMPI } from '../../../lib/x402catalog';
-import { addSubmission, getListings } from '../../../lib/registry';
+// pages/api/registry/submit.js — open submissions go to the k402 registry, the one directory (Phase 0 decision 1).
+// The registry probes the endpoint live and lists only what it actually offered (HTTP 402 with a valid x402 v2
+// offer, scheme/network/payTo/amount taken from the live offer, 0.5 KAS floor); declared values may only agree.
+// This route keeps the light validation so a typo is answered here, then forwards.
+import { validateListing } from '../../../lib/x402catalog';
+import { addSubmission } from '../../../lib/registry';
 
-export const config = { maxDuration: 15 };
+export const config = { maxDuration: 20 };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'POST only' });
   const l = req.body || {};
-
-  const light = validateListing(l);
+  const light = validateListing({ ...l, payTo: l.payTo || 'declared by the live offer' });
   if (!light.ok) return res.status(400).json({ ok: false, error: light.error });
-
-  let url;
-  try { url = await assertPublicUrl(l.resource); }
-  catch (e) { return res.status(400).json({ ok: false, error: `resource URL: ${e.message}` }); }
-
-  let r;
-  try { r = await probe(url.href); }
-  catch (e) { return res.status(400).json({ ok: false, error: `endpoint unreachable: ${e.cause?.code || e.message}` }); }
-
-  const hdr = r.headers?.['payment-required'];
-  if (r.status !== 402 || !hdr) {
-    return res.status(400).json({ ok: false, error: 'endpoint did not return HTTP 402 with a PAYMENT-REQUIRED header' });
-  }
-  const live = validateLiveOffer(hdr);
-  if (!live.ok) return res.status(400).json({ ok: false, error: `live offer invalid: ${live.error}` });
-
-  // Reconcile the submitted listing against the LIVE offer: the endpoint must actually offer the declared
-  // scheme+network with a valid payTo, and the declared payTo/amount must not contradict it. This rejects
-  // listings that misrepresent their network/recipient/price (the live service is the source of truth).
-  const rec = reconcileListingWithOffer(l, live.offer);
-  if (!rec.ok) return res.status(400).json({ ok: false, error: `listing does not match the live service: ${rec.error}` });
-
-  // Price floor: the endpoint's real per-call price must meet the marketplace minimum (anti-dust/spam).
-  if (!meetsPriceFloor(rec.authoritative)) {
-    return res.status(400).json({ ok: false, error: `price ${Number(rec.authoritative.amountSompi) / 1e8} KAS is below the ${MIN_AMOUNT_SOMPI / 1e8} KAS marketplace minimum` });
-  }
-
-  // No duplicate endpoints (same resource + network already listed).
-  const existing = await getListings().catch(() => []);
-  if (existing.some((x) => x.resource === url.href && x.network === rec.authoritative.network)) {
-    return res.status(409).json({ ok: false, error: `this endpoint is already listed for ${rec.authoritative.network}` });
-  }
-
-  // Store the fields the live offer actually attests to (never the submitter's unverified claims), and
-  // mark it verified since it passed the live reconciliation.
-  const added = await addSubmission({ ...l, ...rec.authoritative, resource: url.href, verified: true });
+  const added = await addSubmission({
+    resource: String(l.resource).trim(), serviceName: l.serviceName, description: l.description || '', capability: l.capability || '',
+    scheme: l.scheme, network: l.network, payTo: l.payTo || undefined, amountSompi: l.amountSompi, tags: l.tags || [], kind: l.kind || 'kaspa',
+  });
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(added.ok ? 200 : 400).json(added);
+  return res.status(added.ok ? 200 : (added.status === 502 ? 502 : 400)).json(added);
 }
