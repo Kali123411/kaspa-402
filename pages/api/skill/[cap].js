@@ -30,13 +30,14 @@ export default async function handler(req, res) {
   }
   L.push('## How to call (x402 v2)');
   L.push('```bash');
-  L.push('npm i @kaspa-x402/client');
+  L.push('npm i kx402 && npx kx402 fetch-sdk   # the Kaspa x402 agent payer; prints the WASM SDK path for KASPA_X402_KASPA_WASM_MODULE');
   L.push('```');
   L.push('```js');
-  L.push("import { DirectModeClient } from '@kaspa-x402/client';");
-  L.push('// configure with your Kaspa funding provider + signer (see @kaspa-x402/client docs), then:');
-  L.push(`const r = await client.paidFetch(${listings[0] ? JSON.stringify(listings[0].resource) : '"<service resource url>"'});`);
-  L.push('// on HTTP 402 the client reads PAYMENT-REQUIRED, pays on Kaspa, and retries automatically.');
+  L.push("import { openWallet, payExact, resolveWalletConfig } from 'kx402';   // wraps @kaspa-x402/client's DirectModeClient");
+  L.push("const wallet = await openWallet(resolveWalletConfig({ network: 'kaspa:testnet-10' }));   // env: KASPA_X402_KASPA_WASM_MODULE, KASPA_X402_FUNDING_WALLET=wallet-key:<path>");
+  L.push(`const r = await payExact(wallet, ${listings[0] ? JSON.stringify(listings[0].resource) : '"<service resource url>"'}, { maxAmountSompi: 300_000_000n });`);
+  L.push('// on HTTP 402 it reads PAYMENT-REQUIRED, pays on Kaspa L1 (never over your cap), retries with PAYMENT-SIGNATURE;');
+  L.push('// r.status, r.body, r.settlement.transaction — full example: https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs');
   L.push('```');
   L.push('');
   if (listings.length) {
