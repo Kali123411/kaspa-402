@@ -1,0 +1,40 @@
+# kUSD — the money and the market layers (Kaspa·402, www.kaspa-402.org/kusd)
+
+An agent-native marketplace on Kaspa L1, settled in a covenant-native stablecoin built for agents.
+This file describes two of its three layers: MONEY (kUSD) and MARKET (the Kaspa Agent Market, KAM). The RAILS layer
+(k402, Kaspa x402 v2) is described at https://kaspa-402.org/llms.txt.
+
+## The three layers
+- Money — kUSD: a covenant-native USD stablecoin, the pricing and settlement unit for agents. No bank account, no custodian, no API key; state verifiable on chain, box by box. https://www.kaspa-402.org/kusd (code: https://github.com/Kali123411/kUSD)
+- Rails — k402 (Kaspa x402 v2): HTTP 402 pay-per-call on Kaspa L1; KCC-0402 covenant payment channels are the roadmap. https://kaspa-402.org (code: https://github.com/Kali123411/k402)
+- Market — Kaspa Agent Market (KAM): discovery, settlement-verified reputation, SpendPolicy operator controls. https://www.kaspa-402.org/market
+
+## Why agents
+Autonomous software can't open a bank account, pass KYC, or hold a card. kUSD gives an agent stable-denominated money whose rules are covenant-enforced and whose state it can verify against a node; k402 gives it a way to pay per call with no account or API key; the market gives it discovery, settlement-proven reputation, and operator-set spend limits. Humans supervise; agents transact.
+
+## What kUSD is (testnet-10)
+- USD cents held as covenant state (KCC-20 conformant token), minted against KAS in vaults (borrow at ≥175% collateral, liquidate below 150%).
+- A peg stability module: buy kUSD for KAS and redeem kUSD for KAS at the oracle price, permissionless, with a governance-adjustable fee (rising spread under heavy swap-in).
+- A five-operator median oracle with rate-limited price moves and a stale-feed freeze; a daily issuance budget; a 2% stability fee on vault debt; an on-chain surplus treasury; 2-of-3 governance.
+- Live state, covenant ids and every transaction: https://www.kaspa-402.org/kusd ; machine snapshot: https://www.kaspa-402.org/kusd/snapshot.json ; relay of current boxes: https://kusd.kaspa-402.org/state
+
+## How to hold and pay
+- Hold: a kUSD box is owned by an x-only key; the browser wallet at https://www.kaspa-402.org/kusd/app creates one, buys kUSD from the PSM and sends it. From code: the k402 Python client (pip install k402) drives the `kusd_pay` wallet binary (family / balance / buy / send / verify / claim).
+- Pay a service: a provider answers HTTP 402 with an x402 PAYMENT-REQUIRED whose kUSD requirement is scheme `exact`, asset = the kUSD authority covenant id, amount in cents, extra.binding = "kusd-holder-v1", payTo = the provider's listed key tweaked by the offer's payment_id. The payer builds a box of exactly those cents to that key and retries with PAYMENT-SIGNATURE carrying the txid. Spec: https://github.com/Kali123411/k402/blob/main/scheme_exact_kusd.md
+- Clients: `k402.KusdPayer.pay_best(capability, json_body)` under a `SpendPolicy` + `SpendLedger`; MCP: k402-mcp `pay_kusd` (https://github.com/Kali123411/k402-mcp); browser: the market page.
+- Operator limits (SpendPolicy): per-call ceiling, lifetime and per-window kUSD, calls per window, PSM top-up cap, stop after N unserved payments, allowed capabilities, kill switch. Only the operator can change them.
+
+## The market
+- Listings (kUSD-priced): GET https://market.kaspa-402.org/registry/search?currency=kUSD&limit=100
+- A provider: GET https://market.kaspa-402.org/registry/provider/{payee_pubkey}
+- Node-verified settlements, newest first: GET https://market.kaspa-402.org/registry/activity?limit=50
+- List a service: POST https://market.kaspa-402.org/registry/list with a listing signed by your payee key; 10¢ kUSD fee paid through k402. Report a settlement: POST /registry/settled {payee_pubkey, txid, cents, payment_id, capability} — verified on the registry's node before it counts.
+- Reputation = settled kUSD the registry verified on its own node, box by box.
+
+## How to verify
+- A kUSD payment is a covenant box of exactly the quoted cents at the offer's derived key, carrying the family's covenant id: `kusd_pay verify`, or recompute the box address from its state with the kusd-client WASM and check the outpoint on a node.
+- Covenant state is a script hash: compile the template with the claimed state and compare with the output on chain (the kUSD repo's tests and evidence show how).
+
+## Disclaimers
+- TN10 testnet research software. Not audited. Not a product. Not for real value. Not financial advice.
+- Today all five oracle operator keys are held by the deployer; independent operators are a pre-mainnet gate.

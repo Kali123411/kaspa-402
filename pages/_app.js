@@ -16,6 +16,8 @@ export default function App({ Component, pageProps }) {
           <nav className="flex items-center gap-5 font-mono text-[13px] text-gray-400">
             <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">standard</a>
             <a href="https://github.com/elldeeone/kaspa-x402" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">SDK</a>
+            <a href="/kusd" className="hover:text-teal-400">kUSD</a>
+            <a href="/market" className="hover:text-teal-400">market</a>
             <a href="/validate" className="hover:text-teal-400">validate</a>
           </nav>
         </header>

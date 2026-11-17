@@ -1,0 +1,104 @@
+{
+ "generatedAt": "2026-11-17T03:36:45.493Z",
+ "providers": [
+  {
+   "capability": "summarize",
+   "endpoint": "https://summarize.kaspa-402.org/summarize",
+   "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+   "price_usd": 0.05,
+   "network": "testnet-10",
+   "schemes": [
+    "kusd-utxo",
+    "kaspa-utxo"
+   ],
+   "channel_terms": {},
+   "stake_kas": 0,
+   "description": "Summarize text (llama3.1 8B); 5 cents of kUSD a call, KAS also accepted",
+   "currency": "kUSD",
+   "price_cents": 5,
+   "meta": {
+    "wires": [
+     "x402",
+     "k402"
+    ]
+   },
+   "listed_at": 1794886585,
+   "reputation": {
+    "settled_kas": 0,
+    "settled_cents": 45,
+    "closes": 9,
+    "first_settled": 1794814274,
+    "last_settled": 1794885609
+   }
+  }
+ ],
+ "activity": {
+  "settlements": [
+   {
+    "t": 1794885609,
+    "txid": "e4fa66781cb123bcc1c252265481775cf87377ee3fc2238ad04f78f11a7fd595",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794885571,
+    "txid": "da04d27a0e8cd1bea981f71a3cb76f498a99dd0c4c91a058220a64aa7cdfc353",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794885345,
+    "txid": "03f6a26a740b158c73f7859367d9dd858bc4d2a94c1a12f1bd23c66f2307c5b6",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794884060,
+    "txid": "7ce0b672d6f399cfeb3840069be251886127150b00fb35450156b54afba6d8a9",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794878226,
+    "txid": "da68f2556183728c3e1e8bd4213013514d4085178e72ba0df48491c9f5cc347e",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794878197,
+    "txid": "259b4dbe36c024d08aea50d03d96da74706de5959dcdcdd5d88914ed30acbae6",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794876875,
+    "txid": "7e3a8db061313a3402e775bc5fc43c076b1083c855e2978ccba44990dfb86119",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794815701,
+    "txid": "9649948a6019487bedf6b9308498ca3f6abb7e3cf9a772458114f52237d8ffb8",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   }
+  ],
+  "total_cents": 40
+ }
+}

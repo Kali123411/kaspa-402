@@ -2,6 +2,10 @@
 module.exports = {
   transpilePackages: ['@kaspa-x402/core'],
   reactStrictMode: true,
+  async redirects() {
+    // the Kaspa Agent Market moved here from the Lab: /kusd/market is the old path
+    return [{ source: '/kusd/market', destination: '/market', permanent: true }];
+  },
   async rewrites() {
     // Machine-readable catalog + per-service manifests at clean, conventional URLs for agents/LLMs.
     // beforeFiles so `/skill/<cap>.md` hits the markdown API before the `[cap]` HTML page catches it.
