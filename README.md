@@ -52,10 +52,14 @@ an operator `SpendPolicy`; the kUSD requirement is x402 `exact` with the binding
 
 ## Architecture
 
-- **Registry data**: curated listings in `lib/listings.js` (`SEED`, `BASE_SEED`) merged with open submissions kept in
-  Upstash Redis (`lib/registry.js`; in-memory when no credentials are set). Listings are probe-attested at submit
-  time; they are not re-probed later. *Direction (RESCOPE.md, Phase 3): the site reads the k402 registry so there is
-  one registry and one listing schema for the whole product.*
+- **Registry data**: the k402 registry (`https://market.kaspa-402.org`, env `K402_REGISTRY_URL`) is the one directory
+  for the whole product. `lib/registry.js` reads `GET /registry/catalog` (signed kUSD/KAS listings and probe-attested
+  x402 listings in one shape) and shows the KAS-priced ones here; kUSD-priced ones live on the Kaspa Agent Market page.
+  Submissions are forwarded to `POST /registry/submit`, where the registry probes the endpoint and lists what it
+  actually offered; the registry re-probes every attested listing (6 h) and retires one after three misses. When the
+  registry cannot be reached the site serves `lib/catalog-snapshot.js` (`node scripts/catalog-snapshot.mjs > lib/catalog-snapshot.js`),
+  marked `fromSnapshot`. The site keeps no store of its own (the former `SEED` and Upstash submissions were migrated
+  with k402's `examples/catalog_migrate.py`).
 - **`lib/story.js`**: the shared story — the three layers, the claim, the "why agents" paragraph, the disclaimer set —
   used by the pages and the catalogs so names never drift.
 - **`lib/x402catalog.js`**: the directory's listing schema and the live-offer checks; **`lib/probe.js`**: SSRF-guarded
@@ -72,7 +76,8 @@ npm run dev      # http://localhost:3000
 
 ## Deploy
 
-Vercel: import the repo; `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` enable persistent submissions.
+Vercel: import the repo; no storage credentials are needed (the directory is the k402 registry; `K402_REGISTRY_URL`
+overrides its address). Tests: `node --test tests/*.test.mjs`.
 
 ## Disclaimers
 
