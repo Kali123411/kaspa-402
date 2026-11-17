@@ -262,11 +262,14 @@ export default function Marketplace() {
           <h2 className="mb-4 font-mono text-[12.5px] uppercase tracking-[0.18em] text-gray-400">Pay from an agent</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-gray-950/40 p-5 font-mono text-[12.5px] leading-relaxed text-gray-300">
-              <div className="text-gray-500"># KAS · the standard client (a complete, tested example ships in the next release)</div>
-              <div>npm i @kaspa-x402/client</div>
-              <div className="mt-3"><span className="text-teal-400">import</span> {'{ DirectModeClient }'} <span className="text-teal-400">from</span> <span className="text-gray-200">'@kaspa-x402/client'</span>;</div>
-              <div className="text-gray-500">{'// create the client with your Kaspa funding provider and signer, then:'}</div>
-              <div><span className="text-teal-400">const</span> r = <span className="text-teal-400">await</span> client.paidFetch(<span className="text-gray-200">'https://demo.kaspa-x402.org/exact'</span>);</div>
+              <div className="text-gray-500"># KAS · kx402 (wraps @kaspa-x402/client&apos;s DirectModeClient); tested on testnet-10 — <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">full example</a></div>
+              <div>npm i kx402 &amp;&amp; npx kx402 fetch-sdk</div>
+              <div className="text-gray-500"># env: KASPA_X402_KASPA_WASM_MODULE=…/nodejs/kaspa/kaspa.js  KASPA_X402_FUNDING_WALLET=wallet-key:…/agent.key</div>
+              <div className="mt-3"><span className="text-teal-400">import</span> {'{ openWallet, payExact, resolveWalletConfig, applyInput }'} <span className="text-teal-400">from</span> <span className="text-gray-200">'kx402'</span>;</div>
+              <div><span className="text-teal-400">const</span> wallet = <span className="text-teal-400">await</span> openWallet(resolveWalletConfig({'{'} network: <span className="text-gray-200">'kaspa:testnet-10'</span> {'}'}));</div>
+              <div><span className="text-teal-400">const</span> url = applyInput(<span className="text-gray-200">'https://kaspa-402-summarize.kaspadev.workers.dev/exact'</span>, {'{'} text {'}'});</div>
+              <div><span className="text-teal-400">const</span> r = <span className="text-teal-400">await</span> payExact(wallet, url, {'{'} maxAmountSompi: 300_000_000n {'}'});  <span className="text-gray-500">{'// 402 → pay → retry; never over 3 KAS'}</span></div>
+              <div>r.status, r.body, r.settlement.transaction   <span className="text-gray-500">{'// the result and the txid to verify on a node'}</span></div>
             </div>
             <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-gray-950/40 p-5 font-mono text-[12.5px] leading-relaxed text-gray-300">
               <div className="text-gray-500"># kUSD · the k402 client, under an operator policy (testnet-10)</div>

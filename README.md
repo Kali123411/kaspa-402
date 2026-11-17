@@ -19,7 +19,8 @@ Standalone Next.js site (Pages Router) for **[kaspa-402.org](https://kaspa-402.o
 - **`/skill/<capability>.md`** — a per-capability manifest an agent ingests; human page at `/skill/<capability>`.
 - The homepage's **Agents start here** section: funds → 402 → pay (KAS or kUSD) → verify on a node → sell.
 
-Paying in KAS uses the standard client `@kaspa-x402/client` (from the Kaspa x402 standard, `elldeeone/kaspa-x402`).
+Paying in KAS uses `kx402`, the Kaspa x402 agent payer (it wraps the standard client `@kaspa-x402/client` from
+`elldeeone/kaspa-x402`); the complete, tested example is [`examples/agent-quickstart.mjs`](examples/agent-quickstart.mjs).
 Paying in kUSD uses the k402 Python client (`pip install k402`, `KusdPayer`) or the `k402-mcp` tool `pay_kusd`, under
 an operator `SpendPolicy`; the kUSD requirement is x402 `exact` with the binding `kusd-holder-v1`
 ([spec](https://github.com/Kali123411/k402/blob/main/scheme_exact_kusd.md)).

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   L.push('');
   L.push('## How to pay (x402 v2)');
   L.push('- Call the resource unpaid. On HTTP 402 read the PAYMENT-REQUIRED header (base64 JSON; `accepts[]` = the ways to pay: scheme, network, amount, payTo). Pay one, retry with PAYMENT-SIGNATURE.');
-  L.push('- KAS: npm i @kaspa-x402/client — schemes `exact` and `batch-settlement`; networks kaspa:mainnet (most listings here) and kaspa:testnet-10.');
+  L.push('- KAS: npm i kx402 (the agent payer; wraps @kaspa-x402/client) — `openWallet` → `payExact(wallet, url, { maxAmountSompi })`; schemes `exact` and `batch-settlement`; networks kaspa:mainnet (most listings here) and kaspa:testnet-10. Complete, tested example: https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs');
   L.push(`- kUSD: pip install k402 (KusdPayer.pay_best) or the k402-mcp tool pay_kusd (${LINKS.k402Mcp}); the requirement is scheme \`exact\`, asset = the kUSD authority covenant id, amount in cents, extra.binding = "kusd-holder-v1", proof = the creating txid. Spec: ${LINKS.kusdScheme}. kUSD runs on kaspa:testnet-10 today.`);
   L.push('- Operator limits: a kUSD agent pays inside a SpendPolicy (per-call ceiling, lifetime and windowed budgets, call caps, unserved-payment stop, allowed capabilities, kill switch) that only its operator can change.');
   L.push('- Standard: https://kaspa-x402.org · k402 protocol: ' + LINKS.k402Protocol);
