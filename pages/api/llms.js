@@ -38,10 +38,10 @@ export default async function handler(req, res) {
   L.push('');
   L.push('## Where the other layers live');
   L.push(`- Money (kUSD): ${LAYERS[0].url} — live state, covenant ids, how to verify; the kUSD app (${LINKS.kusdApp}) to hold, buy and send kUSD on testnet-10.`);
-  L.push(`- Market (${MARKET_NAME}): ${LAYERS[2].url} — kUSD-priced services, the settlements feed, settlement-verified reputation, SpendPolicy.`);
+  L.push(`- Market (the ${MARKET_NAME}, KAM): ${LAYERS[2].url} — kUSD-priced services, the settlements feed, settlement-verified reputation, SpendPolicy.`);
   L.push('');
   L.push('## Disclaimers');
-  L.push(`- kUSD and ${MARKET_NAME}: ${DISCLAIMERS.research} ${DISCLAIMERS.advice}`);
+  L.push(`- kUSD and the ${MARKET_NAME}: ${DISCLAIMERS.research} ${DISCLAIMERS.advice}`);
   L.push(`- ${DISCLAIMERS.operators}`);
   L.push('- Mainnet listings on this site settle real KAS; nothing on this site is audited.');
   L.push('');
