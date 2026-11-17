@@ -6,9 +6,9 @@ three layers of one product (see [`RESCOPE.md`](RESCOPE.md)):
 
 | Layer | Name | Where |
 | --- | --- | --- |
-| Money | kUSD — covenant-native USD stablecoin built for agents | [kaspa-app.vercel.app/kusd](https://www.kaspa-402.org/kusd) · [repo](https://github.com/Kali123411/kUSD) |
+| Money | kUSD — covenant-native USD stablecoin built for agents | [www.kaspa-402.org/kusd](https://www.kaspa-402.org/kusd) · [repo](https://github.com/Kali123411/kUSD) |
 | Rails | k402 (Kaspa x402 v2) — this site | [kaspa-402.org](https://kaspa-402.org) · [repo](https://github.com/Kali123411/k402) |
-| Market | Kaspa Agent Market (KAM) — discovery, settlement-verified reputation, SpendPolicy | [kaspa-app.vercel.app/kusd/market](https://www.kaspa-402.org/market) |
+| Market | Kaspa Agent Market (KAM) — discovery, settlement-verified reputation, SpendPolicy | [www.kaspa-402.org/market](https://www.kaspa-402.org/market) |
 
 Standalone Next.js site (Pages Router) for **[kaspa-402.org](https://kaspa-402.org)**, deployed on Vercel.
 

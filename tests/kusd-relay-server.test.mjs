@@ -83,7 +83,7 @@ test('post_then_get_round_trip', async () => {
 test('cors_preflight_answered', async () => {
   const s = await start({ fetchJson: fetchJsonFor([]) });
   try {
-    const r = await fetch(`${s.base}/state`, { method: 'OPTIONS', headers: { origin: 'https://kaspa-app.vercel.app', 'access-control-request-method': 'POST' } });
+    const r = await fetch(`${s.base}/state`, { method: 'OPTIONS', headers: { origin: 'https://www.kaspa-402.org', 'access-control-request-method': 'POST' } });
     assert.equal(r.status, 204);
     assert.equal(r.headers.get('access-control-allow-origin'), '*');
     assert.match(r.headers.get('access-control-allow-methods'), /POST/);
