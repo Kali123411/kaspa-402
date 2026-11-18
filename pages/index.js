@@ -10,6 +10,9 @@ import { EXTERNAL } from '../lib/brand.mjs';
 import ExternalLink from '../components/ExternalLink';
 import StatStrip from '../components/StatStrip';
 import ProbeDemo from '../components/ProbeDemo';
+import CodeBlock from '../components/CodeBlock';
+import CodeTabs from '../components/CodeTabs';
+import { SAMPLES, STEP_COMMANDS, LLMS_CURL } from '../lib/samples.mjs';
 
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
@@ -200,17 +203,31 @@ export default function Marketplace() {
         <section id="agents" className="mt-16 scroll-mt-20">
           <h2 className="font-orbitron text-[22px] font-bold uppercase tracking-tight">Agents start here</h2>
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-gray-400">From nothing to a paid call, then to selling. The machine copy of this page is <a href="/llms.txt" className="text-teal-400 hover:underline">/llms.txt</a>.</p>
+          <div className="mt-4 flex flex-wrap items-center gap-4 rounded-2xl border border-teal-400/20 bg-teal-400/5 p-4">
+            <p className="text-[13.5px] text-gray-300">This site is <span className="text-teal-300">machine-readable</span> — point your agent at <a href="/llms.txt" className="font-mono text-teal-400 hover:underline">/llms.txt</a> (and <a href="/llms.json" className="font-mono text-teal-400 hover:underline">/llms.json</a>).</p>
+            <CodeBlock code={LLMS_CURL} className="min-w-0 flex-1" />
+          </div>
           <ol className="mt-5 grid gap-4 sm:grid-cols-2">
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">1 · get funds</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">A Kaspa key is the only account. On testnet-10, TKAS comes from the <a href={LINKS.faucet} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">faucet</a>; kUSD is bought from the kUSD PSM in the <a href={LINKS.kusdApp} className="text-teal-400 hover:underline">kUSD app</a> or by <span className="font-mono">kusd_pay buy</span>.</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">A Kaspa key is the only account. On testnet-10, TKAS comes from the <a href={LINKS.faucet} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">faucet</a>; kUSD is bought from the kUSD PSM in the <a href={LINKS.kusdApp} className="text-teal-400 hover:underline">kUSD app</a> or by <span className="font-mono">kusd_pay buy</span>.</p>
+              <CodeBlock code={STEP_COMMANDS[0]} className="mt-3" />
+            </li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">2 · read the 402</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">Call the resource unpaid. The <Term id="payment-required"><span className="font-mono">PAYMENT-REQUIRED</span></Term> header is base64 JSON: <span className="font-mono">accepts[]</span> lists each way to pay — scheme, network, amount, <span className="font-mono">payTo</span>. Pick one you can pay.</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">Call the resource unpaid. The <Term id="payment-required"><span className="font-mono">PAYMENT-REQUIRED</span></Term> header is base64 JSON: <span className="font-mono">accepts[]</span> lists each way to pay — scheme, network, amount, <span className="font-mono">payTo</span>. Pick one you can pay.</p>
+              <CodeBlock code={STEP_COMMANDS[1]} className="mt-3" />
+            </li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">3 · pay, in KAS or kUSD</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">KAS: <span className="font-mono">@kaspa-x402/client</span> (<span className="font-mono">exact</span>, <span className="font-mono">batch-settlement</span>). kUSD: the k402 Python client (<span className="font-mono">pip install k402</span>, <span className="font-mono">KusdPayer</span>) or the <a href={LINKS.k402Mcp} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">k402-mcp</a> tool <span className="font-mono">pay_kusd</span>, under a <Term id="spendpolicy"><a href={LINKS.spendPolicy} target="_blank" rel="noopener noreferrer" className="font-mono text-teal-400 hover:underline">SpendPolicy</a></Term> your operator wrote. The kUSD requirement is x402 <span className="font-mono">exact</span> with the kUSD authority covenant as <span className="font-mono">asset</span>, cents as <span className="font-mono">amount</span> and the binding <span className="font-mono">kusd-holder-v1</span> (<a href={LINKS.kusdScheme} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">spec</a>). Retry with <span className="font-mono">PAYMENT-SIGNATURE</span>.</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">KAS: <span className="font-mono">@kaspa-x402/client</span> (<span className="font-mono">exact</span>, <span className="font-mono">batch-settlement</span>). kUSD: the k402 Python client (<span className="font-mono">pip install k402</span>, <span className="font-mono">KusdPayer</span>) or the <a href={LINKS.k402Mcp} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">k402-mcp</a> tool <span className="font-mono">pay_kusd</span>, under a <Term id="spendpolicy"><a href={LINKS.spendPolicy} target="_blank" rel="noopener noreferrer" className="font-mono text-teal-400 hover:underline">SpendPolicy</a></Term> your operator wrote. The kUSD requirement is x402 <span className="font-mono">exact</span> with the kUSD authority covenant as <span className="font-mono">asset</span>, cents as <span className="font-mono">amount</span> and the binding <span className="font-mono">kusd-holder-v1</span> (<a href={LINKS.kusdScheme} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">spec</a>). Retry with <span className="font-mono">PAYMENT-SIGNATURE</span>.</p>
+              <CodeBlock code={STEP_COMMANDS[2]} className="mt-3" />
+            </li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">4 · verify on a node</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">A KAS payment is a transaction to <Term id="payto"><span className="font-mono">payTo</span></Term>. A kUSD payment is a <Term id="covenant">covenant</Term> <Term id="box">box</Term> of exactly the quoted cents at the offer&apos;s key, carrying the family&apos;s covenant id — a node proves it, not a receipt. The market publishes node-verified settlements at <span className="font-mono">{LINKS.registry.replace('https://', '')}/registry/activity</span> (every endpoint in its <a href={LINKS.openapi} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">OpenAPI</a>).</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">A KAS payment is a transaction to <Term id="payto"><span className="font-mono">payTo</span></Term>. A kUSD payment is a <Term id="covenant">covenant</Term> <Term id="box">box</Term> of exactly the quoted cents at the offer&apos;s key, carrying the family&apos;s covenant id — a node proves it, not a receipt. The market publishes node-verified settlements at <span className="font-mono">{LINKS.registry.replace('https://', '')}/registry/activity</span> (every endpoint in its <a href={LINKS.openapi} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">OpenAPI</a>).</p>
+              <CodeBlock code={STEP_COMMANDS[3]} className="mt-3" />
+            </li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5 sm:col-span-2"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">5 · sell</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">Answer 402 yourself: <span className="font-mono">@kaspa-x402/server</span> for KAS, <span className="font-mono">k402</span> (<span className="font-mono">K402(kusd=…)</span>) for kUSD. Submit the KAS endpoint above; list the kUSD one on <a href={LAYERS[2].url} className="text-teal-400 hover:underline">{MARKET_NAME}</a>, where <a href={LINKS.reputation} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">reputation</a> is the kUSD a node has seen you settle, not a rating anyone can type.</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">Answer 402 yourself: <span className="font-mono">@kaspa-x402/server</span> for KAS, <span className="font-mono">k402</span> (<span className="font-mono">K402(kusd=…)</span>) for kUSD. Submit the KAS endpoint above; list the kUSD one on <a href={LAYERS[2].url} className="text-teal-400 hover:underline">{MARKET_NAME}</a>, where <a href={LINKS.reputation} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">reputation</a> is the kUSD a node has seen you settle, not a rating anyone can type.</p>
+              <CodeBlock code={STEP_COMMANDS[4]} className="mt-3" />
+            </li>
           </ol>
         </section>
 
@@ -236,27 +253,8 @@ export default function Marketplace() {
 
         <section className="mt-16">
           <h2 className="mb-4 font-mono text-[12.5px] uppercase tracking-[0.18em] text-gray-400">Pay from an agent</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-gray-950/40 p-5 font-mono text-[12.5px] leading-relaxed text-gray-300">
-              <div className="text-gray-500"># KAS · kx402, the k402 agent payer on npm (wraps @kaspa-x402/client&apos;s DirectModeClient); tested on testnet-10 — <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">full example</a></div>
-              <div>npm i kx402 &amp;&amp; npx kx402 fetch-sdk</div>
-              <div className="text-gray-500"># env: KASPA_X402_KASPA_WASM_MODULE=…/nodejs/kaspa/kaspa.js  KASPA_X402_FUNDING_WALLET=wallet-key:…/agent.key</div>
-              <div className="mt-3"><span className="text-teal-400">import</span> {'{ openWallet, payExact, resolveWalletConfig, applyInput }'} <span className="text-teal-400">from</span> <span className="text-gray-200">'kx402'</span>;</div>
-              <div><span className="text-teal-400">const</span> wallet = <span className="text-teal-400">await</span> openWallet(resolveWalletConfig({'{'} network: <span className="text-gray-200">'kaspa:testnet-10'</span> {'}'}));</div>
-              <div><span className="text-teal-400">const</span> url = applyInput(<span className="text-gray-200">'https://kaspa-402-summarize.kaspadev.workers.dev/exact'</span>, {'{'} text {'}'});</div>
-              <div><span className="text-teal-400">const</span> r = <span className="text-teal-400">await</span> payExact(wallet, url, {'{'} maxAmountSompi: 300_000_000n {'}'});  <span className="text-gray-500">{'// 402 → pay → retry; never over 3 KAS'}</span></div>
-              <div>r.status, r.body, r.settlement.transaction   <span className="text-gray-500">{'// the result and the txid to verify on a node'}</span></div>
-            </div>
-            <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-gray-950/40 p-5 font-mono text-[12.5px] leading-relaxed text-gray-300">
-              <div className="text-gray-500"># kUSD · the k402 client, under an operator policy (testnet-10)</div>
-              <div>pip install k402</div>
-              <div className="mt-3"><span className="text-teal-400">from</span> k402 <span className="text-teal-400">import</span> KusdPayer, KusdWallet, SpendLedger, SpendPolicy</div>
-              <div>payer = KusdPayer(wallet, registry_url=<span className="text-gray-200">&quot;https://market.kaspa-402.org&quot;</span>, network=<span className="text-gray-200">&quot;testnet-10&quot;</span>,</div>
-              <div className="pl-6">policy=SpendPolicy.load(<span className="text-gray-200">&quot;policy.json&quot;</span>), ledger=SpendLedger(<span className="text-gray-200">&quot;spend.db&quot;</span>))</div>
-              <div>route = <span className="text-teal-400">await</span> payer.pay_best(<span className="text-gray-200">&quot;summarize&quot;</span>, json_body={'{'}<span className="text-gray-200">&quot;text&quot;</span>: …{'}'})</div>
-              <div className="text-gray-500"># or, from any MCP client: k402-mcp → pay_kusd(&quot;summarize&quot;, {'{…}'})</div>
-            </div>
-          </div>
+          <CodeTabs samples={SAMPLES} />
+          <p className="mt-2 font-mono text-[11px] text-gray-600">Full example: <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">examples/agent-quickstart.mjs ↗ github.com</a></p>
         </section>
 
       </main>
