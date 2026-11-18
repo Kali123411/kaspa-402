@@ -88,5 +88,5 @@ test('share card and favicon: the 402 numeral', () => {
 test('the share card font ships with the function: next.config traces lib/fonts into /api/og (Vercel returned 500 without it)', () => {
   const cfg = read('next.config.js');
   assert.match(cfg, /outputFileTracingIncludes/);
-  assert.match(cfg, /'\/api\/og':\s*\['\.\/lib\/fonts\/\*\*'\]/);
+  assert.match(cfg, /'\/api\/og':\s*\['\.\/lib\/fonts\/\*\*', '\.\/node_modules\/next\/dist\/compiled\/@vercel\/og\/\*\*'\]/, 'the font and the renderer wasm');
 });
