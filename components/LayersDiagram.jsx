@@ -28,8 +28,8 @@ export default function LayersDiagram() {
       {/* the money flows over the rails into the market */}
       <line x1={col.x[0] + col.w} y1={79} x2={col.x[1] - 4} y2={79} stroke="#2dd4bf" strokeWidth="1.5" markerEnd="url(#arrow)" />
       <line x1={col.x[1] + col.w} y1={79} x2={col.x[2] - 4} y2={79} stroke="#2dd4bf" strokeWidth="1.5" markerEnd="url(#arrow)" />
-      <text x={col.x[0] + col.w + 50} y={70} textAnchor="middle" fill="#6b7280" fontFamily="ui-monospace, monospace" fontSize="10.5">priced in kUSD or KAS</text>
-      <text x={col.x[1] + col.w + 50} y={70} textAnchor="middle" fill="#6b7280" fontFamily="ui-monospace, monospace" fontSize="10.5">HTTP 402 → pay → 200</text>
+      <text x={col.x[0] + col.w + 50} y={28} textAnchor="middle" fill="#6b7280" fontFamily="ui-monospace, monospace" fontSize="10.5">priced in kUSD or KAS</text>
+      <text x={col.x[1] + col.w + 50} y={28} textAnchor="middle" fill="#6b7280" fontFamily="ui-monospace, monospace" fontSize="10.5">HTTP 402 → pay → 200</text>
       {/* the chain under all three */}
       <rect x={40} y={146} width={720} height={34} rx={10} fill="rgba(255,255,255,0.02)" stroke="#1f2937" />
       <text x={400} y={168} textAnchor="middle" fill="#9ca3af" fontFamily="ui-monospace, monospace" fontSize="11.5" letterSpacing="1.5">KASPA L1 · COVENANTS · ≈1 S SETTLEMENT</text>
