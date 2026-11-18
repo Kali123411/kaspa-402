@@ -12,6 +12,7 @@ import StatStrip from '../components/StatStrip';
 import ProbeDemo from '../components/ProbeDemo';
 import CodeBlock from '../components/CodeBlock';
 import CodeTabs from '../components/CodeTabs';
+import LayersDiagram from '../components/LayersDiagram';
 import { SAMPLES, STEP_COMMANDS, LLMS_CURL } from '../lib/samples.mjs';
 
 const SOMPI = 1e8;
@@ -153,6 +154,7 @@ export default function Marketplace() {
         <section id="layers" className="mt-14 scroll-mt-20">
           <h2 className="font-orbitron text-[22px] font-bold uppercase tracking-tight">Three layers, one product</h2>
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-gray-400">{CLAIM} This site is the rails.</p>
+          <LayersDiagram />
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
             {LAYERS.map((l) => (
               <a key={l.key} href={l.url} className={`glass card-hover flex flex-col gap-2 rounded-2xl border p-5 ${l.key === 'rails' ? 'border-teal-400/40' : 'border-gray-800'}`}>
