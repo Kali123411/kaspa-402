@@ -84,3 +84,9 @@ test('share card and favicon: the 402 numeral', () => {
   assert.ok(idx.includes('property="og:image"') && idx.includes('/api/og') && idx.includes('summary_large_image'));
   assert.ok(read('pages/_app.js').includes('href="/favicon.svg"'));
 });
+
+test('the share card font ships with the function: next.config traces lib/fonts into /api/og (Vercel returned 500 without it)', () => {
+  const cfg = read('next.config.js');
+  assert.match(cfg, /outputFileTracingIncludes/);
+  assert.match(cfg, /'\/api\/og':\s*\['\.\/lib\/fonts\/\*\*'\]/);
+});

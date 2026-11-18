@@ -2,6 +2,8 @@
 module.exports = {
   transpilePackages: ['@kaspa-x402/core'],
   reactStrictMode: true,
+  // /api/og reads the bundled Fraunces WOFF with fs at request time; without this the serverless bundle on Vercel omits it (500)
+  outputFileTracingIncludes: { '/api/og': ['./lib/fonts/**'] },
   async redirects() {
     // the Kaspa Agent Market moved here from the Lab: /kusd/market is the old path
     return [{ source: '/kusd/market', destination: '/market', permanent: true }];
