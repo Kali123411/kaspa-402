@@ -19,7 +19,7 @@ test('persona split follows the hero: agent builder vs API seller, each with its
   const block = s.slice(i, i + 4000);
   assert.ok(block.includes('I&apos;m building an agent') && block.includes('I&apos;m selling an API'));
   assert.ok(block.includes('href="#agents"') && block.includes('href="/get-started"'), 'builder path → steps + setup guide');
-  assert.ok(block.includes('href="/validate"') && block.includes('href="#list"'), 'seller path → validate + list');
+  assert.ok(block.includes('href="/validate"') && block.includes('href="/list"'), 'seller path → validate + list');
   const how = s.indexOf('1 · the agent calls');
   assert.ok(i < how, 'the split comes before the how-it-works strip');
 });
