@@ -6,8 +6,8 @@ three layers of one product (see [`RESCOPE.md`](RESCOPE.md)):
 
 | Layer | Name | Where |
 | --- | --- | --- |
-| Money | kUSD — covenant-native USD stablecoin built for agents | [www.kaspa-402.org/kusd](https://www.kaspa-402.org/kusd) · [repo](https://github.com/Kali123411/kUSD) |
-| Rails | k402 (Kaspa x402 v2) — this site | [kaspa-402.org](https://kaspa-402.org) · [repo](https://github.com/Kali123411/k402) |
+| Money | kUSD — covenant-native USD stablecoin built for agents | [www.kaspa-402.org/kusd](https://www.kaspa-402.org/kusd) · [repo](https://github.com/kaspa-402/kUSD) |
+| Rails | k402 (Kaspa x402 v2) — this site | [kaspa-402.org](https://kaspa-402.org) · [repo](https://github.com/kaspa-402/k402) |
 | Market | Kaspa Agent Market (KAM) — discovery, settlement-verified reputation, SpendPolicy | [www.kaspa-402.org/market](https://www.kaspa-402.org/market) |
 
 Standalone Next.js site (Pages Router) for **[kaspa-402.org](https://kaspa-402.org)**, deployed on Vercel.
@@ -23,7 +23,7 @@ Paying in KAS uses `kx402`, the Kaspa x402 agent payer (it wraps the standard cl
 `elldeeone/kaspa-x402`); the complete, tested example is [`examples/agent-quickstart.mjs`](examples/agent-quickstart.mjs).
 Paying in kUSD uses the k402 Python client (`pip install k402`, `KusdPayer`) or the `k402-mcp` tool `pay_kusd`, under
 an operator `SpendPolicy`; the kUSD requirement is x402 `exact` with the binding `kusd-holder-v1`
-([spec](https://github.com/Kali123411/k402/blob/main/scheme_exact_kusd.md)).
+([spec](https://github.com/kaspa-402/k402/blob/main/scheme_exact_kusd.md)).
 
 ## List a service
 
@@ -87,5 +87,5 @@ a pre-mainnet gate. Mainnet listings on this site settle real KAS; nothing on th
 
 ---
 
-Rails protocol + Python client: **[Kali123411/k402](https://github.com/Kali123411/k402)** · `pip install k402` ·
-MCP: **[Kali123411/k402-mcp](https://github.com/Kali123411/k402-mcp)** · connect CLI: **[Kali123411/kaspa-402-cli](https://github.com/Kali123411/kaspa-402-cli)**
+Rails protocol + Python client: **[Kali123411/k402](https://github.com/kaspa-402/k402)** · `pip install k402` ·
+MCP: **[Kali123411/k402-mcp](https://github.com/kaspa-402/k402-mcp)** · connect CLI: **[Kali123411/kaspa-402-cli](https://github.com/kaspa-402/kaspa-402-cli)**

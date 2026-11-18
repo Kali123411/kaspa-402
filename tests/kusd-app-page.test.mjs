@@ -36,10 +36,10 @@ test('the app page carries the caveats', () => {
 test('no trackers and no unexpected hosts', () => {
   assert.doesNotMatch(app, /googletagmanager|google-analytics|gtag\(|plausible|segment\.com|mixpanel|posthog/i);
   assert.doesNotMatch(app, /<script[^>]+src=/i);
-  const allowed = [/^https:\/\/www\.kaspa-402\.org\//, /^https:\/\/kusd\.kaspa-402\.org\//, /^https:\/\/api-tn10\.kaspa\.org\//, /^https:\/\/raw\.githubusercontent\.com\/Kali123411\/kUSD\//,
-    /^https:\/\/faucet-tn10\.kaspanet\.io\//, /^https:\/\/github\.com\/Kali123411\/kUSD/, /^https:\/\/explorer-tn10\.kaspa\.org\//,
+  const allowed = [/^https:\/\/www\.kaspa-402\.org\//, /^https:\/\/kusd\.kaspa-402\.org\//, /^https:\/\/api-tn10\.kaspa\.org\//, /^https:\/\/raw\.githubusercontent\.com\/kaspa-402\/kUSD\//,
+    /^https:\/\/faucet-tn10\.kaspanet\.io\//, /^https:\/\/github\.com\/kaspa-402\/kUSD/, /^https:\/\/explorer-tn10\.kaspa\.org\//,
     // our own three layers, named in lib/kusd/story.mjs
-    /^https:\/\/kaspa-402\.org/, /^https:\/\/kaspa-app\.vercel\.app\//, /^https:\/\/github\.com\/Kali123411\/k402/];
+    /^https:\/\/kaspa-402\.org/, /^https:\/\/kaspa-app\.vercel\.app\//, /^https:\/\/github\.com\/kaspa-402\/k402/];
   const urls = app.match(/https?:\/\/[^\s'"`)]+/g) || [];
   for (const u of urls) assert.ok(allowed.some((r) => r.test(u)), `unexpected host in ${u}`);
 });

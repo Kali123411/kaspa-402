@@ -48,7 +48,7 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
     <Panel title="Operator">
       <p className="text-sm text-gray-300">
         The person who funds an agent&apos;s wallet sets these; the agent cannot loosen them from a call. Here you are both, so this is the
-        mechanism on display — <a className="text-neon-purple hover:underline" href="https://github.com/Kali123411/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy <ExternalLink className="inline h-3 w-3" aria-hidden /></a> enforces the same bounds for real agents and MCP servers.
+        mechanism on display — <a className="text-neon-purple hover:underline" href="https://github.com/kaspa-402/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy <ExternalLink className="inline h-3 w-3" aria-hidden /></a> enforces the same bounds for real agents and MCP servers.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" onClick={onFreeze} className={frozen ? primary : secondary}>

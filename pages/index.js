@@ -208,7 +208,7 @@ export default function Marketplace() {
                 <div>
                   <div className="flex flex-wrap items-baseline gap-3 pb-2 font-mono text-[12.5px] text-gray-500"><span className="text-gray-100">Base-native · via the router</span><span>pay in KAS · router settles USDC on Base · {baseSvcs.length}</span></div>
                   <p className="mb-3 max-w-[70ch] text-[14px] leading-relaxed text-gray-500">
-                    These services live on Base. You still pay in KAS — the <a href="https://github.com/Kali123411/kaspa-x402-router" target="_blank" rel="noopener noreferrer" className={LINK}>kaspa-x402-router</a> pays
+                    These services live on Base. You still pay in KAS — the <a href="https://github.com/kaspa-402/kaspa-x402-router" target="_blank" rel="noopener noreferrer" className={LINK}>kaspa-x402-router</a> pays
                     the service’s USDC on Base for you and returns the result, with an on-chain receipt for each leg.
                   </p>
                   {baseSvcs.map((l) => <ServiceCard key={l.id || l.resource} l={l} />)}
@@ -271,7 +271,7 @@ export default function Marketplace() {
 
           <Section mark="6" note="Pay from an agent: the same call in three languages." className="mt-16 mb-4">
             <CodeTabs samples={SAMPLES} />
-            <p className="mt-3 font-mono text-[12px] text-gray-600">Full example: <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className={LINK}>examples/agent-quickstart.mjs</a> on GitHub.</p>
+            <p className="mt-3 font-mono text-[12px] text-gray-600">Full example: <a href="https://github.com/kaspa-402/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className={LINK}>examples/agent-quickstart.mjs</a> on GitHub.</p>
           </Section>
         </div>
       </main>

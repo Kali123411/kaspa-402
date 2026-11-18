@@ -2,7 +2,7 @@
   "generatedAt": "2026-11-18T16:05:36Z",
   "network": "testnet-10",
   "stage": "Stage 2",
-  "repo": "https://github.com/Kali123411/kUSD",
+  "repo": "https://github.com/kaspa-402/kUSD",
   "caveat": "kUSD is TN10 research software: not audited, not a product, not for real value.",
   "covenants": {
     "oracle": {

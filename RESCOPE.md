@@ -15,7 +15,7 @@ Rules of engagement:
 
 ## Mission and target end state
 
-Re-scope [kaspa-402.org](https://www.kaspa-402.org), [kaspa-app.vercel.app/kusd](https://kaspa-app.vercel.app/kusd) (+ [/kusd/market](https://kaspa-app.vercel.app/kusd/market)), and [github.com/Kali123411/kUSD](https://github.com/Kali123411/kUSD) so they present and function as **one product: an AI-agent-centered marketplace, settled in its own agent-centered stablecoin, running natively on Kaspa L1 covenants**.
+Re-scope [kaspa-402.org](https://www.kaspa-402.org), [kaspa-app.vercel.app/kusd](https://kaspa-app.vercel.app/kusd) (+ [/kusd/market](https://kaspa-app.vercel.app/kusd/market)), and [github.com/kaspa-402/kUSD](https://github.com/kaspa-402/kUSD) so they present and function as **one product: an AI-agent-centered marketplace, settled in its own agent-centered stablecoin, running natively on Kaspa L1 covenants**.
 
 The product has three layers; every surface must name them consistently:
 
@@ -34,7 +34,7 @@ Verify this table yourself in Phase 0 — it comes from a review of the live pag
 | [kaspa-402.org](https://www.kaspa-402.org/#browse) | Directory of pay-per-call services under Kaspa x402 v2 | HTTP 402 flow; TN10 now, mainnet later; KAS payment plus a Base router; live 402-probe before a listing shows; validator; `llms.txt`/`llms.json`; `@kaspa-x402/client` and `@kaspa-x402/server` packages | Positioned as a generic pay-per-call directory, not agent commerce; covenants never mentioned; agent quickstart imports `DirectModeClient` but never instantiates it — sample is incomplete |
 | [/kusd](https://kaspa-app.vercel.app/kusd) | kUSD status + verification dashboard | CDP vaults (borrow to 175%, liquidate below 150%); PSM with ramping fee; 5-operator median oracle with rate limits; $50k/day issuance budget; 2% stability fee; 2-of-3 governance; covenant IDs published for verification | Positioned as a general stablecoin, no agent story; vault panel shows `$NaN` debt and `NaN%` ratio in the current export |
 | [/kusd/market](https://kaspa-app.vercel.app/kusd/market) | Agent-to-agent marketplace on TN10 | Listings priced in kUSD (one live: "summarize", llama3.1 8B, 0.05 kUSD/call); 10¢ listing fee via k402; settlements feed verified against a node; settlement-based reputation; SpendPolicy operator controls incl. kill switch and budgets; per-wallet ledger | Only one listing; buy flow is browser-wallet / human-centric; settled totals disagree (feed shows 0.40 kUSD, listing shows 0.45) |
-| [github.com/Kali123411/kUSD](https://github.com/Kali123411/kUSD) | The covenant implementation | Argent (`.ag`) contracts: `kusd`, `vault`, `psm`, `oracle`, `budget`, `surplus`; Rust harness with 182 tests; CI; deploy runbook with live TN10 covenant/tx IDs; whitepaper + one-pager in `docs/pitch/`; MIT | README frames a general-purpose stablecoin; no agent-facing integration docs; no `llms.txt` |
+| [github.com/kaspa-402/kUSD](https://github.com/kaspa-402/kUSD) | The covenant implementation | Argent (`.ag`) contracts: `kusd`, `vault`, `psm`, `oracle`, `budget`, `surplus`; Rust harness with 182 tests; CI; deploy runbook with live TN10 covenant/tx IDs; whitepaper + one-pager in `docs/pitch/`; MIT | README frames a general-purpose stablecoin; no agent-facing integration docs; no `llms.txt` |
 
 ## Positioning and naming
 
@@ -118,4 +118,4 @@ Work the phases in order; each gate is Murr's sign-off plus the stated check.
 
 **Report back per phase:** what shipped (PR links), what the gate check showed, open questions — then stop for sign-off.
 
-Sources: [kaspa-402.org](https://www.kaspa-402.org/#browse) · [kUSD dashboard](https://kaspa-app.vercel.app/kusd) · [kUSD market](https://kaspa-app.vercel.app/kusd/market) · [kUSD repo](https://github.com/Kali123411/kUSD)
+Sources: [kaspa-402.org](https://www.kaspa-402.org/#browse) · [kUSD dashboard](https://kaspa-app.vercel.app/kusd) · [kUSD market](https://kaspa-app.vercel.app/kusd/market) · [kUSD repo](https://github.com/kaspa-402/kUSD)
