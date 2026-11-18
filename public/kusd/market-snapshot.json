@@ -1,6 +1,45 @@
 {
- "generatedAt": "2026-11-17T03:36:45.493Z",
+ "generatedAt": "2026-11-18T16:22:01.074Z",
  "providers": [
+  {
+   "capability": "embed",
+   "endpoint": "https://summarize.kaspa-402.org/embed",
+   "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+   "price_usd": 0.02,
+   "network": "testnet-10",
+   "schemes": [
+    "kusd-utxo",
+    "kaspa-utxo"
+   ],
+   "channel_terms": {},
+   "stake_kas": 0,
+   "description": "Text embedding, 768 dims (nomic-embed-text); 2 cents of kUSD a call",
+   "currency": "kUSD",
+   "price_cents": 2,
+   "meta": {
+    "model": "nomic-embed-text",
+    "input": {
+     "text": "the text to embed (≤20k chars)"
+    },
+    "output": "embedding",
+    "example": {
+     "text": "covenant-native stablecoin"
+    },
+    "wires": [
+     "x402",
+     "k402"
+    ]
+   },
+   "listed_at": 1795018829,
+   "reputation": {
+    "settled_kas": 0,
+    "settled_cents": 82,
+    "closes": 1,
+    "kusd_payments": 17,
+    "first_settled": 1794814274,
+    "last_settled": 1794896760
+   }
+  },
   {
    "capability": "summarize",
    "endpoint": "https://summarize.kaspa-402.org/summarize",
@@ -13,27 +52,238 @@
    ],
    "channel_terms": {},
    "stake_kas": 0,
-   "description": "Summarize text (llama3.1 8B); 5 cents of kUSD a call, KAS also accepted",
+   "description": "Summarize text (llama3.1:8b-instruct-q4_K_M); 5 cents of kUSD a call, KAS also accepted",
    "currency": "kUSD",
    "price_cents": 5,
    "meta": {
+    "model": "llama3.1:8b-instruct-q4_K_M",
+    "input": {
+     "text": "the text to summarize (≤20k chars)",
+     "max_words": "optional, default 80"
+    },
+    "output": "summary",
+    "example": {
+     "text": "Kaspa is a proof-of-work blockDAG with one-second blocks.",
+     "max_words": 20
+    },
     "wires": [
      "x402",
      "k402"
     ]
    },
-   "listed_at": 1794886585,
+   "listed_at": 1795018816,
    "reputation": {
     "settled_kas": 0,
-    "settled_cents": 45,
-    "closes": 9,
+    "settled_cents": 82,
+    "closes": 1,
+    "kusd_payments": 17,
     "first_settled": 1794814274,
-    "last_settled": 1794885609
+    "last_settled": 1794896760
+   }
+  },
+  {
+   "capability": "translate",
+   "endpoint": "https://summarize.kaspa-402.org/translate",
+   "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+   "price_usd": 0.05,
+   "network": "testnet-10",
+   "schemes": [
+    "kusd-utxo",
+    "kaspa-utxo"
+   ],
+   "channel_terms": {},
+   "stake_kas": 0,
+   "description": "Translate text into any language (llama3.1:8b-instruct-q4_K_M); 5 cents of kUSD a call",
+   "currency": "kUSD",
+   "price_cents": 5,
+   "meta": {
+    "model": "llama3.1:8b-instruct-q4_K_M",
+    "input": {
+     "text": "the text to translate (≤20k chars)",
+     "to": "target language, default English"
+    },
+    "output": "translation",
+    "example": {
+     "text": "Les agents paient par appel.",
+     "to": "English"
+    },
+    "wires": [
+     "x402",
+     "k402"
+    ]
+   },
+   "listed_at": 1795018842,
+   "reputation": {
+    "settled_kas": 0,
+    "settled_cents": 82,
+    "closes": 1,
+    "kusd_payments": 17,
+    "first_settled": 1794814274,
+    "last_settled": 1794896760
+   }
+  },
+  {
+   "capability": "extract",
+   "endpoint": "https://summarize.kaspa-402.org/extract",
+   "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+   "price_usd": 0.05,
+   "network": "testnet-10",
+   "schemes": [
+    "kusd-utxo",
+    "kaspa-utxo"
+   ],
+   "channel_terms": {},
+   "stake_kas": 0,
+   "description": "Structured extraction to JSON (llama3.1:8b-instruct-q4_K_M); 5 cents of kUSD a call",
+   "currency": "kUSD",
+   "price_cents": 5,
+   "meta": {
+    "model": "llama3.1:8b-instruct-q4_K_M",
+    "input": {
+     "text": "the source text (≤20k chars)",
+     "fields": "optional list of field names"
+    },
+    "output": "extracted",
+    "example": {
+     "text": "Alice paid Bob 5 KAS on Monday in Berlin.",
+     "fields": [
+      "who",
+      "amount",
+      "when",
+      "where"
+     ]
+    },
+    "wires": [
+     "x402",
+     "k402"
+    ]
+   },
+   "listed_at": 1795018874,
+   "reputation": {
+    "settled_kas": 0,
+    "settled_cents": 82,
+    "closes": 1,
+    "kusd_payments": 17,
+    "first_settled": 1794814274,
+    "last_settled": 1794896760
+   }
+  },
+  {
+   "capability": "review",
+   "endpoint": "https://summarize.kaspa-402.org/review",
+   "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+   "price_usd": 0.1,
+   "network": "testnet-10",
+   "schemes": [
+    "kusd-utxo",
+    "kaspa-utxo"
+   ],
+   "channel_terms": {},
+   "stake_kas": 0,
+   "description": "Code review: bugs, security, clarity (llama3.1:8b-instruct-q4_K_M); 10 cents of kUSD a call",
+   "currency": "kUSD",
+   "price_cents": 10,
+   "meta": {
+    "model": "llama3.1:8b-instruct-q4_K_M",
+    "input": {
+     "text": "the code to review (≤20k chars)",
+     "language": "optional"
+    },
+    "output": "review",
+    "example": {
+     "text": "def pay(x):\n    return x / 0",
+     "language": "python"
+    },
+    "wires": [
+     "x402",
+     "k402"
+    ]
+   },
+   "listed_at": 1795018858,
+   "reputation": {
+    "settled_kas": 0,
+    "settled_cents": 82,
+    "closes": 1,
+    "kusd_payments": 17,
+    "first_settled": 1794814274,
+    "last_settled": 1794896760
    }
   }
  ],
  "activity": {
   "settlements": [
+   {
+    "t": 1794896760,
+    "txid": "1f9df0a150f465adebe11ad379abe4a3643250147ba0b62ddfa6d6ce00815b1f",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794894453,
+    "txid": "78108a4d1cab54947265aff98644b8f8ce816a48f5578aea90bdb5c834be58f3",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "extract"
+   },
+   {
+    "t": 1794894448,
+    "txid": "5de2c81c90dc2f339a420ff36e66db8e593c1cfda63dc0f6280e0f4de0d74473",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 2,
+    "capability": "embed"
+   },
+   {
+    "t": 1794893123,
+    "txid": "4054a1af4cacb1b54ef75fe74e759f5b7ba1f6efd9497ba801bb0c11ef70e485",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794892734,
+    "txid": "682b0634ba50ef8e74e3f20b08e6ecc82f26f5bcf8d4aaae98e56dd092acc5ce",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794892575,
+    "txid": "f8f64ee819188b5b460d4f06d9fb3f26a4bd6c6ea7c10af24fab4af73f1caf86",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794892486,
+    "txid": "ef7e85f32f08daff774b28917b0a762f98b47b759af7faef67ac3bb1cde04d01",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794887108,
+    "txid": "81a63312786d19d05ec2ea03c7d1934930f5a51a2952f7b8f3dfb56d6bd14630",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
+   {
+    "t": 1794886623,
+    "txid": "27a21b4806c201aab0d359e80095d54e8fba08d4680a09df80658fc3e230f948",
+    "idx": 0,
+    "payee_pubkey": "4e368c507924a26afdc91bead200b8d5c0dd9e33b44f3e144b83bcac3754a5a0",
+    "cents": 5,
+    "capability": "summarize"
+   },
    {
     "t": 1794885609,
     "txid": "e4fa66781cb123bcc1c252265481775cf87377ee3fc2238ad04f78f11a7fd595",
@@ -99,6 +349,6 @@
     "capability": "summarize"
    }
   ],
-  "total_cents": 40
+  "total_cents": 82
  }
 }
