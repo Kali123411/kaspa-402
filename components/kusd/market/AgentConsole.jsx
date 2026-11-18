@@ -168,9 +168,6 @@ export default function AgentConsole({ k, session, review, listing, live, author
           </div>
         </div>
       )}
-      {stored === false && false && (
-        <p className="text-sm text-gray-300">You need the browser wallet from the <a href="/kusd/app" className="text-neon-purple hover:underline">kUSD app</a>: create it there, fund it with TN10 KAS and buy a little kUSD, then come back. Same key, same device.</p>
-      )}
       {stored && (!secret || !wallet) && <UnlockForm k={k} onOpen={open} onForget={forget} />}
       {wallet && (
         <>
