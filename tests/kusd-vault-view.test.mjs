@@ -12,8 +12,10 @@ test('the bundled snapshot has the new vault shape and renders without NaN', () 
   const v = snapshot.covenants.vault.state;
   assert.ok('debt_mc' in v && 'index_at' in v && !('debt' in v), 'the exporter writes debt_mc/index_at, not debt');
   const view = vaultView(v, snapshot.covenants.oracle.state);
-  assert.equal(view.debtCents, 0);
-  assert.equal(view.ratioPct, null, 'no debt: no ratio');
+  // the Stage 2c deployment's vault: 300 KAS, 400c minted at 270 and index 1.0 → owes 400c, 202.5% at the liquidation price
+  assert.equal(view.debtCents, 400);
+  assert.equal(Math.round(view.ratioPct), 203);
+  assert.ok(Number.isFinite(view.ratioPct));
   assert.ok(Number.isFinite(view.collateralKas) && view.collateralKas === v.collateral / 1e8);
 });
 

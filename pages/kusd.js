@@ -25,6 +25,7 @@ const STEP_LABEL = {
   'BUDGET-WIRE': 'Wire budget', 'VAULT-GENESIS': 'Vault genesis', REFRESH: 'Price refresh',
   REFUSED_PRINTS: 'Bad prints refused', SET_MEMBER: 'Operator rotation', 'BUDGET-SET-LIMIT': 'Budget limit change',
   MINT: 'Mint', FREEZE: 'Oracle frozen', SWAP_OUT_FEE: 'PSM redeem with fee', LIQUIDATE: 'Liquidation',
+  SET_MINER: 'Oracle bound to the miner median', 'MINER-POST': 'Miner median posted',
   SURPLUS_SPEND: 'Surplus spend', CLOSE: 'Vault close', HEARTBEAT: 'Routine refreshes', REPAY: 'Repay', ADJUST: 'Collateral top-up',
   NOT_FINAL: 'Future clock refused', SET_CEILING: 'PSM parameters', SET_RATE: 'Stability fee change', LIQ_REFUSED: 'Liquidation refused (above 150%)', SWAP_IN: 'PSM swap in', SWAP_OUT: 'PSM redeem',
 };
@@ -214,6 +215,30 @@ export default function Kusd() {
               </ul>
             </div>
           </div>
+          {c.miner && (
+            <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5 p-5">
+              <div className="flex items-center gap-3">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Stage 2 · Miner median</div>
+                {dot('miner')}
+                <span className={`rounded-md border px-2 py-0.5 font-mono text-[11px] ${o.bounded === 1 ? 'border-cyan-400/60 bg-cyan-400/10 text-cyan-300' : 'border-gray-700 text-gray-500'}`}>
+                  bound {o.bounded === 1 ? 'ON' : 'OFF'}
+                </span>
+              </div>
+              <div className="mt-2 grid gap-4 md:grid-cols-3">
+                <div>
+                  <div className="font-orbitron text-3xl font-bold text-white">{c.miner.state.votes > 0 ? usdPerKas(c.miner.state.median) : '—'}</div>
+                  <div className="font-mono text-xs text-gray-500">
+                    {c.miner.state.votes.toLocaleString()} of {c.miner.state.blocks.toLocaleString()} blocks voted · window anchored at DAA {c.miner.state.anchor_daa.toLocaleString()}
+                  </div>
+                </div>
+                <ul className="md:col-span-2 space-y-1.5 text-sm text-gray-400">
+                  <li>· Kaspa miners put a 13-byte KAS/USD vote in their blocks&apos; coinbase payload; a RISC Zero proof over a 6,000-block window posts the median here, verified by the chain.</li>
+                  <li>· When that median is fresh (under 45 minutes old) and at least half the blocks voted, every refresh is <span className="text-gray-200">clamped to within 5%</span> of it: operators alone cannot move the price past the miners, and miners alone cannot move it past the operators.</li>
+                  <li>· Otherwise the refresh falls back to the operators&apos; median and records <span className="font-mono">bounded = 0</span>: miner silence never freezes the feed.</li>
+                </ul>
+              </div>
+            </div>
+          )}
           {status?.staleOracle && (
             <div className="mt-4 rounded-xl border border-amber-400/40 bg-amber-400/5 px-4 py-3 text-sm text-amber-200">
               Last refresh ~{hoursSilent}h ago. After 1 hour of silence anyone may freeze the oracle, which stops minting until operators refresh it.
@@ -312,7 +337,7 @@ export default function Kusd() {
               <div className="min-w-0 rounded-xl border border-gray-800 bg-black/30 p-5">
                 <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-gray-500">Covenant IDs (testnet-10)</div>
                 <ul className="mt-2 space-y-2">
-                  {['oracle', 'psm', 'surplus', 'budget', 'authority', 'vault'].map((n) => (
+                  {['oracle', 'miner', 'psm', 'surplus', 'budget', 'authority', 'vault'].filter((n) => c[n]).map((n) => (
                     <li key={n} className="font-mono text-[11px]">
                       <span className="text-gray-400">{n}</span>
                       <div className="flex items-start">

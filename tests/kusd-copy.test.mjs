@@ -54,15 +54,20 @@ test('the showcase links to the kUSD app', () => {
   assert.match(page, /Open the kUSD app/);
 });
 
-test('snapshot pins are the new family', () => {
-  // the stability-fee re-genesis: new oracle, PSM, budget, authority and vault; only the surplus carries over
+test('snapshot pins are the Stage 2c family', () => {
+  // the Stage 2c re-genesis: new oracle (bound to the MinerMedian box), PSM, budget, authority and vault; the
+  // surplus and the MinerMedian box carry over
   const c = bundled.covenants;
-  assert.equal(c.authority.covid, '06b7532009b87f516475923a2b4dc6edb471b220391ca7c33c6fd88ff9f5ab32');
-  assert.equal(c.psm.covid, '3ef81a787bbe2f762b9fc983634c50fd77aa41c5c2f0cd6aa6e3790114a390f3');
-  assert.equal(c.budget.covid, 'ace2bb2c9ba4f0c9ca7d80de7023aaa9640a2055fe1d631c2b3559662bba5c91');
-  assert.equal(c.oracle.covid, '57241302b9686574237377e780e31f38214558ff421c7066ab84489c1053e2ec');
+  assert.equal(c.oracle.covid, '0dac704fe95fa389a429eec46e70a04be2a2685cc4c301c8af8569abb221d242');
+  assert.equal(c.psm.covid, 'a85081494a09b462dd5d46eac3d318714122a870995fa0ff651fc978c33480c6');
+  assert.equal(c.budget.covid, '944f7bc53b5b87f9b52d5a0dc1dc160660fea7349082114851919dac41f23ec2');
+  assert.equal(c.authority.covid, 'ad21c4394bc67de68118326a3513b29c1a5395d03fc0d2a666cb7a61078a9c77');
+  assert.equal(c.vault.covid, '09d5b909e896bbf13d5d30be8c585862c0bdc1fda2cdf4725076507e9a22ad91');
   assert.equal(c.surplus.covid, 'c76efdcbe2edfe162af0730ece57f739f57888b9e55993a021aaf34271297913');
+  assert.equal(c.miner.covid, 'deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35');
+  assert.equal(c.oracle.state.miner_id, c.miner.covid);
   assert.equal(c.minted.covid, c.authority.covid);
+  assert.equal(bundled.stage, 'Stage 2');
 });
 
 test('every timeline step has a label on the page', () => {
