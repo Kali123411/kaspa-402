@@ -1,5 +1,6 @@
 // Liveness indicators for /kusd: the overall badge and per-covenant dots.
 import { useEffect, useState } from 'react';
+import Freshness from '../Freshness';
 
 export function overallState(status) {
   if (!status) return 'unreachable';
@@ -33,29 +34,8 @@ function useSecondsSince(iso) {
 
 export default function LiveBadge({ status, loading, generatedAt }) {
   const secs = useSecondsSince(status?.checkedAt);
-  if (loading) {
-    return (
-      <span className="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-black/40 px-4 py-1.5 text-sm text-gray-400">
-        <Dot state="loading" /> Checking TN10…
-      </span>
-    );
-  }
+  if (loading) return <Freshness state="checking" source="TN10" size="md" />;
   const state = overallState(status);
-  const text = {
-    current: `Matches chain · checked ${secs}s ago`,
-    moved: `Chain has moved past this snapshot (exported ${generatedAt})`,
-    partial: `Some covenants couldn't be checked · checked ${secs}s ago`,
-    unreachable: 'TN10 unreachable, showing the archived snapshot',
-  }[state];
-  const tone = {
-    current: 'border-emerald-400/50 text-emerald-300',
-    moved: 'border-amber-400/50 text-amber-300',
-    partial: 'border-amber-400/50 text-amber-300',
-    unreachable: 'border-gray-600 text-gray-400',
-  }[state];
-  return (
-    <span className={`inline-flex items-center gap-2 rounded-full border bg-black/40 px-4 py-1.5 text-sm ${tone}`}>
-      <Dot state={state === 'current' ? 'current' : state === 'unreachable' ? 'unknown' : 'moved'} /> {text}
-    </span>
-  );
+  const map = { current: 'verified', moved: 'moved', partial: 'partial', unreachable: 'unreachable' };
+  return <Freshness state={map[state]} source="the TN10 API" ageSeconds={state === 'moved' ? undefined : secs} at={generatedAt} size="md" />;
 }

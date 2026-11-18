@@ -1,6 +1,7 @@
 // What the app is connected to and whether it may act: network, node, oracle, verification, the
 // client build's hash and the standing caveats.
 import { useEffect, useState } from 'react';
+import Freshness from '../../Freshness';
 import { ShieldCheck, ShieldAlert, Loader2 } from 'lucide-react';
 import snapshot from '../../../public/kusd/snapshot.json';
 import source from '../../../lib/kusd/wasm/SOURCE.json';
@@ -30,10 +31,13 @@ export default function StatusStrip({ k }) {
         {shown && (
           <span className={`font-mono text-xs ${shown.verified ? 'text-gray-300' : 'text-gray-500'}`}>
             KAS {usdPerKas(shown.state.price)} · mint {usdPerKas(shown.state.mint)} · liq {usdPerKas(shown.state.liq)}
-            {shown.verified
-              ? (k.daa ? ` · ${ago(oracleAgeSeconds(k.daa, shown.state.last))}` : '')
-              : ` · last published ${String(shown.asOf).replace('T', ' ').slice(0, 16)} UTC, not verified`}
+            {shown.verified && k.daa ? ` · ${ago(oracleAgeSeconds(k.daa, shown.state.last))}` : ''}
           </span>
+        )}
+        {shown && (
+          shown.verified
+            ? <Freshness state="verified" source="the node" />
+            : <Freshness state="unverified" source="feed snapshot" at={shown.asOf} />
         )}
       </div>
       <div className="mt-2 flex items-start gap-2">
