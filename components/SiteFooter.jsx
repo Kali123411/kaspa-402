@@ -5,7 +5,7 @@ import ExternalLink from './ExternalLink';
 export default function SiteFooter() {
   const ext = 'hover:text-teal-400';
   return (
-    <footer className="mx-auto mt-16 max-w-5xl border-t border-gray-800 px-6 pb-10 pt-6 font-mono text-[12px] text-gray-500">
+    <footer className="mx-auto mt-16 w-full max-w-[1600px] border-t border-gray-100 px-6 pb-10 pt-6 font-mono text-[12px] text-gray-500 lg:px-14">
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <a href="/get-started" className={ext}>get set up</a>
         <a href="/llms.txt" className={ext}>/llms.txt</a>

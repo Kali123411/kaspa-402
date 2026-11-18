@@ -1,0 +1,21 @@
+{
+ "network": "testnet-10",
+ "endpoint": "https://summarize.kaspa-402.org/summarize",
+ "cents": 5,
+ "pay_to": "aa28d58cdbd49b712069f44a359b1253db67d7bcdf973bec2ee2f8f3023c22fc",
+ "payment_id": "p_f148c06eb289d78a",
+ "t_402": 0.348,
+ "t_sent": 7.357,
+ "t_200": 15.135,
+ "attempts": [
+  {
+   "t": 15.135,
+   "status": 200,
+   "ms": 7749
+  }
+ ],
+ "txid": "d01fc924fd48e3fb8d6bc6f0eb2f60389613307bcb2d8d3af796a2e7146610c8",
+ "final_status": 200,
+ "result_bytes": 284,
+ "recorded_at": "2026-11-18T19:59:56Z"
+}
