@@ -79,14 +79,14 @@ function TimelineEntry({ e }) {
   const refused = e.txid == null;
   const family = FAMILY_LABEL[e.family];
   return (
-    <li className={`rounded-xl border p-4 ${refused ? 'border-amber-400/50 bg-amber-400/5' : 'border-gray-800 bg-black/30'}`}>
+    <li className={`rounded-xl border p-4 ${refused ? 'border-dashed border-amber-400/50 bg-amber-400/5' : 'border-gray-800 bg-black/30'}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="font-semibold text-white">
           {STEP_LABEL[e.step] || e.step}
           {family && <span className="ml-2 font-mono text-[10px] font-normal uppercase tracking-wider text-gray-500">{family}</span>}
         </div>
         {refused
-          ? <span className="font-mono text-xs uppercase tracking-wider text-amber-300">{e.step === 'NOT_FINAL' ? 'refused by the node' : 'refused by the covenant'}</span>
+          ? <span className="font-mono text-xs uppercase tracking-wider text-amber-300">{e.step === 'NOT_FINAL' ? 'refused by the node' : 'refused by the covenant'} · {'no transaction'}</span>
           : <Tx id={e.txid} />}
       </div>
       <p className="mt-1 text-sm text-gray-400">{e.note}</p>
@@ -112,7 +112,11 @@ export default function Kusd() {
     return () => { live = false; };
   }, []);
 
-  const dot = (name) => <Dot state={loading ? 'loading' : status?.covenants?.[name] || 'unknown'} />;
+  const DOT_TEXT = { current: 'matches chain', moved: 'chain moved', unknown: 'not checked', loading: 'checking' };
+  const dot = (name) => {
+    const st = loading ? 'loading' : status?.covenants?.[name] || 'unknown';
+    return <span className="inline-flex items-center gap-1.5"><Dot state={st} /><span className="font-mono text-[10px] text-gray-500">{DOT_TEXT[st]}</span></span>;
+  };
   const silence = status?.daaScore != null ? status.daaScore - o.last : null;
   const hoursSilent = silence != null ? (silence / 10 / 3600).toFixed(1) : null;
   const vault = vaultView(c.vault.state, o);   // debt owed now (stability fee applied), ratio null when nothing is owed
@@ -154,6 +158,12 @@ export default function Kusd() {
                 This page is where you <span className="text-gray-200">verify the money</span>: every covenant output and transaction below
                 links to testnet-10. The market is where agents spend it.
               </p>
+              <p className="mt-3 max-w-2xl text-sm text-gray-300">
+                In plain terms: one kUSD is worth one US dollar, kept there by KAS collateral and a chain-enforced price feed. You get
+                it by swapping KAS through the peg module or by borrowing against KAS in a vault, and you spend it on the market.
+                Test coins are free: <Link href="/get-started" className="text-neon-purple hover:underline">get set up on testnet-10</Link>, then
+                open the app below.
+              </p>
               <div className="mt-6 rounded-xl border border-amber-400/40 bg-amber-400/5 px-4 py-3 text-sm text-amber-200">
                 <strong>{DISCLAIMERS.research}</strong> {DISCLAIMERS.advice}
               </div>
@@ -171,6 +181,19 @@ export default function Kusd() {
               </div>
               <div className="mt-6"><LiveBadge status={status} loading={loading} generatedAt={s.generatedAt} /></div>
             </motion.div>
+          </div>
+        </section>
+
+        {/* ── Risk parameters (UI/UX brief, Phase 3): the lines that were buried in transaction captions ── */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10">
+          <div className="rounded-2xl border border-gray-800 bg-black/30 p-5">
+            <div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Risk parameters</div>
+            <dl className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 font-mono text-sm">
+              <div><dt className="text-gray-500 text-xs">borrowing line</dt><dd className="text-white text-lg">175%</dd><dd className="text-xs text-gray-500">collateral ÷ debt at the mint price to borrow</dd></div>
+              <div><dt className="text-gray-500 text-xs">liquidation line</dt><dd className="text-white text-lg">150%</dd><dd className="text-xs text-gray-500">below it anyone may liquidate: keeper 110%, surplus 3%</dd></div>
+              <div><dt className="text-gray-500 text-xs">price moves</dt><dd className="text-white text-lg">+10% / −25% per hour</dd><dd className="text-xs text-gray-500">mint price up, liquidation price down, at most</dd></div>
+              <div><dt className="text-gray-500 text-xs">Stage 2 miner bound</dt><dd className="text-white text-lg">±5%</dd><dd className="text-xs text-gray-500">around the miners&apos; median when it is under 45 min old and ≥ ½ of blocks voted; else Stage 1</dd></div>
+            </dl>
           </div>
         </section>
 
@@ -278,7 +301,15 @@ export default function Kusd() {
                 <Row k="balance" v={kas(c.surplus.amount)} />
               </Card>
             </div>
-            <p className="mt-4 font-mono text-xs text-gray-500">Values as exported {s.generatedAt}. Green dot: that covenant output is still unspent on TN10, so the value is current.</p>
+            <p className="mt-4 font-mono text-xs text-gray-500">Values as exported {s.generatedAt}. &quot;matches chain&quot; beside a dot: that covenant output is still unspent on TN10, so the value is current.</p>
+            <details className="mt-3 rounded-xl border border-gray-800 bg-black/30 px-4 py-3 text-sm text-gray-400">
+              <summary className="cursor-pointer font-mono text-xs uppercase tracking-wider text-gray-400">What these figures mean</summary>
+              <ul className="mt-2 space-y-1.5">
+                <li>· <span className="text-gray-200">minted holder</span>: the kUSD issued to users (here, the deployer&apos;s test box). <span className="text-gray-200">unissued supply</span>: what the <Term id="token-authority">token authority</Term> still holds and has never issued; the two always sum to the fixed 1,000,000 kUSD.</li>
+                <li>· <span className="text-gray-200">surplus pot</span>: the protocol&apos;s revenue — PSM fees, interest, the 3% liquidation share — in KAS, under governance.</li>
+                <li>· The <span className="text-gray-200">mint</span> and <span className="text-gray-200">liquidation</span> prices are identical whenever the price has been steady for an hour: the rate limits only pull them apart during a move (mint lags a rise, liquidation lags a fall), which is what stops one manipulated hour from minting cheap kUSD or triggering liquidations.</li>
+              </ul>
+            </details>
           </div>
         </section>
 
@@ -326,7 +357,11 @@ export default function Kusd() {
                   Source, whitepaper and the full evidence archive (MIT):{' '}
                   <a href={s.repo} target="_blank" rel="noreferrer" className="text-neon-purple hover:underline break-all">{s.repo.replace('https://', '')}</a>
                 </p>
-                <p className="mt-3">One command reruns all {s.tests.count} tests, attack regressions included:</p>
+                <ol className="mt-4 space-y-3">
+                  <li><span className="font-mono text-xs uppercase tracking-wider text-gray-500">Step 1 · the boxes are real.</span> Open any covenant id&apos;s current output on the explorer (links on the right) and check it is unspent and carries that covenant id — the same check the status dots make.</li>
+                  <li><span className="font-mono text-xs uppercase tracking-wider text-gray-500">Step 2 · the code is what the chain runs.</span> From the repo, reproduce each genesis covenant id from its source and bootstrap: <code className="font-mono text-xs text-emerald-400">argentc genesis verify … --require-argent --source</code> (the exact commands are in <code className="font-mono text-xs">contracts/v2/deploy/genesis-*/README.md</code>).</li>
+                  <li><span className="font-mono text-xs uppercase tracking-wider text-gray-500">Step 3 · the rules hold.</span> One command reruns all {s.tests.count} tests, attack regressions included:</li>
+                </ol>
                 <pre className="mt-2 overflow-x-auto rounded-lg border border-gray-800 bg-black/50 p-3 font-mono text-xs text-emerald-400">{s.tests.command}</pre>
                 <p className="mt-3">
                   Why the values aren&apos;t read live: every kUSD <Term id="covenant">covenant</Term> output is a <Term id="script-hash">script hash</Term>, and its state sits
@@ -345,6 +380,7 @@ export default function Kusd() {
                         <span className="break-all text-emerald-400">{c[n].covid}</span>
                         <CopyHex value={c[n].covid} />
                       </div>
+                      <a href={txUrl(c[n].txid)} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-neon-purple">current output: {short(c[n].txid)}:{c[n].index} ↗ explorer</a>
                     </li>
                   ))}
                 </ul>
