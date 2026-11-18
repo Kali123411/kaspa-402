@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }) {
           </nav>
         </header>
         <div role="note" className="border-b border-amber-400/15 bg-amber-400/5 px-6 py-1.5 text-center font-mono text-[11.5px] text-amber-200/80">
-          {DISCLAIMER_BANNER}
+          {DISCLAIMER_BANNER} <a href="/get-started" className="ml-2 text-teal-400/80 hover:text-teal-300 hover:underline">Get set up on testnet-10 →</a>
         </div>
         <Component {...pageProps} />
         <SiteFooter />
