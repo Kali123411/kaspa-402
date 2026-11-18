@@ -47,7 +47,7 @@ export default function Private() {
   return (
     <>
       <Head>
-        <title>Pay privately — Kaspa x402 · shielded pool</title>
+        <title>Pay privately — k402 · shielded pool</title>
         <meta name="description" content="A demo of paying a kaspa-402 service privately: the payer settles from a Kaspa shielded pool, unlinkable to the wallet that funded it. A Groth16 ZK privacy primitive on Kaspa L1, on testnet-10." />
       </Head>
       <main className="mx-auto max-w-5xl px-6 py-12">
@@ -108,12 +108,6 @@ export default function Private() {
           </p>
         </section>
 
-        <footer className="mt-16 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-gray-800 pt-6 font-mono text-[12px] text-gray-500">
-          <a href="/" className="hover:text-teal-400">← marketplace</a>
-          <a href="/validate" className="hover:text-teal-400">validate</a>
-          <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">standard ↗</a>
-          <span className="ml-auto text-gray-600">shielded pool · unaudited · testnet-only · not for real value</span>
-        </footer>
       </main>
     </>
   );

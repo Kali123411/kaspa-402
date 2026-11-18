@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   const info = capInfo(cap);
 
   const L = [];
-  L.push(`# Kaspa x402 skill: ${cap}`);
+  L.push(`# k402 skill: ${cap}`);
   L.push('');
   L.push(`> ${info.what}`);
   L.push('');
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   }
   L.push('## How to call (x402 v2)');
   L.push('```bash');
-  L.push('npm i kx402 && npx kx402 fetch-sdk   # the Kaspa x402 agent payer; prints the WASM SDK path for KASPA_X402_KASPA_WASM_MODULE');
+  L.push('npm i kx402 && npx kx402 fetch-sdk   # kx402, the k402 agent payer on npm; prints the WASM SDK path for KASPA_X402_KASPA_WASM_MODULE');
   L.push('```');
   L.push('```js');
   L.push("import { openWallet, payExact, resolveWalletConfig } from 'kx402';   // wraps @kaspa-x402/client's DirectModeClient");

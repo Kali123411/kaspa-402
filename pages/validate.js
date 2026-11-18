@@ -2,6 +2,8 @@
 // 402 whose PAYMENT-REQUIRED header decodes to a valid PaymentRequired, validated by @kaspa-x402/core)
 // with a recognized Kaspa scheme + supported network and a well-formed payTo, before you list it.
 import Head from 'next/head';
+import { EXTERNAL } from '../lib/brand.mjs';
+import ExternalLink from '../components/ExternalLink';
 import { useState } from 'react';
 
 const ICON = { pass: '✓', warn: '!', fail: '✕' };
@@ -53,7 +55,7 @@ export default function Validate() {
   return (
     <>
       <Head>
-        <title>Validate your service — Kaspa x402 marketplace</title>
+        <title>Validate your service — k402</title>
         <meta name="description" content="Preflight your endpoint before listing: check it returns a valid x402 v2 402 (PAYMENT-REQUIRED) with a recognized Kaspa scheme and a valid payTo." />
       </Head>
       <main className="mx-auto max-w-2xl px-6 py-10">
@@ -147,7 +149,7 @@ export default function Validate() {
         ) : null}
 
         <p className="mt-10 border-t border-gray-800 pt-5 text-[13px] text-gray-400">
-          Built on the <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">Kaspa x402</a> standard.
+          Built on k402, the <ExternalLink href={EXTERNAL.standard}>Kaspa x402 v2 standard</ExternalLink>.
           Your pay-gate should return a <span className="font-mono">402</span> with a <span className="font-mono">PAYMENT-REQUIRED</span> header to any request that has no <span className="font-mono">PAYMENT-SIGNATURE</span> — the
           <a href="https://www.npmjs.com/package/@kaspa-x402/server" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline"> @kaspa-x402/server</a> SDK does this for you.
         </p>
