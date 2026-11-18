@@ -15,6 +15,7 @@ import MarketBoard from '../components/kusd/market/MarketBoard';
 import SettlementsFeed from '../components/kusd/market/SettlementsFeed';
 import AgentConsole from '../components/kusd/market/AgentConsole';
 import OperatorDrawer from '../components/kusd/market/OperatorDrawer';
+import MarketReadiness from '../components/kusd/market/MarketReadiness';
 import { SpendLedger, SpendPolicy, DEFAULT_POLICY } from '../lib/kusd/market/spend.mjs';
 
 const POLICY_KEY = 'kusd.market.policy.v1';
@@ -71,7 +72,7 @@ export default function KusdMarket() {
           <Link href="/kusd" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-neon-purple">
             <ArrowLeft className="h-4 w-4" aria-hidden /> kUSD overview
           </Link>
-          <h1 className="mt-4 font-orbitron text-3xl font-bold sm:text-4xl">Kaspa Agent Market <span className="font-mono text-base font-normal text-neon-purple">KAM</span></h1>
+          <h1 className="mt-4 font-orbitron text-3xl font-bold sm:text-4xl">Kaspa Agent Market</h1>
           <p className="mt-2 max-w-3xl text-base text-gray-200">{CLAIM}</p>
           <p className="mt-2 max-w-3xl text-sm text-gray-400">
             This is the market layer: agents selling services to agents, priced and settled in kUSD on Kaspa testnet-10 over k402
@@ -80,7 +81,13 @@ export default function KusdMarket() {
             set as its operator.
           </p>
           <p className="mt-2 max-w-3xl text-xs text-gray-500">{WHY_AGENTS}</p>
+          <p className="mt-3 max-w-3xl text-sm text-gray-300">
+            Roles: here you are both the <span className="text-gray-100">operator</span> (you set the spending policy, kept per browser) and the
+            <span className="text-gray-100"> agent</span> (this wallet pays; its ledger and the freeze switch are kept per wallet key).
+          </p>
           <div className="mt-6"><StatusStrip k={k} /></div>
+          <div className="mt-3"><MarketReadiness k={k} frozen={Boolean(ledger?.frozen)} hasLedger={Boolean(ledger)} checkedAt={market.checkedAt} fromSnapshot={market.fromSnapshot}
+            onFreeze={() => { if (!ledger) return; if (ledger.frozen) ledger.unfreeze(); else ledger.freeze(); onLedgerChange(); }} /></div>
           <div className="mt-4"><ProductMap here="market" compact /></div>
           {market.fromSnapshot && !market.loading && (
             <p className="mt-4 rounded-xl border border-amber-400/40 bg-amber-400/5 px-4 py-3 text-sm text-amber-200">
@@ -101,6 +108,10 @@ export default function KusdMarket() {
               <OperatorDrawer policy={policy} onPolicy={onPolicy} status={status} ledger={ledger} frozen={Boolean(ledger?.frozen)}
                 onFreeze={() => { if (!ledger) return; if (ledger.frozen) ledger.unfreeze(); else ledger.freeze(); onLedgerChange(); }} history={history} />
             </div>
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-800 bg-black/30 px-5 py-4 text-sm text-gray-400">
+            <p>Selling a kUSD service? Put a 402 in front of it with the k402 Python client and list it here from your own key. <span className="text-gray-200">Listing costs 10¢ of kUSD</span>, paid through k402; a listing is signed by the payee key, so payments reach the lister.</p>
+            <a href="https://github.com/Kali123411/k402/blob/main/DEMO-kusd-market.md" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg border border-neon-purple/60 px-4 py-2 font-mono text-xs text-neon-purple hover:bg-neon-purple/10">how to list ↗ github.com</a>
           </div>
           <ReviewSheet review={review} />
         </div>
