@@ -19,6 +19,26 @@ const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloa
 // USD-pegged services settle in KAS at the live rate (amountSompi is the dust floor); fixed services show KAS.
 const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call · in KAS at spot (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi · ${kas(l.amountSompi)} KAS`; };
 const short = (s) => (s && s.length > 34 ? s.slice(0, 16) + '…' + s.slice(-8) : s);
+// "last verified 12m ago" from a unix-seconds or ISO timestamp
+const agoText = (t) => {
+  const ms = typeof t === 'number' ? t * 1000 : Date.parse(t);
+  if (!Number.isFinite(ms)) return null;
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
+  return s < 60 ? `${s}s ago` : s < 3600 ? `${Math.round(s / 60)}m ago` : s < 172800 ? `${Math.round(s / 3600)}h ago` : `${Math.round(s / 86400)}d ago`;
+};
+const stamp = (l) => { const t = l.listedAt || l.probedAt; return typeof t === 'number' ? t * 1000 : Date.parse(t) || 0; };
+
+function CopyUrl({ l }) {
+  const [done, setDone] = useState(false);
+  async function copy() {
+    try { await navigator.clipboard.writeText(l.resource); setDone(true); setTimeout(() => setDone(false), 1500); } catch { /* clipboard blocked */ }
+  }
+  return (
+    <button type="button" onClick={copy} aria-label="Copy URL" title="Copy the resource URL" className="rounded border border-gray-800 px-2 py-0.5 font-mono text-[10.5px] text-gray-400 hover:border-teal-400/50 hover:text-teal-300">
+      {done ? 'copied' : 'copy URL'}
+    </button>
+  );
+}
 const FIELD = 'rounded-xl border border-teal-400/20 bg-gray-950/70 px-4 py-2.5 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-teal-400/60';
 
 function ServiceCard({ l }) {
@@ -29,7 +49,7 @@ function ServiceCard({ l }) {
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-orbitron text-[15px] font-bold tracking-tight text-gray-100">{l.serviceName}</h3>
         <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${isBase ? 'border-sky-400/40 text-sky-300' : l.verified ? 'border-teal-400/40 text-teal-400' : 'border-amber-400/40 text-amber-400'}`}>
-          {isBase ? 'via router' : l.verified ? 'verified' : 'submitted'}
+          {isBase ? 'via router' : l.verified ? '402 probe passed' : 'submitted · probe pending'}
         </span>
       </div>
       {l.description ? <p className="text-[13.5px] leading-relaxed text-gray-400">{l.description}</p> : null}
@@ -37,11 +57,12 @@ function ServiceCard({ l }) {
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-teal-400">{l.scheme}</span>
         <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-400">{l.network}</span>
         {isBase ? <span className="rounded border border-sky-500/30 bg-sky-500/5 px-2 py-0.5 text-sky-300">→ {baseUsd} on Base</span> : null}
-        <span className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-300">{priceLabel(l)}</span>
+        <span title={`${l.amountSompi} sompi`} className="rounded border border-gray-800 bg-white/5 px-2 py-0.5 text-gray-300">{priceLabel(l)}</span>
         {(l.tags || []).map((t) => <span key={t} className="rounded border border-gray-800 px-2 py-0.5 text-gray-500">{t}</span>)}
       </div>
       <div className="mt-1 font-mono text-[11.5px] text-gray-500">
-        <div className="truncate">resource: <a href={l.resource} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400">{l.resource}</a></div>
+        <div className="flex items-center gap-2"><span className="truncate">resource: <a href={l.resource} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400">{l.resource}</a></span><CopyUrl l={l} /></div>
+        {l.verified && l.probedAt && agoText(l.probedAt) ? <div className="text-gray-600">last verified {agoText(l.probedAt)} · one unpaid 402 probe</div> : null}
         {isBase && l.base ? (
           <div className="truncate">settles on: <span className="text-sky-300">{l.base.host}</span> <span className="text-gray-600">· {l.base.network}</span></div>
         ) : l.payTo ? <div className="truncate">payTo: <span className="text-gray-400">{short(l.payTo)}</span></div> : null}
@@ -55,6 +76,7 @@ export default function Marketplace() {
   const [listings, setListings] = useState([]);
   const [q, setQ] = useState('');
   const [net, setNet] = useState('all');
+  const [sort, setSort] = useState('recent');
   const [loading, setLoading] = useState(true);
 
   const load = () => fetch('/api/registry/list').then((r) => r.json()).then((d) => setListings(d.listings || [])).catch(() => {}).finally(() => setLoading(false));
@@ -62,12 +84,13 @@ export default function Marketplace() {
 
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return listings.filter((l) => {
+    const rows = listings.filter((l) => {
       if (net !== 'all' && l.network !== net) return false;
       if (!needle) return true;
       return [l.serviceName, l.description, l.capability, l.scheme, ...(l.tags || [])].join(' ').toLowerCase().includes(needle);
     });
-  }, [listings, q, net]);
+    return rows.sort((a, b) => (sort === 'price' ? Number(a.amountSompi) - Number(b.amountSompi) : stamp(b) - stamp(a)));
+  }, [listings, q, net, sort]);
 
   const kaspaSvcs = useMemo(() => shown.filter((l) => l.kind !== 'base'), [shown]);
   const baseSvcs = useMemo(() => shown.filter((l) => l.kind === 'base'), [shown]);
@@ -153,6 +176,9 @@ export default function Marketplace() {
               <select value={net} onChange={(e) => setNet(e.target.value)} className={FIELD}>
                 <option value="all">all networks</option><option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option>
               </select>
+              <select value={sort} onChange={(e) => setSort(e.target.value)} className={FIELD} aria-label="sort">
+                <option value="recent">newest first</option><option value="price">cheapest first</option>
+              </select>
             </div>
           </div>
           <div className="mt-8 space-y-12">
@@ -185,7 +211,7 @@ export default function Marketplace() {
           </div>
           {!loading && shown.length === 0 ? (
             <p className="mt-6 rounded-xl border border-gray-800 bg-gray-950/40 px-5 py-4 font-mono text-[13px] text-gray-500">
-              No services match. {listings.length === 0 ? 'Be the first — submit yours below.' : 'Try a different filter.'}
+              {net === 'all' ? 'No services match' : `No ${net} services match`}. {listings.length === 0 ? 'Be the first — list yours.' : net === 'all' ? 'Try a different search.' : 'Try another network, or list the first one.'}
             </p>
           ) : null}
         </section>
