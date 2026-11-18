@@ -5,6 +5,8 @@
 import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 import { CLAIM, DISCLAIMERS, LAYERS, LINKS, MARKET_NAME, WHY_AGENTS } from '../lib/story';
+import { EXTERNAL } from '../lib/brand.mjs';
+import ExternalLink from '../components/ExternalLink';
 
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
@@ -116,7 +118,7 @@ export default function Marketplace() {
   return (
     <>
       <Head>
-        <title>kaspa-402 — the payment rail for AI agent commerce on Kaspa L1</title>
+        <title>k402 — the payment rail for AI agent commerce on Kaspa L1</title>
         <meta name="description" content={`${CLAIM} This is the rails layer: k402 (Kaspa x402 v2), HTTP 402 pay-per-call on Kaspa L1 — no account, no API key, no custodian.`} />
       </Head>
       <main className="mx-auto max-w-5xl px-6 py-12">
@@ -125,7 +127,7 @@ export default function Marketplace() {
           <h1 className="mt-4 font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight sm:text-5xl">The payment rail for AI agent commerce on Kaspa L1</h1>
           <p className="mt-5 text-[16px] leading-relaxed text-gray-300">
             An agent calls a resource, gets an HTTP <span className="font-mono text-gray-200">402</span>, pays on Kaspa L1 and retries —
-            no account, no API key, no custodian. Every service here speaks <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">Kaspa x402 v2</a>.
+            no account, no API key, no custodian. Every service here speaks k402, the <ExternalLink href={EXTERNAL.standard}>Kaspa x402 v2 standard</ExternalLink>.
             Humans run the services and supervise the agents; the agents do the buying.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-gray-400">
@@ -262,7 +264,7 @@ export default function Marketplace() {
           <h2 className="mb-4 font-mono text-[12.5px] uppercase tracking-[0.18em] text-gray-400">Pay from an agent</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-gray-950/40 p-5 font-mono text-[12.5px] leading-relaxed text-gray-300">
-              <div className="text-gray-500"># KAS · kx402 (wraps @kaspa-x402/client&apos;s DirectModeClient); tested on testnet-10 — <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">full example</a></div>
+              <div className="text-gray-500"># KAS · kx402, the k402 agent payer on npm (wraps @kaspa-x402/client&apos;s DirectModeClient); tested on testnet-10 — <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">full example</a></div>
               <div>npm i kx402 &amp;&amp; npx kx402 fetch-sdk</div>
               <div className="text-gray-500"># env: KASPA_X402_KASPA_WASM_MODULE=…/nodejs/kaspa/kaspa.js  KASPA_X402_FUNDING_WALLET=wallet-key:…/agent.key</div>
               <div className="mt-3"><span className="text-teal-400">import</span> {'{ openWallet, payExact, resolveWalletConfig, applyInput }'} <span className="text-teal-400">from</span> <span className="text-gray-200">'kx402'</span>;</div>
@@ -283,19 +285,6 @@ export default function Marketplace() {
           </div>
         </section>
 
-        <footer className="mt-16 border-t border-gray-800 pt-6 font-mono text-[12px] text-gray-500">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <a href="/llms.txt" className="hover:text-teal-400">/llms.txt</a>
-            <a href="/llms.json" className="hover:text-teal-400">/llms.json</a>
-            <a href="/validate" className="hover:text-teal-400">validate</a>
-            <a href={LAYERS[0].url} className="hover:text-teal-400">money · kUSD</a>
-            <a href={LAYERS[2].url} className="hover:text-teal-400">market</a>
-            <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">standard ↗</a>
-            <a href={LAYERS[1].repo} target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">k402 ↗</a>
-            <a href="https://github.com/elldeeone/kaspa-x402" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400">@kaspa-x402 SDK ↗</a>
-          </div>
-          <p className="mt-3 text-[11.5px] text-gray-600">kUSD and the {MARKET_NAME}: {DISCLAIMERS.research} {DISCLAIMERS.advice} Mainnet listings here settle real KAS; nothing on this site is audited.</p>
-        </footer>
       </main>
     </>
   );

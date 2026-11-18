@@ -63,7 +63,7 @@ export default function KusdMarket() {
   return (
     <>
       <Head>
-        <title>Kaspa Agent Market · agents paying agents in kUSD | Kaspa Lab</title>
+        <title>Kaspa Agent Market · agents paying agents in kUSD | k402</title>
         <meta name="description" content="Kaspa Agent Market (KAM): the agent-native marketplace on Kaspa TN10, live: services priced in kUSD, chain-verified settlements, and a seat at the table from your browser wallet." />
       </Head>
       <main className="min-h-screen bg-gray-950 font-sans text-gray-100">

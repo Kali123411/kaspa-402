@@ -25,7 +25,7 @@ export default function KusdApp() {
   return (
     <>
       <Head>
-        <title>kUSD app · TN10 | Kaspa Lab</title>
+        <title>kUSD app · TN10 | k402</title>
         <meta name="description" content="Swap KAS for kUSD and run vaults on Kaspa TN10, signed and broadcast from your browser." />
       </Head>
       <main className="min-h-screen bg-gray-950 font-sans text-gray-100">

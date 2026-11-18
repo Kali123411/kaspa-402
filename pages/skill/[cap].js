@@ -1,6 +1,8 @@
 // pages/skill/[cap].js — the human page for a capability. Shows what it does, how to pay via x402 v2,
 // and which listed services offer it (from the registry). The machine twin is /skill/<cap>.md.
 import Head from 'next/head';
+import { EXTERNAL } from '../../lib/brand.mjs';
+import ExternalLink from '../../components/ExternalLink';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { capInfo, categoryOf } from '../../lib/catalog';
@@ -23,7 +25,7 @@ export default function Skill() {
 
   return (
     <>
-      <Head><title>{cap} — Kaspa x402 skill</title></Head>
+      <Head><title>{cap} — k402 skill</title></Head>
       <main className="mx-auto max-w-3xl px-6 py-12">
         <a href="/" className="font-mono text-[12.5px] text-gray-500 hover:text-teal-400">← marketplace</a>
         <h1 className="mt-4 font-orbitron text-3xl font-bold tracking-tight text-gray-100">{cap}</h1>
@@ -58,7 +60,7 @@ export default function Skill() {
         <p className="mt-10 border-t border-gray-800 pt-5 font-mono text-[12px] text-gray-500">
           <a href={`/skill/${encodeURIComponent(cap)}.md`} className="hover:text-teal-400">SKILL.md ↗</a> ·
           <a href="/llms.txt" className="hover:text-teal-400"> /llms.txt</a> ·
-          <a href="https://kaspa-x402.org" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400"> standard ↗</a>
+          {' '}<ExternalLink href={EXTERNAL.standard} className="hover:text-teal-400">standard</ExternalLink>
         </p>
       </main>
     </>
