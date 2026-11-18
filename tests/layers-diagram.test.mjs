@@ -19,3 +19,10 @@ test('the landing renders the diagram above the three layer cards', () => {
   const i = idx.indexOf('<LayersDiagram'); const j = idx.indexOf('{LAYERS.map((l) => (');
   assert.ok(i > 0 && j > i, 'diagram before the cards');
 });
+
+test('the flow labels sit above the layer boxes, not across them (owner: they overlapped the cards)', () => {
+  const d = read('components/LayersDiagram.jsx');
+  const ys = [...d.matchAll(/<text [^>]*y=\{(\d+)\}[^>]*>(priced in kUSD or KAS|HTTP 402 → pay → 200)</g)].map((m) => Number(m[1]));
+  assert.equal(ys.length, 2, 'both flow labels found');
+  for (const y of ys) assert.ok(y < 40, `label at y=${y} overlaps the boxes (top edge 40)`);
+});
