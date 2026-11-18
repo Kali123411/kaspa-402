@@ -1,274 +1,51 @@
-/* styles/globals.css — monochrome edition */
+/* styles/globals.css — the k402 identity (docs/uiux/2026-11-18-identity-design.md).
+   Graphite ground, one acid accent, Fraunces display, Source Serif 4 body, JetBrains Mono data. Rules, numbers and type;
+   no gradients, glass, glow, moving highlights or scanlines. */
 
-/* 1. Fonts: Geist (display), Inter (body), Geist Mono (data/metrics) */
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono&display=swap');
+/* 1. Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* 2. Base Tailwind layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 3. Set Geist as your default font */
+/* 3. Tokens + base */
+:root {
+  --ground: #16181D;
+  --panel: #1F2229;
+  --rule: #2B2F37;
+  --text: #F2F3F5;
+  --muted: #8B9099;
+  --accent: #D1FF4A;
+  --accent-ink: #16181D;
+}
 @layer base {
-  html {
-    font-family: 'Geist', sans-serif;
-  }
-
-  /* Neon selection + scrollbar — small details that sell the theme */
-  ::selection {
-    background: rgba(255,255,255, 0.45);
-    color: #fff;
-  }
-
-  .dark ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  .dark ::-webkit-scrollbar-track {
-    background: #0a0a0a;
-  }
-  .dark ::-webkit-scrollbar-thumb {
-    background: #2e2e2c;
-    border-radius: 5px;
-    border: 2px solid #0a0a0a;
-  }
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background: #d4d4d4;
-  }
+  html { font-family: 'Source Serif 4', Georgia, serif; background: var(--ground); color: var(--text); }
+  body { font-feature-settings: 'tnum' 1; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--ground); }
+  ::-webkit-scrollbar-thumb { background: var(--rule); border: 2px solid var(--ground); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 }
 
-/* 4. Global cyberpunk atmosphere (dark mode only):
-      fixed scanlines + faint HUD grid + corner vignette glows.
-      Sits ON TOP of page backgrounds (pointer-events: none) so every page
-      gets the texture regardless of its own bg-* classes. Alphas kept very
-      low so text stays readable. */
-.dark body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  background-image:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(255,255,255, 0.07), transparent),
-    radial-gradient(ellipse 55% 40% at 85% 110%, rgba(255,255,255, 0.05), transparent),
-    linear-gradient(rgba(255,255,255, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255, 0.028) 1px, transparent 1px),
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.11) 0px, rgba(0, 0, 0, 0.11) 1px, transparent 1px, transparent 3px);
-  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px, 100% 3px;
-}
-
-/* 5. Custom utilities */
+/* 4. The old utility names, redefined flat so the pages keep working until each is restyled */
 @layer utilities {
-  /* Custom animations */
-  .animate-shimmer {
-    background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
-  }
-
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite alternate;
-  }
-
-  /* Neon text glow — inherits the element's own color */
-  .neon-text {
-    text-shadow:
-      0 0 6px currentColor,
-      0 0 24px rgba(255,255,255, 0.35);
-  }
-
-  .neon-text-pink {
-    text-shadow:
-      0 0 6px currentColor,
-      0 0 24px rgba(255,255,255, 0.4);
-  }
-
-  /* Gradient text — cyan → kaspa teal → hot pink shimmer */
-  .gradient-text-kaspa {
-    background: linear-gradient(135deg, #ffffff, #ffffff, #cfcfcf);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 3s linear infinite;
-  }
-
-  /* Enhanced card hover effects */
-  .card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .card-hover:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.3),
-      0 10px 10px -5px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255,255,255, 0.35),
-      0 0 40px rgba(255,255,255, 0.18),
-      0 0 60px rgba(255,255,255, 0.08);
-  }
-
-  /* Glass morphism — violet void tint with a cyan hairline */
-  .glass {
-    background: rgba(14,14,14, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255, 0.12);
-  }
-
-  .glass-light {
-    background: rgba(20,20,20, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  /* Enhanced button styles */
-  .btn-kaspa {
-    background: linear-gradient(135deg, #ffffff, #d4d4d4);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-kaspa::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transition: left 0.5s;
-  }
-
-  .btn-kaspa:hover::before {
-    left: 100%;
-  }
-
-  .btn-kaspa:hover {
-    background: linear-gradient(135deg, #ffffff, #ffffff);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255,255,255, 0.35), 0 0 40px rgba(255,255,255, 0.15);
-  }
-
-  /* Loading skeleton on the void palette */
-  .skeleton {
-    background: linear-gradient(90deg, #0f0f0f 25%, #2e2e2c 50%, #0f0f0f 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-
-  /* Enhanced search input */
-  .search-input {
-    background: rgba(20,20,20, 0.8);
-    border: 1px solid rgba(120,120,120, 0.5);
-    transition: all 0.3s ease;
-  }
-
-  .search-input:focus {
-    background: rgba(20,20,20, 0.9);
-    border-color: #ffffff;
-    box-shadow:
-      0 0 0 3px rgba(255,255,255, 0.1),
-      0 0 20px rgba(255,255,255, 0.12);
-  }
-
-  /* Custom checkbox styling */
-  .checkbox-kaspa {
-    appearance: none;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 2px solid #4a4a48;
-    border-radius: 0.25rem;
-    background-color: #0f0f0f;
-    transition: all 0.2s;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .checkbox-kaspa:checked {
-    background-color: #ffffff;
-    border-color: #ffffff;
-  }
-
-  .checkbox-kaspa:checked::after {
-    content: '✓';
-    position: absolute;
-    top: -2px;
-    left: 2px;
-    color: #0a0a0a;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .checkbox-kaspa:hover {
-    border-color: #ffffff;
-  }
+  .neon-text, .neon-text-pink { }
+  .gradient-text-kaspa { color: var(--accent); }
+  .card-hover { transition: border-color 150ms ease; }
+  .card-hover:hover { border-color: var(--text); }
+  .glass, .glass-light { background: var(--panel); border: 1px solid var(--rule); }
+  .btn-kaspa { background: var(--accent); color: var(--accent-ink); }
+  .btn-kaspa:hover { background: #E4FF8F; }
+  .skeleton { background: var(--panel); }
+  .search-input { background: var(--panel); border: 1px solid var(--rule); color: var(--text); }
+  .search-input:focus { border-color: var(--accent); }
 }
 
-/* Keyframe animations */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-  from {
-    box-shadow: 0 0 20px rgba(255,255,255, 0.35);
-  }
-  to {
-    box-shadow: 0 0 30px rgba(255,255,255, 0.7);
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: 2.5rem !important;
-  }
-
-  .hero-subtitle {
-    font-size: 1.5rem !important;
-  }
-
-  .card-hover:hover {
-    transform: translateY(-4px) scale(1.01);
-  }
-}
-
-/* Accessibility - Respect reduced motion preference */
+/* 5. Reduced motion: the only motion on the site is the data moving; stop it on request */
 @media (prefers-reduced-motion: reduce) {
-  .animate-shimmer,
-  .animate-float,
-  .animate-pulse-glow,
-  .animate-flicker,
-  .card-hover {
-    animation: none !important;
-  }
-
-  .card-hover:hover {
-    transform: none !important;
-  }
-
-  .gradient-text-kaspa {
-    animation: none !important;
-  }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
