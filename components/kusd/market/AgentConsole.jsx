@@ -153,7 +153,22 @@ export default function AgentConsole({ k, session, review, listing, live, author
 
   return (
     <Panel title="Buy a call — be the agent">
+      <ol className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-wider">
+        {[['1 · wallet', Boolean(wallet)], ['2 · pick a listing', Boolean(wallet && listing)], ['3 · quote & pay', Boolean(q)]].map(([label, done], i, arr) => {
+          const current = !done && (i === 0 || arr[i - 1][1]);
+          return <li key={label} className={`rounded-full border px-2.5 py-0.5 ${done ? 'border-emerald-400/50 text-emerald-300' : current ? 'border-neon-purple text-neon-purple' : 'border-gray-800 text-gray-600'}`}>{label}{done ? ' ✓' : ''}</li>;
+        })}
+      </ol>
       {stored === false && (
+        <div className="rounded-lg border border-neon-purple/40 bg-neon-purple/5 p-4 text-sm text-gray-300">
+          <p>Step 1 is a browser wallet. It never leaves this browser: a key sealed with your passphrase, funded with free testnet-10 KAS, holding a few cents of kUSD.</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href="/kusd/app" className="rounded-lg bg-neon-purple px-4 py-2 text-sm font-semibold text-black hover:bg-neon-purple/90">Create a wallet in the kUSD app →</a>
+            <a href="/get-started" className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:border-neon-purple/60">Get test funds first</a>
+          </div>
+        </div>
+      )}
+      {stored === false && false && (
         <p className="text-sm text-gray-300">You need the browser wallet from the <a href="/kusd/app" className="text-neon-purple hover:underline">kUSD app</a>: create it there, fund it with TN10 KAS and buy a little kUSD, then come back. Same key, same device.</p>
       )}
       {stored && (!secret || !wallet) && <UnlockForm k={k} onOpen={open} onForget={forget} />}
@@ -169,7 +184,7 @@ export default function AgentConsole({ k, session, review, listing, live, author
               <div className="rounded-lg border border-gray-800 bg-black/30 p-3 text-sm">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="font-mono text-white">{listing.capability}</span>
-                  <span className="font-mono text-neon-purple">{usdText(listing.price_cents)}/call</span>
+                  <span className="font-mono text-neon-purple" title={`${listing.price_cents}¢`}>{usdText(listing.price_cents)}/call</span>
                 </div>
                 <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
                   <span className="break-all font-mono">{listing.endpoint}</span>

@@ -66,7 +66,7 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
                 className={`w-full rounded-xl border p-4 text-left transition ${isSel ? 'border-neon-purple bg-neon-purple/10' : 'border-gray-800 bg-black/30 hover:border-gray-600'}`}>
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-mono text-base text-white">{p.capability}</span>
-                  <span className="font-mono text-sm text-neon-purple">{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
+                  <span className="font-mono text-sm text-neon-purple" title={`${p.price_cents}¢`}>{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
                 </div>
                 <div className="mt-1 text-xs text-gray-400">
                   {p.meta?.provider || `provider ${short(p.payee_pubkey)}`}{p.meta?.model ? ` · ${p.meta.model}` : ''}

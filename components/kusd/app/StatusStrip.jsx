@@ -2,6 +2,7 @@
 // client build's hash and the standing caveats.
 import { useEffect, useState } from 'react';
 import Freshness from '../../Freshness';
+import Term from '../../Term';
 import { ShieldCheck, ShieldAlert, Loader2 } from 'lucide-react';
 import snapshot from '../../../public/kusd/snapshot.json';
 import source from '../../../lib/kusd/wasm/SOURCE.json';
@@ -30,7 +31,7 @@ export default function StatusStrip({ k }) {
         </span>
         {shown && (
           <span className={`font-mono text-xs ${shown.verified ? 'text-gray-300' : 'text-gray-500'}`}>
-            KAS {usdPerKas(shown.state.price)} · mint {usdPerKas(shown.state.mint)} · liq {usdPerKas(shown.state.liq)}
+            KAS {usdPerKas(shown.state.price)} · <Term id="mint-price">mint</Term> {usdPerKas(shown.state.mint)} · <Term id="liq-price">liq</Term> {usdPerKas(shown.state.liq)}
             {shown.verified && k.daa ? ` · ${ago(oracleAgeSeconds(k.daa, shown.state.last))}` : ''}
           </span>
         )}
