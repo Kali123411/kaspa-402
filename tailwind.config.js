@@ -1,107 +1,59 @@
-// tailwind.config.js — monochrome theme: white accents on true black.
-// gray + teal are REMAPPED here so every existing bg-gray-*/text-teal-* across
-// the site picks up the cyberpunk palette without per-page edits.
+// tailwind.config.js — the k402 identity (docs/uiux/2026-11-18-identity-design.md): graphite neutrals, one acid accent,
+// Fraunces display, Source Serif 4 body, JetBrains Mono data. The `gray`, `teal`, `neon` and `kaspa` names are REMAPPED to
+// the identity's tokens so every existing class across the site re-skins at once; later passes retire the old names.
+const ground = '#16181D';
+const panel = '#1F2229';
+const rule = '#2B2F37';
+const text = '#F2F3F5';
+const muted = '#8B9099';
+const accent = '#D1FF4A';
+
 module.exports = {
   darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}' // Add this if you're using app directory
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Geist', 'ui-sans-serif', 'system-ui'],
-        orbitron: ['Geist', 'sans-serif'],
-        mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        sans: ['"Source Serif 4"', 'Georgia', 'serif'],
+        orbitron: ['Fraunces', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
-        // Violet-tinted neutral scale (replaces Tailwind gray site-wide).
+        // the neutral scale, graphite: 950 ground, 900 panel, 800 rule, 500 muted, 100–50 text
         gray: {
-          50:  '#fafafa',
-          100: '#f2f2f2',
-          200: '#e0e0e0',
-          300: '#bdbdbd',
-          400: '#8b8b89',
-          500: '#6b6b69',
-          600: '#4a4a48',
-          700: '#2e2e2c',
-          800: '#1a1a1a',
-          900: '#0f0f0f',
-          950: '#0a0a0a',
+          50: text,
+          100: text,
+          200: '#D6DAE0',
+          300: '#C9CDD4',
+          400: '#B9BDC6',
+          500: muted,
+          600: '#5B616B',
+          700: '#3A3F48',
+          800: rule,
+          900: panel,
+          950: ground,
         },
-        // Electric-cyan scale (replaces teal site-wide).
+        // every "teal" in the site is the one accent (lighter/darker only for hover and disabled states)
         teal: {
-          50:  '#ffffff',
-          100: '#f2f2f2',
-          200: '#e0e0e0',
-          300: '#f0f0f0',
-          400: '#ffffff',
-          500: '#d4d4d4',
-          600: '#a8a8a8',
-          700: '#6b6b69',
-          800: '#4a4a48',
-          900: '#3a3a38',
-          950: '#1f1f1d',
+          50: '#F6FFD6', 100: '#EEFFB8', 200: '#E4FF8F', 300: '#DBFF6B', 400: accent, 500: '#B8E63A',
+          600: '#93B82E', 700: '#6E8A22', 800: '#4A5C17', 900: '#2E3A0E', 950: '#1A2108',
         },
-        kaspa: '#ffffff',
-        // Add more Kaspa-themed colors
-        'kaspa-teal': '#a8a8a8',
-        'kaspa-blue': '#a8a8a8',
-        'kaspa-purple': '#a8a8a8',
-        neon: {
-          cyan: '#ffffff',
-          pink: '#cfcfcf',
-          purple: '#a8a8a8',
-          yellow: '#e0e0e0',
-        },
+        kaspa: accent,
+        'kaspa-teal': accent,
+        'kaspa-blue': accent,
+        'kaspa-purple': accent,
+        neon: { cyan: accent, pink: accent, purple: accent, yellow: accent },
+        ground, panel, rule, muted, accent,
       },
-      boxShadow: {
-        'glow-cyan': '0 0 12px rgba(255,255,255,0.55), 0 0 32px rgba(255,255,255,0.25)',
-        'glow-pink': '0 0 12px rgba(255,255,255,0.5), 0 0 32px rgba(255,255,255,0.22)',
-        'glow-purple': '0 0 12px rgba(255,255,255,0.5), 0 0 32px rgba(255,255,255,0.22)',
-        'glow-teal': '0 0 20px rgba(255,255,255,0.3)',
-        'glow-kaspa': '0 0 30px rgba(255,255,255, 0.35)',
-      },
-      animation: {
-        'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'shimmer': 'shimmer 2s linear infinite',
-        'flicker': 'neon-flicker 5s linear infinite',
-      },
-      keyframes: {
-        'pulse-slow': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.5' },
-        },
-        'float': {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        'shimmer': {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
-        'neon-flicker': {
-          '0%, 91%, 94%, 97%, 100%': { opacity: '1' },
-          '92%': { opacity: '0.55' },
-          '95%, 98%': { opacity: '0.75' },
-        },
-      },
-      backdropBlur: {
-        'xs': '2px',
-        'xl': '12px',
-        '2xl': '16px',
-      },
-      backgroundImage: {
-        'kaspa-gradient': 'linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 25%, #1a1a1a 50%, #0f0f0f 75%, #0a0a0a 100%)',
-        'kaspa-card': 'linear-gradient(135deg, rgba(255,255,255, 0.08) 0%, rgba(255,255,255, 0.05) 50%, rgba(255,255,255, 0.08) 100%)',
-        'kaspa-button': 'linear-gradient(135deg, #ffffff, #ffffff)',
-      },
-      borderColor: {
-        'kaspa': 'rgba(255,255,255, 0.35)',
-      },
+      borderRadius: { none: '0px', sm: '0px', DEFAULT: '0px', md: '0px', lg: '0px', xl: '0px', '2xl': '0px', '3xl': '0px', full: '9999px' },
+      boxShadow: { none: 'none' },
+      animation: {},
+      keyframes: {},
     },
   },
   plugins: [],
-}
+};
