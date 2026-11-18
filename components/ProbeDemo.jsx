@@ -25,13 +25,13 @@ export default function ProbeDemo() {
     }
   }
   return (
-    <div className="mt-8 rounded-2xl border border-teal-400/30 bg-black/60 p-4">
+    <div className="border border-gray-100 bg-panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-wider text-teal-400">live · watch an agent get paywalled</div>
+          <div className="font-mono text-[12px] text-gray-500">Fig. 2 — one unpaid request, live, to a listed service</div>
           <p className="mt-1 text-[13px] text-gray-400">One real unpaid request to a listed service{meta?.service ? ` (${meta.service}, ${meta.network})` : ''}. Nothing is paid by this page.</p>
         </div>
-        <button type="button" onClick={run} disabled={busy} className="rounded-lg border border-teal-400/50 px-4 py-2 font-mono text-[12.5px] text-teal-300 hover:bg-teal-400/10 disabled:opacity-50">
+        <button type="button" onClick={run} disabled={busy} className="border border-gray-100 px-4 py-2 font-mono text-[12.5px] text-gray-100 hover:border-accent hover:text-accent disabled:opacity-50">
           {busy ? 'probing…' : lines ? 'run it again' : 'run an unpaid request'}
         </button>
       </div>

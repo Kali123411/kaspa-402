@@ -1,6 +1,7 @@
 // pages/api/stats.js — the hero's live proof numbers: the directory and the registry's verified settlements.
 import { getListings, REGISTRY_URL } from '../../lib/registry';
 import { computeStats } from '../../lib/stats.mjs';
+import { tickerEvents } from '../../lib/ticker.mjs';
 
 export default async function handler(req, res) {
   const listings = await getListings();
@@ -13,5 +14,5 @@ export default async function handler(req, res) {
     if (r.ok) activity = await r.json();
   } catch { /* the strip shows what it has */ }
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-  res.status(200).json({ ...computeStats(listings, activity), activityReachable: activity != null });
+  res.status(200).json({ ...computeStats(listings, activity), events: tickerEvents(listings, activity), activityReachable: activity != null });
 }

@@ -9,9 +9,10 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </Head>
       <div className="min-h-screen font-sans bg-gray-950 text-white transition-colors">
-        <header className="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 h-14 border-b border-gray-100 bg-gray-950">
+        <header className="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 h-14 border-b border-gray-100 bg-gray-950 lg:px-14">
           <a href="/" className="font-orbitron text-[26px] font-bold tracking-[-0.03em] text-gray-100">
             {BRAND}
           </a>
@@ -24,8 +25,8 @@ export default function App({ Component, pageProps }) {
             <ExternalLink href={EXTERNAL.sdk} className="hidden hover:text-teal-400 md:inline" domainClassName="text-gray-600">SDK</ExternalLink>
           </nav>
         </header>
-        <div role="note" className="border-b border-amber-400/15 bg-amber-400/5 px-6 py-1.5 text-center font-mono text-[11.5px] text-amber-200/80">
-          {DISCLAIMER_BANNER} <a href="/get-started" className="ml-2 text-teal-400/80 hover:text-teal-300 hover:underline">Get set up on testnet-10 →</a>
+        <div role="note" className="border-b border-gray-800 px-6 py-1.5 font-mono text-[11.5px] text-gray-500 lg:px-14">
+          {DISCLAIMER_BANNER} <a href="/get-started" className="ml-2 text-accent underline decoration-gray-700 underline-offset-4 hover:decoration-accent">Get set up on testnet-10 →</a>
         </div>
         <Component {...pageProps} />
         <SiteFooter />
