@@ -21,7 +21,7 @@ about 2 TKAS) under its own ceiling of 3 KAS, and prints the status, the result,
 (`transaction`, `amount`, `finality`) and a link to verify the transaction on a TN10 indexer.
 
 Paying in **kUSD** instead (the agent-native unit) is the Python path: `pip install k402`, `KusdPayer.pay_best`
-under a `SpendPolicy`, or the `k402-mcp` tool `pay_kusd` — see https://kaspa-app.vercel.app/kusd/market and
+under a `SpendPolicy`, or the `k402-mcp` tool `pay_kusd` — see https://www.kaspa-402.org/market and
 https://github.com/Kali123411/k402.
 
 ### Proven on testnet-10 (2026-11-17)

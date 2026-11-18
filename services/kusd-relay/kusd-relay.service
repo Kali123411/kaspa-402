@@ -1,0 +1,20 @@
+[Unit]
+Description=kUSD state relay (verified cache of protocol and user boxes, port 8735)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/kusd-relay
+ExecStart=/usr/bin/env node %h/.local/share/kusd-relay/server.mjs
+Restart=on-failure
+RestartSec=5
+# internet-facing through the Cloudflare tunnel: bound memory, no privilege gain, read-only system
+# except the relay's own directory
+MemoryMax=512M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=%h/.local/share/kusd-relay
+PrivateTmp=yes
+
+[Install]
+WantedBy=default.target
