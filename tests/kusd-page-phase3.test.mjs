@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const s = readFileSync(new URL('../pages/kusd.js', import.meta.url), 'utf8');
+const s = readFileSync(new URL('../pages/kusd.js', import.meta.url), 'utf8') + readFileSync(new URL('../components/kusd/Timeline.jsx', import.meta.url), 'utf8');   // the log rows moved to the shared Timeline component
 
 test('intro says what kUSD is, how to use it and where test funds come from', () => {
   assert.ok(s.includes('In plain terms') && s.includes('href="/get-started"'), 'plain-English intro with the setup guide');

@@ -5,6 +5,8 @@ import { readFileSync } from 'node:fs';
 import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
 
 const page = readFileSync(new URL('../pages/kusd.js', import.meta.url), 'utf8');
+const labels = readFileSync(new URL('../components/kusd/Timeline.jsx', import.meta.url), 'utf8');   // STEP_LABEL, FAMILY_LABEL, TimelineEntry live here since the history page
+const pageAndLabels = page + labels;
 const home = readFileSync(new URL('../pages/index.js', import.meta.url), 'utf8');
 
 test('a stale live oracle is not labeled plain "Live"', () => {
@@ -35,14 +37,14 @@ const bundled = JSON.parse(readFileSync(new URL('../public/kusd/snapshot.json', 
 test('every retired family in the snapshot has a label on the page', () => {
   const retired = [...new Set(bundled.timeline.map((e) => e.family).filter((f) => f !== 'stage1'))];
   assert.ok(retired.length >= 2, `expected the retired Stage 1 and Phase 5 families, got ${retired}`);
-  for (const f of retired) assert.match(page, new RegExp(`'${f}':`), `no FAMILY_LABEL for ${f}`);
+  for (const f of retired) assert.match(pageAndLabels, new RegExp(`'${f}':`), `no FAMILY_LABEL for ${f}`);
   assert.match(page, /Previous deployments/);
 });
 
 test('a refusal by the node is not captioned as a refusal by the covenant', () => {
   assert.ok(bundled.timeline.some((e) => e.step === 'NOT_FINAL'), 'snapshot has the NOT_FINAL entry');
-  assert.match(page, /NOT_FINAL: 'Future clock refused'/);
-  assert.match(page, /refused by the node/);
+  assert.match(pageAndLabels, /NOT_FINAL: 'Future clock refused'/);
+  assert.match(pageAndLabels, /refused by the node/);
 });
 
 test('page explains the lock-time clock', () => {
@@ -72,6 +74,6 @@ test('snapshot pins are the Stage 2c family', () => {
 
 test('every timeline step has a label on the page', () => {
   for (const step of new Set(bundled.timeline.map((e) => e.step))) {
-    assert.match(page, new RegExp(`['\\s{]'?${step}'?: '`), `no STEP_LABEL for ${step}`);
+    assert.match(labels, new RegExp(`['\\s{]'?${step}'?: '`), `no STEP_LABEL for ${step}`);
   }
 });
