@@ -46,55 +46,6 @@ function ServiceCard({ l }) {
   );
 }
 
-function SubmitForm({ onAdded }) {
-  const empty = { serviceName: '', resource: '', description: '', capability: '', scheme: 'exact', network: 'kaspa:testnet-10', amountSompi: '', payTo: '' };
-  const [f, setF] = useState(empty);
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState(null);
-  const upd = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }));
-
-  async function submit(e) {
-    e.preventDefault();
-    if (busy) return;
-    setBusy(true); setMsg(null);
-    try {
-      const body = { ...f, amountSompi: Number(f.amountSompi), payTo: f.payTo.trim() || undefined, capability: f.capability.trim() || undefined };
-      const r = await fetch('/api/registry/submit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-      const d = await r.json();
-      if (d.ok) { setMsg({ level: 'ok', text: 'Listed — your endpoint passed the live x402 v2 probe.' }); setF(empty); onAdded && onAdded(); }
-      else setMsg({ level: 'err', text: d.error || 'submission failed' });
-    } catch { setMsg({ level: 'err', text: 'request failed — check the endpoint and try again' }); }
-    finally { setBusy(false); }
-  }
-
-  return (
-    <form onSubmit={submit} className="glass grid gap-3 rounded-2xl border border-teal-400/15 p-5 sm:grid-cols-2">
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Service name</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.serviceName} onChange={upd('serviceName')} placeholder="My inference API" required /></div>
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Resource URL (the x402-paid endpoint)</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.resource} onChange={upd('resource')} placeholder="https://your-host/run" inputMode="url" required /></div>
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Description</label>
-        <textarea className={FIELD + ' mt-1.5 w-full resize-y'} rows={2} value={f.description} onChange={upd('description')} placeholder="One or two lines: what it does, what you send and get back." /></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Scheme</label>
-        <select className={FIELD + ' mt-1.5 w-full'} value={f.scheme} onChange={upd('scheme')}>
-          <option value="exact">exact</option><option value="batch-settlement">batch-settlement</option></select></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Network</label>
-        <select className={FIELD + ' mt-1.5 w-full'} value={f.network} onChange={upd('network')}>
-          <option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option></select></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Price (sompi)</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.amountSompi} onChange={upd('amountSompi')} type="number" placeholder="20000000" required /></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Capability <span className="text-gray-600">(optional)</span></label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.capability} onChange={upd('capability')} placeholder="summarize" /></div>
-      <div className="flex items-center gap-4 sm:col-span-2">
-        <button type="submit" disabled={busy} className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a] disabled:opacity-60">
-          {busy ? 'probing endpoint…' : 'Submit for listing →'}</button>
-        {msg ? <span className={`font-mono text-[12px] ${msg.level === 'ok' ? 'text-teal-400' : 'text-rose-400'}`}>{msg.text}</span> : null}
-      </div>
-      <p className="sm:col-span-2 font-mono text-[11px] leading-relaxed text-gray-600">We send one unpaid request to your resource; it must return HTTP 402 with a valid <Term id="x402-v2">x402 v2</Term> <Term id="payment-required">PAYMENT-REQUIRED</Term> header before it appears. Nothing is charged.</p>
-    </form>
-  );
-}
-
 export default function Marketplace() {
   const [listings, setListings] = useState([]);
   const [q, setQ] = useState('');
@@ -128,7 +79,7 @@ export default function Marketplace() {
           <h1 className="mt-4 font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight sm:text-5xl">The payment rail for AI agent commerce on Kaspa L1</h1>
           <p className="mt-5 text-[16px] leading-relaxed text-gray-300">
             An agent calls a resource, gets an HTTP <span className="font-mono text-gray-200">402</span>, pays on Kaspa L1 and retries —
-            no account, no API key, no custodian. Every service here speaks k402, the <ExternalLink href={EXTERNAL.standard}>Kaspa x402 v2 standard</ExternalLink>.
+            no account, no API key, no custodian. Every service here speaks k402, the <Term id="x402-v2"><ExternalLink href={EXTERNAL.standard}>Kaspa x402 v2 standard</ExternalLink></Term>.
             Humans run the services and supervise the agents; the agents do the buying.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-gray-400">
@@ -158,7 +109,7 @@ export default function Marketplace() {
             <p className="mt-1.5 text-[14px] leading-relaxed text-gray-300">Put a 402 in front of your endpoint, validate it here (one unpaid probe, nothing charged), then list it for agents to find.</p>
             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[12px] text-sky-300">
               <span>validate your service →</span>
-              <a href="#list" className="text-gray-400 hover:text-sky-300">list it</a>
+              <a href="/list" className="text-gray-400 hover:text-sky-300">list it</a>
             </div>
           </a>
         </section>
@@ -233,13 +184,13 @@ export default function Marketplace() {
         </section>
 
         <section id="list" className="mt-16 scroll-mt-20">
-          <h2 className="font-orbitron text-[22px] font-bold uppercase tracking-tight">List your service</h2>
-          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-gray-400">
-            Ship an x402 v2 endpoint with <a href="https://www.npmjs.com/package/@kaspa-x402/server" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">@kaspa-x402/server</a>, then submit it here.
-            It only appears once it has answered a live, unpaid 402 probe: that gate is the anti-spam rule, and any agent can repeat the same check before paying.
-            To sell for kUSD, list on the {MARKET_NAME} instead — a listing there is signed by your payee key and costs 10¢ of kUSD through k402 (<a href={LINKS.k402Protocol} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">how</a>).
-          </p>
-          <div className="mt-5"><SubmitForm onAdded={load} /></div>
+          <div className="glass flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-800 p-5">
+            <div>
+              <h2 className="font-orbitron text-[18px] font-bold uppercase tracking-tight">Selling an API?</h2>
+              <p className="mt-1 max-w-xl text-[13.5px] leading-relaxed text-gray-400">Put a 402 in front of it and list it here. One unpaid probe is the only gate; kUSD-priced services list on the {MARKET_NAME}.</p>
+            </div>
+            <a href="/list" className="rounded-lg border border-teal-400/40 px-5 py-2.5 font-mono text-[12.5px] text-teal-400 hover:bg-teal-400/10">List your service →</a>
+          </div>
         </section>
 
         <section id="agents" className="mt-16 scroll-mt-20">
@@ -249,7 +200,7 @@ export default function Marketplace() {
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">1 · get funds</div>
               <p className="mt-1.5 text-[13.5px] text-gray-300">A Kaspa key is the only account. On testnet-10, TKAS comes from the <a href={LINKS.faucet} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">faucet</a>; kUSD is bought from the kUSD PSM in the <a href={LINKS.kusdApp} className="text-teal-400 hover:underline">kUSD app</a> or by <span className="font-mono">kusd_pay buy</span>.</p></li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">2 · read the 402</div>
-              <p className="mt-1.5 text-[13.5px] text-gray-300">Call the resource unpaid. The <span className="font-mono">PAYMENT-REQUIRED</span> header is base64 JSON: <span className="font-mono">accepts[]</span> lists each way to pay — scheme, network, amount, <span className="font-mono">payTo</span>. Pick one you can pay.</p></li>
+              <p className="mt-1.5 text-[13.5px] text-gray-300">Call the resource unpaid. The <Term id="payment-required"><span className="font-mono">PAYMENT-REQUIRED</span></Term> header is base64 JSON: <span className="font-mono">accepts[]</span> lists each way to pay — scheme, network, amount, <span className="font-mono">payTo</span>. Pick one you can pay.</p></li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">3 · pay, in KAS or kUSD</div>
               <p className="mt-1.5 text-[13.5px] text-gray-300">KAS: <span className="font-mono">@kaspa-x402/client</span> (<span className="font-mono">exact</span>, <span className="font-mono">batch-settlement</span>). kUSD: the k402 Python client (<span className="font-mono">pip install k402</span>, <span className="font-mono">KusdPayer</span>) or the <a href={LINKS.k402Mcp} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">k402-mcp</a> tool <span className="font-mono">pay_kusd</span>, under a <Term id="spendpolicy"><a href={LINKS.spendPolicy} target="_blank" rel="noopener noreferrer" className="font-mono text-teal-400 hover:underline">SpendPolicy</a></Term> your operator wrote. The kUSD requirement is x402 <span className="font-mono">exact</span> with the kUSD authority covenant as <span className="font-mono">asset</span>, cents as <span className="font-mono">amount</span> and the binding <span className="font-mono">kusd-holder-v1</span> (<a href={LINKS.kusdScheme} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">spec</a>). Retry with <span className="font-mono">PAYMENT-SIGNATURE</span>.</p></li>
             <li className="rounded-2xl border border-gray-800 bg-gray-950/40 p-5"><div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">4 · verify on a node</div>
