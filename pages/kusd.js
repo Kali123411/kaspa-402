@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Term from '../components/Term';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -207,7 +208,7 @@ export default function Kusd() {
                 <li>· Each operator signs its own price offline. Anyone can relay three prints into a refresh, and the relayer can&apos;t change the price.</li>
                 <li>· The price is the <span className="text-gray-200">median of three</span>, and prints more than <span className="text-gray-200">3% apart</span> are refused as a set.</li>
                 <li>· The mint price may rise at most 10% per hour and the liquidation price may fall at most 25% per hour, so one manipulated hour can&apos;t mint cheap kUSD or trigger a wave of liquidations.</li>
-                <li>· Every clock is proven by the transaction&apos;s lock time: the network won&apos;t include a transaction before its lock time, so nobody can claim time that hasn&apos;t passed.</li>
+                <li>· Every clock is proven by the transaction&apos;s <Term id="lock-time">lock time</Term>: the network won&apos;t include a transaction before its lock time, so nobody can claim time that hasn&apos;t passed.</li>
                 <li className="text-amber-200/90">· On TN10 the five operators run as separate services on one machine, each with its own key and price source, and a keyless relayer assembles their prints; independent operators are a pre-mainnet gate (each on its own machine).</li>
                 {Object.entries(rotated).map(([slot, txid]) => (
                   <li key={slot}>· Slot {slot} was rotated to a fresh key without a redeploy: <Tx id={txid} /></li>
@@ -218,7 +219,7 @@ export default function Kusd() {
           {c.miner && (
             <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5 p-5">
               <div className="flex items-center gap-3">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Stage 2 · Miner median</div>
+                <div className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Stage 2 · <Term id="miner-median">Miner median</Term></div>
                 {dot('miner')}
                 <span className={`rounded-md border px-2 py-0.5 font-mono text-[11px] ${o.bounded === 1 ? 'border-cyan-400/60 bg-cyan-400/10 text-cyan-300' : 'border-gray-700 text-gray-500'}`}>
                   bound {o.bounded === 1 ? 'ON' : 'OFF'}
@@ -303,7 +304,7 @@ export default function Kusd() {
         {/* ── Metering ── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
           <h2 className="font-orbitron text-2xl font-bold text-white">Cost on chain</h2>
-          <p className="mt-2 max-w-2xl font-mono text-sm text-gray-400">Compute mass against Kaspa&apos;s 500,000 per-transaction cap, measured by the test suite.</p>
+          <p className="mt-2 max-w-2xl font-mono text-sm text-gray-400"><Term id="compute-mass">Compute mass</Term> against Kaspa&apos;s 500,000 per-transaction cap, measured by the test suite.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {s.metering.map((m) => (
               <div key={m.path} className="rounded-xl border border-gray-800 bg-black/30 p-5">
@@ -328,7 +329,7 @@ export default function Kusd() {
                 <p className="mt-3">One command reruns all {s.tests.count} tests, attack regressions included:</p>
                 <pre className="mt-2 overflow-x-auto rounded-lg border border-gray-800 bg-black/50 p-3 font-mono text-xs text-emerald-400">{s.tests.command}</pre>
                 <p className="mt-3">
-                  Why the values aren&apos;t read live: every kUSD covenant output is a script hash, and its state sits
+                  Why the values aren&apos;t read live: every kUSD <Term id="covenant">covenant</Term> output is a <Term id="script-hash">script hash</Term>, and its state sits
                   inside the hashed script until it is spent. This page shows the exported values and checks the outputs
                   are still unspent. To check a value yourself, compile the covenant template with that state and compare
                   its script hash with the output on chain; the repo&apos;s tests and evidence show how.

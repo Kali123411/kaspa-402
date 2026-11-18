@@ -2,6 +2,7 @@
 // 402 whose PAYMENT-REQUIRED header decodes to a valid PaymentRequired, validated by @kaspa-x402/core)
 // with a recognized Kaspa scheme + supported network and a well-formed payTo, before you list it.
 import Head from 'next/head';
+import Term from '../components/Term';
 import { EXTERNAL } from '../lib/brand.mjs';
 import ExternalLink from '../components/ExternalLink';
 import { useState } from 'react';
@@ -64,9 +65,9 @@ export default function Validate() {
         <h1 className="mt-4 font-orbitron text-2xl font-bold tracking-tight text-gray-100">Validate your service</h1>
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-gray-300">
           Preflight your endpoint before you list it. We send one <span className="font-mono text-gray-200">unpaid</span> request and
-          check it speaks <span className="font-mono text-gray-200">x402 v2</span> — a <span className="font-mono text-gray-200">402</span> whose
-          <span className="font-mono text-gray-200"> PAYMENT-REQUIRED</span> header decodes to a valid offer with a recognized Kaspa scheme and
-          a well-formed <span className="font-mono text-gray-200">payTo</span> — so agents don’t hit a dead listing. Nothing is charged or stored.
+          check it speaks <Term id="x402-v2"><span className="font-mono text-gray-200">x402 v2</span></Term> — a <span className="font-mono text-gray-200">402</span> whose
+          <Term id="payment-required"><span className="font-mono text-gray-200"> PAYMENT-REQUIRED</span></Term> header decodes to a valid offer with a recognized Kaspa <Term id="scheme">scheme</Term> and
+          a well-formed <Term id="payto"><span className="font-mono text-gray-200">payTo</span></Term> — so agents don’t hit a dead listing. Nothing is charged or stored.
         </p>
 
         <form onSubmit={run} className="mt-7 flex flex-col gap-3">
