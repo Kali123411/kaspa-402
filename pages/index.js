@@ -8,6 +8,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { CLAIM, DISCLAIMERS, LAYERS, LINKS, MARKET_NAME, WHY_AGENTS } from '../lib/story';
 import { EXTERNAL } from '../lib/brand.mjs';
 import ExternalLink from '../components/ExternalLink';
+import StatStrip from '../components/StatStrip';
+import ProbeDemo from '../components/ProbeDemo';
 
 const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
@@ -123,7 +125,7 @@ export default function Marketplace() {
         <meta name="description" content={`${CLAIM} This is the rails layer: k402 (Kaspa x402 v2), HTTP 402 pay-per-call on Kaspa L1 — no account, no API key, no custodian.`} />
       </Head>
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <section className="max-w-2xl">
+        <section className="max-w-3xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-teal-400">Kaspa · k402 (Kaspa x402 v2) · the rails</p>
           <h1 className="mt-4 font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight sm:text-5xl">The payment rail for AI agent commerce on Kaspa L1</h1>
           <p className="mt-5 text-[16px] leading-relaxed text-gray-300">
@@ -137,10 +139,12 @@ export default function Marketplace() {
             Services priced in agent money, <span className="text-gray-200">kUSD</span>, live on the {MARKET_NAME} on <span className="font-mono text-gray-300">kaspa:testnet-10</span> today.
           </p>
           <p className="mt-4 rounded-xl border border-gray-800 bg-gray-950/40 px-4 py-3 text-[13.5px] leading-relaxed text-gray-400">{WHY_AGENTS}</p>
+          <StatStrip />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a href="#agents" className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Agents start here →</a>
             <a href="#browse" className="rounded-lg border border-gray-700 px-5 py-2.5 font-mono text-[12.5px] text-gray-300 hover:border-teal-400/40 hover:text-teal-400">Browse services</a>
           </div>
+          <ProbeDemo />
         </section>
 
         {/* Who are you? One path each (UI/UX brief, Phase 2 P0-4): operators no longer scroll past the agent content. */}
