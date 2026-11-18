@@ -13,6 +13,7 @@ export default function SiteFooter() {
         <a href="/market" className={ext}>market</a>
         <a href="/validate" className={ext}>validate</a>
         <a href="/private" className={ext}>pay privately</a>
+        <a href="/glossary" className={ext}>glossary</a>
         <ExternalLink href={EXTERNAL.standard} className={ext}>standard</ExternalLink>
         <ExternalLink href={EXTERNAL.k402Repo} className={ext}>k402 code</ExternalLink>
         <ExternalLink href={EXTERNAL.sdk} className={ext}>SDK</ExternalLink>

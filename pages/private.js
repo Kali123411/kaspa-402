@@ -2,6 +2,7 @@
 // A Groth16 ZK privacy primitive on Kaspa L1 (generic — presented standalone). Testnet-10 research
 // demo only: unaudited, single-party trusted setup, not for real value. All txids are real on TN10.
 import Head from 'next/head';
+import Term from '../components/Term';
 
 const TX = 'https://api-tn10.kaspa.org/transactions/';
 const short = (h) => h.slice(0, 10) + '…' + h.slice(-6);
@@ -56,7 +57,7 @@ export default function Private() {
           <h1 className="mt-4 font-orbitron text-4xl font-bold uppercase leading-tight tracking-tight sm:text-5xl">Pay a service privately</h1>
           <p className="mt-5 text-[16px] leading-relaxed text-gray-300">
             An agent can pay any <a href="/" className="text-teal-400 hover:underline">kaspa-402</a> service <span className="text-violet-300">without its funding wallet being linkable to what it buys</span>.
-            The payment settles from a <span className="text-gray-200">Kaspa shielded pool</span> — a Groth16 ZK privacy primitive on Kaspa L1 —
+            The payment settles from a <Term id="shielded-pool"><span className="text-gray-200">Kaspa shielded pool</span></Term> — a <Term id="groth16">Groth16</Term> ZK privacy primitive on Kaspa L1 —
             so the address that pays shares nothing with the address that funded it.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-gray-400">
@@ -68,7 +69,7 @@ export default function Private() {
         <div className="mt-8 rounded-xl border border-amber-400/30 bg-amber-400/5 px-5 py-4">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-amber-300">Research demo · testnet-10</p>
           <p className="mt-1.5 text-[13.5px] leading-relaxed text-amber-100/80">
-            The shielded pool here is <span className="font-semibold">unaudited</span>, runs a <span className="font-semibold">single-party trusted setup</span> (so it is forgeable / drainable),
+            The shielded pool here is <span className="font-semibold">unaudited</span>, runs a <Term id="trusted-setup"><span className="font-semibold">single-party trusted setup</span></Term> (so it is forgeable / drainable),
             and lives on <span className="font-mono">kaspa:testnet-10</span> only. It is a proof of concept — <span className="font-semibold">not for real value</span>.
             A mainnet version needs an MPC trusted-setup ceremony and a ZK audit.
           </p>
