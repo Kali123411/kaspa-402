@@ -3,45 +3,21 @@ import Term from '../components/Term';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, ExternalLink, ArrowRight } from 'lucide-react';
+import { Copy, Check, ArrowRight } from 'lucide-react';
 import snapshot from '../public/kusd/snapshot.json';
 import LiveBadge, { Dot } from '../components/kusd/LiveBadge';
 import ProductMap from '../components/kusd/ProductMap';
 import { DISCLAIMERS } from '../lib/kusd/story.mjs';
 import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
 import { vaultView } from '../lib/kusd/status.mjs';
+import { STEP_LABEL, Tx, TimelineEntry, txUrl, short } from '../components/kusd/Timeline';
+import { groupTimeline, filterTimeline } from '../lib/kusd/timeline.mjs';
 
 // Units (contracts/v2/README.md): oracle prices are 1e-4 USD per KAS, kUSD amounts are cents, KAS is sompi.
 const usdPerKas = (p) => `$${(p / 1e4).toFixed(4)}`;
 const dollars = (c) => `$${(c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const kas = (s) => `${(s / 1e8).toLocaleString('en-US', { maximumFractionDigits: 2 })} KAS`;
 const STALE_DAA = 36000;
-const txUrl = (id) => `https://api-tn10.kaspa.org/transactions/${id}`;
-const short = (h) => `${h.slice(0, 8)}…${h.slice(-4)}`;
-const day = (t) => new Date(t * 1000).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
-
-const STEP_LABEL = {
-  'ORACLE-GENESIS': 'Oracle genesis', 'PSM-GENESIS': 'PSM genesis', 'SURPLUS-GENESIS': 'Surplus genesis',
-  'BUDGET-GENESIS': 'Budget genesis', 'AUTHORITY-GENESIS': 'Token authority genesis', WIRE: 'Wire PSM',
-  'BUDGET-WIRE': 'Wire budget', 'VAULT-GENESIS': 'Vault genesis', REFRESH: 'Price refresh',
-  REFUSED_PRINTS: 'Bad prints refused', SET_MEMBER: 'Operator rotation', 'BUDGET-SET-LIMIT': 'Budget limit change',
-  MINT: 'Mint', FREEZE: 'Oracle frozen', SWAP_OUT_FEE: 'PSM redeem with fee', LIQUIDATE: 'Liquidation',
-  SET_MINER: 'Oracle bound to the miner median', 'MINER-POST': 'Miner median posted',
-  SURPLUS_SPEND: 'Surplus spend', CLOSE: 'Vault close', HEARTBEAT: 'Routine refreshes', REPAY: 'Repay', ADJUST: 'Collateral top-up',
-  NOT_FINAL: 'Future clock refused', SET_CEILING: 'PSM parameters', SET_RATE: 'Stability fee change', LIQ_REFUSED: 'Liquidation refused (above 150%)', SWAP_IN: 'PSM swap in', SWAP_OUT: 'PSM redeem',
-};
-
-// Retired covenant families, shown together under "Previous deployments".
-const FAMILY_LABEL = { 'stage1-v1': 'Stage 1, first deployment', 'phase5': 'Phase 5' };
-
-function Tx({ id }) {
-  return (
-    <a href={txUrl(id)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-neon-purple hover:underline">
-      {short(id)} <ExternalLink className="h-3 w-3" aria-hidden />
-    </a>
-  );
-}
-
 function CopyHex({ value }) {
   const [done, setDone] = useState(false);
   const copy = async () => {
@@ -75,25 +51,6 @@ function Row({ k, v }) {
   );
 }
 
-function TimelineEntry({ e }) {
-  const refused = e.txid == null;
-  const family = FAMILY_LABEL[e.family];
-  return (
-    <li className={`rounded-xl border p-4 ${refused ? 'border-dashed border-amber-400/50 bg-amber-400/5' : 'border-gray-800 bg-black/30'}`}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="font-semibold text-white">
-          {STEP_LABEL[e.step] || e.step}
-          {family && <span className="ml-2 font-mono text-[10px] font-normal uppercase tracking-wider text-gray-500">{family}</span>}
-        </div>
-        {refused
-          ? <span className="font-mono text-xs uppercase tracking-wider text-amber-300">{e.step === 'NOT_FINAL' ? 'refused by the node' : 'refused by the covenant'} · {'no transaction'}</span>
-          : <Tx id={e.txid} />}
-      </div>
-      <p className="mt-1 text-sm text-gray-400">{e.note}</p>
-      <div className="mt-1 font-mono text-[11px] text-gray-600">{day(e.time)}</div>
-    </li>
-  );
-}
 
 export default function Kusd() {
   const [status, setStatus] = useState(null);
@@ -121,7 +78,12 @@ export default function Kusd() {
   const hoursSilent = silence != null ? (silence / 10 / 3600).toFixed(1) : null;
   const vault = vaultView(c.vault.state, o);   // debt owed now (stability fee applied), ratio null when nothing is owed
   const stage1 = s.timeline.filter((e) => e.family === 'stage1').slice().reverse();
-  const previous = s.timeline.filter((e) => e.family !== 'stage1').slice().reverse();
+  const retired = s.timeline.filter((e) => e.family !== 'stage1').length;
+  const [logQ, setLogQ] = useState('');
+  const [showAll, setShowAll] = useState(false);
+  const grouped = groupTimeline(filterTimeline(stage1, logQ, STEP_LABEL));
+  const PAGE = 20;
+  const visible = showAll || logQ ? grouped : grouped.slice(0, PAGE);
   const signers = new Set(s.operators.lastRefreshSigners);
   const rotated = Object.fromEntries(s.operators.rotated.map((r) => [r.slot, r.txid]));
   const desc = 'kUSD: the covenant-native USD stablecoin built for AI agents, on Kaspa L1 (testnet-10). The money layer of the agent-native marketplace: live state, every transaction, and how to verify it yourself.';
@@ -316,19 +278,34 @@ export default function Kusd() {
         {/* ── Timeline ── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
           <h2 className="font-orbitron text-2xl font-bold text-white">Every transaction, {s.stage}</h2>
-          <p className="mt-2 max-w-2xl font-mono text-sm text-gray-400">Newest first. Each link opens the raw transaction on the public TN10 API.</p>
-          <ol className="mt-6 space-y-3">{stage1.map((e, i) => <TimelineEntry key={`${e.step}-${i}`} e={e} />)}</ol>
+          <p className="mt-2 max-w-2xl font-mono text-sm text-gray-400">Newest first. Each link opens the raw transaction on the public TN10 API. Runs of routine events (refreshes, repayments, governance knobs) are folded into one row each — expand to see every transaction.</p>
+          <input value={logQ} onChange={(e) => setLogQ(e.target.value)} aria-label="Search the transaction log" placeholder="search: liquidation, set_miner, a txid…"
+            className="mt-4 w-full max-w-md rounded-xl border border-gray-800 bg-black/40 px-4 py-2.5 font-mono text-sm text-gray-100 outline-none placeholder:text-gray-600 focus:border-neon-purple/60" />
+          <ol className="mt-6 space-y-3">
+            {visible.map((g, i) => g.kind === 'one'
+              ? <TimelineEntry key={`${g.entry.step}-${i}`} e={g.entry} />
+              : (
+                <li key={`${g.step}-${i}`}>
+                  <details className="rounded-xl border border-gray-800 bg-black/20">
+                    <summary className="cursor-pointer px-4 py-3 text-sm text-gray-300"><span className="font-semibold text-white">{STEP_LABEL[g.step] || g.step}</span> <span className="font-mono text-xs text-gray-500">× {g.entries.length} · {g.entries[g.entries.length - 1] && g.entries[0] ? `${short(g.entries[g.entries.length - 1].txid || '')} … ${short(g.entries[0].txid || '')}` : ''} · expand</span></summary>
+                    <ol className="space-y-3 border-t border-gray-800 p-3">{g.entries.map((e, k) => <TimelineEntry key={`${e.step}-${k}`} e={e} />)}</ol>
+                  </details>
+                </li>
+              ))}
+          </ol>
+          {!showAll && !logQ && grouped.length > PAGE && (
+            <button type="button" onClick={() => setShowAll(true)} className="mt-4 rounded-lg border border-gray-700 px-4 py-2 font-mono text-xs text-gray-300 hover:border-neon-purple/60">Show all {grouped.length} rows</button>
+          )}
+          {grouped.length === 0 && <p className="mt-4 font-mono text-sm text-gray-500">Nothing matches &quot;{logQ}&quot;.</p>}
         </section>
 
-        {/* ── Previous deployment ── */}
+        {/* ── Previous deployments: archived on their own page ── */}
         <section className="border-y border-gray-800 bg-gray-900/40">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14">
-            <h2 className="font-orbitron text-2xl font-bold text-white">Previous deployments (retired covenants)</h2>
-            <p className="mt-2 max-w-2xl font-mono text-sm text-gray-400">
-              Changing a covenant&apos;s code means re-creating the whole family. The first Stage 1 deployment (before lock-time clocks)
-              and Phase 5, which showed the safety rails working live, are still on TN10.
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 flex flex-wrap items-center justify-between gap-4">
+            <p className="max-w-2xl font-mono text-sm text-gray-400">
+              Changing a covenant&apos;s code means re-creating the whole family. The retired deployments ({retired} captioned transactions: the first Stage 1 family and Phase 5) stay on TN10 as evidence.
             </p>
-            <ol className="mt-6 space-y-3">{previous.map((e, i) => <TimelineEntry key={`${e.family}-${e.step}-${i}`} e={e} />)}</ol>
+            <Link href="/kusd/history" className="rounded-lg border border-gray-700 px-4 py-2 font-mono text-xs text-gray-300 hover:border-neon-purple/60">History of deployments →</Link>
           </div>
         </section>
 
