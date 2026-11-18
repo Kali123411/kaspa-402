@@ -11,7 +11,7 @@ const { boxAddress } = loadClient();
 const hex = (b) => Buffer.from(b).toString('hex');
 const API = 'https://tn10.test';
 
-const pins = { oracle: '07'.repeat(32), psm: '66'.repeat(32), budget: '88'.repeat(32), authority: '42'.repeat(32), surplus: '77'.repeat(32) };
+const pins = { oracle: '07'.repeat(32), psm: '66'.repeat(32), budget: '88'.repeat(32), authority: '42'.repeat(32), surplus: '77'.repeat(32), miner: '4d'.repeat(32) };
 const oracleState = golden.box_address.request.state;
 const holderState = golden.cases.swap_in.created.find((c) => c.kind === 'holder').state;
 const vaultLive = golden.cases.mint.request.params.vault;
@@ -238,4 +238,25 @@ test('an_owner_list_is_capped', async () => {
   const [r] = await accept([entry(boxes[64])], { ...d, store });
   assert.equal(r.ok, false);
   assert.match(r.reason, /too many/);
+});
+
+// Stage 2c: the MinerMedian box is a sixth protocol kind, and the oracle state carries miner_id/bounded
+const minerState = { median: 2730, votes: 3048, blocks: 6000, anchor_daa: 626474937, anchor_bs: 123, epoch: 6,
+  image_id: Array(32).fill(0x33), tally_root: Array(32).fill(0), gov: oracleState.gov };
+const minerBox = { kind: 'miner', state: minerState, covid: pins.miner, txid: 'c4'.repeat(32), index: 0, value: 100_000_000 };
+
+test('miner_entry_accepted_under_the_miner_pin', async () => {
+  const store = memStore();
+  const [r] = await accept([entry(minerBox)], { ...deps([minerBox]), store });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  const { protocol } = await read(store);
+  assert.equal(protocol.miner.state.median, 2730);
+  const [wrong] = await accept([entry({ ...minerBox, covid: '4e'.repeat(32) })], { ...deps([{ ...minerBox, covid: '4e'.repeat(32) }]), store: memStore() });
+  assert.equal(wrong.ok, false);
+});
+
+test('oracle_state_without_the_stage2c_fields_rejected', () => {
+  const { miner_id, bounded, ...stale } = oracleState;
+  assert.ok(miner_id && bounded !== undefined, 'the golden oracle state carries the Stage 2c fields');
+  assert.throws(() => parseEntry({ ...entry(oracleBox), state: stale }, { boxAddress }), RelayInputError);
 });

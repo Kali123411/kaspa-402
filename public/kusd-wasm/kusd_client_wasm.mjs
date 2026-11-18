@@ -167,39 +167,23 @@ function debugString(val) {
     return className;
 }
 /**
- * The address a box of `kind` holding `state` must sit at: {kind, state, testnet} -> {address}.
- * Comparing it with the UTXO's address on chain is how the page verifies claimed state.
- * @param {string} request
+ * The wallet's x-only key and address for a 64-hex secret.
+ * @param {string} secret_hex
+ * @param {boolean} testnet
  * @returns {string}
  */
-export function box_address(request) {
+export function wallet(secret_hex, testnet) {
     let deferred2_0;
     let deferred2_1;
     try {
-        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const ptr0 = passStringToWasm0(secret_hex, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.box_address(ptr0, len0);
+        const ret = wasm.wallet(ptr0, len0, testnet);
         deferred2_0 = ret[0];
         deferred2_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
     } finally {
         wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
-/**
- * @returns {string}
- */
-export function version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
     }
 }
 
@@ -225,18 +209,34 @@ export function build(request) {
 }
 
 /**
- * The wallet's x-only key and address for a 64-hex secret.
- * @param {string} secret_hex
- * @param {boolean} testnet
  * @returns {string}
  */
-export function wallet(secret_hex, testnet) {
+export function version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * The address a box of `kind` holding `state` must sit at: {kind, state, testnet} -> {address}.
+ * Comparing it with the UTXO's address on chain is how the page verifies claimed state.
+ * @param {string} request
+ * @returns {string}
+ */
+export function box_address(request) {
     let deferred2_0;
     let deferred2_1;
     try {
-        const ptr0 = passStringToWasm0(secret_hex, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.wallet(ptr0, len0, testnet);
+        const ret = wasm.box_address(ptr0, len0);
         deferred2_0 = ret[0];
         deferred2_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);

@@ -1,6 +1,6 @@
 {
   "repo": "gordonmurray-coding/kusd-framework",
   "path": "contracts/v2/client/wasm (pkg-web, built by build.sh)",
-  "commit": "17c46c28c2116915131e5c9a0d5793e9b9064bce",
-  "sha256": "90d4cc0fcf92256480cc7e12634bf5044a778717ced59d0a31c9886591d698a1"
+  "commit": "6cd401c",
+  "sha256": "3a49f870c7e087afc32bb7f03e61b1bd0fb07e05ce5372361225902fd703b009"
 }
