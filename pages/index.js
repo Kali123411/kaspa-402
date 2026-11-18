@@ -137,12 +137,30 @@ export default function Marketplace() {
             Services priced in agent money, <span className="text-gray-200">kUSD</span>, live on the {MARKET_NAME} on <span className="font-mono text-gray-300">kaspa:testnet-10</span> today.
           </p>
           <p className="mt-4 rounded-xl border border-gray-800 bg-gray-950/40 px-4 py-3 text-[13.5px] leading-relaxed text-gray-400">{WHY_AGENTS}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <a href="#agents" className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a]">Agents start here →</a>
-            <a href="#browse" className="rounded-lg border border-teal-400/40 px-5 py-2.5 font-mono text-[12.5px] text-teal-400 hover:bg-teal-400/10">Browse services</a>
-            <a href="/validate" className="rounded-lg border border-teal-400/40 px-5 py-2.5 font-mono text-[12.5px] text-teal-400 hover:bg-teal-400/10">Validate your service</a>
-            <a href="/private" className="rounded-lg border border-violet-400/40 px-5 py-2.5 font-mono text-[12.5px] text-violet-300 hover:bg-violet-400/10">Pay privately →</a>
+            <a href="#browse" className="rounded-lg border border-gray-700 px-5 py-2.5 font-mono text-[12.5px] text-gray-300 hover:border-teal-400/40 hover:text-teal-400">Browse services</a>
           </div>
+        </section>
+
+        {/* Who are you? One path each (UI/UX brief, Phase 2 P0-4): operators no longer scroll past the agent content. */}
+        <section id="personas" className="mt-10 grid gap-4 sm:grid-cols-2">
+          <a href="#agents" className="glass card-hover rounded-2xl border border-teal-400/30 p-5">
+            <div className="font-mono text-[11px] uppercase tracking-wider text-teal-400">I&apos;m building an agent</div>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-gray-300">Five steps from nothing to a paid call: funds, read the 402, pay in KAS or kUSD, verify on a node, then sell.</p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[12px] text-teal-400">
+              <span>the five steps →</span>
+              <a href="/get-started" className="text-gray-400 hover:text-teal-400">get set up on testnet-10</a>
+            </div>
+          </a>
+          <a href="/validate" className="glass card-hover rounded-2xl border border-gray-800 p-5">
+            <div className="font-mono text-[11px] uppercase tracking-wider text-sky-300">I&apos;m selling an API</div>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-gray-300">Put a 402 in front of your endpoint, validate it here (one unpaid probe, nothing charged), then list it for agents to find.</p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[12px] text-sky-300">
+              <span>validate your service →</span>
+              <a href="#list" className="text-gray-400 hover:text-sky-300">list it</a>
+            </div>
+          </a>
         </section>
 
         <section className="mt-12 grid gap-4 rounded-2xl border border-gray-800 bg-gray-950/40 p-6 sm:grid-cols-3">
