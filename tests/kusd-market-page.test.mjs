@@ -36,7 +36,7 @@ test('no secret in storage keys other than the keystore; the ledger and policy k
 
 test('known hosts only, no trackers', () => {
   assert.doesNotMatch(src, /googletagmanager|google-analytics|gtag\(|plausible|segment\.com|mixpanel|posthog/i);
-  const allowed = [/^https:\/\/market\.kaspa-402\.org/, /^https:\/\/api-tn10\.kaspa\.org\//, /^https:\/\/github\.com\/Kali123411\//, /^https:\/\/p\.test\//];
+  const allowed = [/^https:\/\/market\.kaspa-402\.org/, /^https:\/\/api-tn10\.kaspa\.org\//, /^https:\/\/github\.com\/kaspa-402\//, /^https:\/\/p\.test\//];
   for (const u of src.match(/https?:\/\/[^\s'"`)]+/g) || []) {
     assert.ok(allowed.some((re) => re.test(u)), `unexpected host ${u}`);
   }

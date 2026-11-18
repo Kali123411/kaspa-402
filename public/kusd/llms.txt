@@ -5,8 +5,8 @@ This file describes two of its three layers: MONEY (kUSD) and MARKET (the Kaspa 
 (k402, Kaspa x402 v2) is described at https://kaspa-402.org/llms.txt.
 
 ## The three layers
-- Money — kUSD: a covenant-native USD stablecoin, the pricing and settlement unit for agents. No bank account, no custodian, no API key; state verifiable on chain, box by box. https://www.kaspa-402.org/kusd (code: https://github.com/Kali123411/kUSD)
-- Rails — k402 (Kaspa x402 v2): HTTP 402 pay-per-call on Kaspa L1; KCC-0402 covenant payment channels are the roadmap. https://kaspa-402.org (code: https://github.com/Kali123411/k402)
+- Money — kUSD: a covenant-native USD stablecoin, the pricing and settlement unit for agents. No bank account, no custodian, no API key; state verifiable on chain, box by box. https://www.kaspa-402.org/kusd (code: https://github.com/kaspa-402/kUSD)
+- Rails — k402 (Kaspa x402 v2): HTTP 402 pay-per-call on Kaspa L1; KCC-0402 covenant payment channels are the roadmap. https://kaspa-402.org (code: https://github.com/kaspa-402/k402)
 - Market — Kaspa Agent Market (KAM): discovery, settlement-verified reputation, SpendPolicy operator controls. https://www.kaspa-402.org/market
 
 ## Why agents
@@ -20,8 +20,8 @@ Autonomous software can't open a bank account, pass KYC, or hold a card. kUSD gi
 
 ## How to hold and pay
 - Hold: a kUSD box is owned by an x-only key; the browser wallet at https://www.kaspa-402.org/kusd/app creates one, buys kUSD from the PSM and sends it. From code: the k402 Python client (pip install k402) drives the `kusd_pay` wallet binary (family / balance / buy / send / verify / claim).
-- Pay a service: a provider answers HTTP 402 with an x402 PAYMENT-REQUIRED whose kUSD requirement is scheme `exact`, asset = the kUSD authority covenant id, amount in cents, extra.binding = "kusd-holder-v1", payTo = the provider's listed key tweaked by the offer's payment_id. The payer builds a box of exactly those cents to that key and retries with PAYMENT-SIGNATURE carrying the txid. Spec: https://github.com/Kali123411/k402/blob/main/scheme_exact_kusd.md
-- Clients: `k402.KusdPayer.pay_best(capability, json_body)` under a `SpendPolicy` + `SpendLedger`; MCP: k402-mcp `pay_kusd` (https://github.com/Kali123411/k402-mcp); browser: the market page.
+- Pay a service: a provider answers HTTP 402 with an x402 PAYMENT-REQUIRED whose kUSD requirement is scheme `exact`, asset = the kUSD authority covenant id, amount in cents, extra.binding = "kusd-holder-v1", payTo = the provider's listed key tweaked by the offer's payment_id. The payer builds a box of exactly those cents to that key and retries with PAYMENT-SIGNATURE carrying the txid. Spec: https://github.com/kaspa-402/k402/blob/main/scheme_exact_kusd.md
+- Clients: `k402.KusdPayer.pay_best(capability, json_body)` under a `SpendPolicy` + `SpendLedger`; MCP: k402-mcp `pay_kusd` (https://github.com/kaspa-402/k402-mcp); browser: the market page.
 - Operator limits (SpendPolicy): per-call ceiling, lifetime and per-window kUSD, calls per window, PSM top-up cap, stop after N unserved payments, allowed capabilities, kill switch. Only the operator can change them.
 
 ## The market

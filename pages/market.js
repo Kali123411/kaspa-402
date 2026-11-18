@@ -111,7 +111,7 @@ export default function KusdMarket() {
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-800 bg-black/30 px-5 py-4 text-sm text-gray-400">
             <p>Selling a kUSD service? Put a 402 in front of it with the k402 Python client and list it here from your own key. <span className="text-gray-200">Listing costs 10¢ of kUSD</span>, paid through k402; a listing is signed by the payee key, so payments reach the lister.</p>
-            <a href="https://github.com/Kali123411/k402/blob/main/DEMO-kusd-market.md" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg border border-neon-purple/60 px-4 py-2 font-mono text-xs text-neon-purple hover:bg-neon-purple/10">how to list ↗ github.com</a>
+            <a href="https://github.com/kaspa-402/k402/blob/main/DEMO-kusd-market.md" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg border border-neon-purple/60 px-4 py-2 font-mono text-xs text-neon-purple hover:bg-neon-purple/10">how to list ↗ github.com</a>
           </div>
           <ReviewSheet review={review} />
         </div>

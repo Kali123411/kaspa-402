@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   L.push("const wallet = await openWallet(resolveWalletConfig({ network: 'kaspa:testnet-10' }));   // env: KASPA_X402_KASPA_WASM_MODULE, KASPA_X402_FUNDING_WALLET=wallet-key:<path>");
   L.push(`const r = await payExact(wallet, ${listings[0] ? JSON.stringify(listings[0].resource) : '"<service resource url>"'}, { maxAmountSompi: 300_000_000n });`);
   L.push('// on HTTP 402 it reads PAYMENT-REQUIRED, pays on Kaspa L1 (never over your cap), retries with PAYMENT-SIGNATURE;');
-  L.push('// r.status, r.body, r.settlement.transaction — full example: https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs');
+  L.push('// r.status, r.body, r.settlement.transaction — full example: https://github.com/kaspa-402/kaspa-402/blob/main/examples/agent-quickstart.mjs');
   L.push('```');
   L.push('');
   if (listings.length) {
