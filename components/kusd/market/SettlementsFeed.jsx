@@ -1,6 +1,7 @@
 // Agents paying agents, as the registry verified it: each row is a kUSD box the registry found on its node at
 // the offer's derived key, reported by the provider while the box was unspent.
 import { useEffect, useRef, useState } from 'react';
+import Freshness from '../../Freshness';
 import { ExternalLink } from 'lucide-react';
 import { usdText, Panel, txUrl } from '../app/ui';
 
@@ -29,14 +30,10 @@ export default function SettlementsFeed({ activity, fromSnapshot, loading, gener
   return (
     <Panel title="Settlements">
       <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
-        <span className="text-gray-400">verified kUSD paid to providers, all time</span>
+        <span className="text-gray-400">verified kUSD paid to providers — all providers, all time</span>
         <span className="font-mono text-lg text-white">{usdText(activity?.total_cents || 0)}</span>
       </div>
-      {fromSnapshot && !loading && (
-        <p className="rounded-lg border border-amber-400/40 bg-amber-400/5 px-3 py-2 text-xs text-amber-200">
-          Not live: this is a snapshot from {generatedAt ? `${String(generatedAt).replace('T', ' ').slice(0, 16)} UTC` : 'an earlier export'}.
-        </p>
-      )}
+      {fromSnapshot && !loading && <Freshness state="unverified" source="market snapshot" at={generatedAt} />}
       {rows.length === 0 && <p className="text-sm text-gray-400">No settlements yet.</p>}
       <ul className="divide-y divide-gray-800" aria-live="polite">
         {rows.map((r) => {

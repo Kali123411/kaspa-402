@@ -74,7 +74,7 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
                 </div>
                 {p.description && <p className="mt-2 text-xs text-gray-300">{p.description}</p>}
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
-                  <span>settled <span className="font-mono text-gray-200">{usdText(p.reputation?.settled_cents || 0)}</span>{p.reputation?.last_settled ? `, last ${ago(p.reputation.last_settled, now)}` : ''}</span>
+                  <span>settled to this provider <span className="font-mono text-gray-200">{usdText(p.reputation?.settled_cents || 0)}</span>{p.reputation?.last_settled ? `, last ${ago(p.reputation.last_settled, now)}` : ''}</span>
                   {loading ? <span className="text-[11px] text-gray-500">…</span> : fromSnapshot ? <span className="text-[11px] text-gray-500">snapshot</span> : <LiveDot probe={live[p.endpoint]} />}
                 </div>
                 <div className="mt-2 break-all font-mono text-[10px] text-gray-600">{p.payee_pubkey}</div>
