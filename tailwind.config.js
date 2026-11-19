@@ -1,6 +1,6 @@
 // tailwind.config.js — the k402 identity (docs/uiux/2026-11-18-identity-design.md): graphite neutrals, one acid accent,
-// Fraunces display, Source Serif 4 body, JetBrains Mono data. The `gray`, `teal`, `neon` and `kaspa` names are REMAPPED to
-// the identity's tokens so every existing class across the site re-skins at once; later passes retire the old names.
+// Fraunces display, Source Serif 4 body, JetBrains Mono data. The `gray` scale is REMAPPED to
+// the identity's tokens; the teal/neon/kaspa aliases were retired in Phase 4 PR 6 once no page named them.
 const ground = '#16181D';
 const panel = '#1F2229';
 const rule = '#2B2F37';
@@ -37,16 +37,6 @@ module.exports = {
           900: panel,
           950: ground,
         },
-        // every "teal" in the site is the one accent (lighter/darker only for hover and disabled states)
-        teal: {
-          50: '#F6FFD6', 100: '#EEFFB8', 200: '#E4FF8F', 300: '#DBFF6B', 400: accent, 500: '#B8E63A',
-          600: '#93B82E', 700: '#6E8A22', 800: '#4A5C17', 900: '#2E3A0E', 950: '#1A2108',
-        },
-        kaspa: accent,
-        'kaspa-teal': accent,
-        'kaspa-blue': accent,
-        'kaspa-purple': accent,
-        neon: { cyan: accent, pink: accent, purple: accent, yellow: accent },
         ground, panel, rule, muted, accent,
       },
       borderRadius: { none: '0px', sm: '0px', DEFAULT: '0px', md: '0px', lg: '0px', xl: '0px', '2xl': '0px', '3xl': '0px', full: '9999px' },

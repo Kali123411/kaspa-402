@@ -13,7 +13,7 @@ export function overallState(status) {
 
 const DOT = {
   current: 'bg-accent',
-  moved: 'bg-amber-400',
+  moved: 'bg-gray-100',
   unknown: 'bg-gray-500',
   loading: 'bg-gray-600',
 };
