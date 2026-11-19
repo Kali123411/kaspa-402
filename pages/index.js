@@ -295,7 +295,7 @@ export default function Marketplace() {
 
           <Section mark="7" note="Pay from an agent: the same call in three languages." className="mt-16 mb-4">
             <CodeTabs samples={SAMPLES} />
-            <p className="mt-3 font-mono text-[12px] text-gray-600">Full example: <a href="https://github.com/kaspa-402/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className={LINK}>examples/agent-quickstart.mjs</a> on GitHub.</p>
+            <p className="mt-3 font-mono text-[12px] text-gray-600">Full example: <a href="https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className={LINK}>examples/agent-quickstart.mjs</a> on GitHub.</p>
           </Section>
         </div>
       </main>

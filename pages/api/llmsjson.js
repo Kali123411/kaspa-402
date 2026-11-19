@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       kas: {
         client: 'npm i kx402 (wraps @kaspa-x402/client) · npx kx402 fetch-sdk',
         how: 'openWallet(resolveWalletConfig({ network })) then payExact(wallet, url, { maxAmountSompi }): on HTTP 402 it reads PAYMENT-REQUIRED, pays on Kaspa L1 (exact or batch-settlement) inside your cap, retries with PAYMENT-SIGNATURE and returns the result with the settlement txid.',
-        example: 'https://github.com/kaspa-402/kaspa-402/blob/main/examples/agent-quickstart.mjs',
+        example: 'https://github.com/Kali123411/kaspa-402/blob/main/examples/agent-quickstart.mjs',
         docs: 'https://www.npmjs.com/package/kx402',
       },
       kusd: {
