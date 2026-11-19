@@ -31,19 +31,7 @@ const agoText = (t) => {
 };
 const stamp = (l) => { const t = l.listedAt || l.probedAt; return typeof t === 'number' ? t * 1000 : Date.parse(t) || 0; };
 
-// the ledger's vocabulary: section marks in the margin, hairline rules, underlined text links, one filled button per view
-const MARK = 'font-mono text-[12px] leading-relaxed text-gray-500';
-const H2 = 'font-orbitron text-[clamp(26px,2.2vw,34px)] font-medium leading-tight tracking-[-0.02em] text-gray-100';
-const H3 = 'font-orbitron text-[clamp(20px,1.6vw,24px)] font-medium tracking-[-0.02em] text-gray-100';
-const LINK = 'underline decoration-gray-700 underline-offset-4 hover:text-accent hover:decoration-accent';
-const FIELD = 'border border-gray-800 bg-panel px-3 py-2 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-accent';
-/** a numbered section: § mark + side note in the margin column, content beside it; one column on phones */
-const Section = ({ id, mark, note, children, className = '' }) => (
-  <section id={id} className={`grid gap-6 border-t border-gray-100 pt-6 scroll-mt-20 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-10 ${className}`}>
-    <div className={MARK}><div>§ {mark}</div>{note ? <div className="mt-1 text-gray-600">{note}</div> : null}</div>
-    <div className="min-w-0">{children}</div>
-  </section>
-);
+import { FIELD, H2, H3, LINK, MARK, PAGE, Section } from '../components/Ledger';
 
 function CopyUrl({ l }) {
   const [done, setDone] = useState(false);
@@ -119,7 +107,7 @@ export default function Marketplace() {
       </Head>
       <main className="w-full">
         <LiveTicker />
-        <div className="mx-auto w-full max-w-[1600px] px-6 lg:px-14">
+        <div className={PAGE}>
 
           {/* the hero: the claim on the left, the recorded round trip replaying on the right; one column on phones */}
           <section className="grid gap-12 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(400px,38%)] lg:items-start lg:gap-16 lg:pt-16">
