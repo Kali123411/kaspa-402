@@ -9,7 +9,7 @@ export default function SwapTab({ k, wallet, review }) {
   const [err, setErr] = useState(null);
   const protocol = k.chain?.protocol;
   if (!wallet) return <Panel><p className="text-sm text-gray-400">Unlock or create a wallet in the Wallet tab first.</p></Panel>;
-  if (!protocol) return <Panel><p className="text-sm text-amber-200">{k.canAct.reason}</p></Panel>;
+  if (!protocol) return <Panel><p className="text-sm text-gray-300">{k.canAct.reason}</p></Panel>;
 
   const oracle = protocol.oracle.state;
   const spread = protocol.psm.state.spread;
@@ -47,7 +47,7 @@ export default function SwapTab({ k, wallet, review }) {
         )}
         <Row k="PSM room under its ceiling" v={usdText(limits.psmHeadroomCents)} />
         <Row k="Mint budget available" v={usdText(limits.budgetCents)} />
-        {err && <p className="text-sm text-red-400">{err}</p>}
+        {err && <p className="text-sm text-gray-200">{err}</p>}
       </Panel>
 
       <Panel title="kUSD → KAS">
@@ -57,7 +57,7 @@ export default function SwapTab({ k, wallet, review }) {
         </p>
         {holders.length === 0 && <p className="text-sm text-gray-400">You hold no kUSD boxes yet.</p>}
         {holders.map((h) => (
-          <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-black/30 p-3">
+          <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2  bg-panel p-3">
             <div className="min-w-0">
               <div className="font-mono text-sm text-white">{usdText(h.state.amount)}</div>
               <div className="text-xs text-gray-500">pays {kasText(swapOutQuote(h.state.amount, oracle, spread).net)}{spread ? ` after the ${feeText} fee` : ''}</div>

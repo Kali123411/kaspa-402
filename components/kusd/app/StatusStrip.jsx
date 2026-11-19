@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Freshness from '../../Freshness';
 import Term from '../../Term';
-import { ShieldCheck, ShieldAlert, Loader2 } from 'lucide-react';
 import snapshot from '../../../public/kusd/snapshot.json';
 import source from '../../../lib/kusd/wasm/SOURCE.json';
 import { oracleSources, oracleAgeSeconds, oracleView } from '../../../lib/kusd/app/status.mjs';
@@ -23,9 +22,9 @@ export default function StatusStrip({ k }) {
   const shown = oracleView(k.chain?.protocol, feed);
   const verified = k.canAct.ok;
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/60 p-4 text-sm">
+    <div className="border border-gray-800 bg-panel p-4 text-sm">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="rounded-full border border-amber-400/40 px-2.5 py-0.5 font-mono text-xs uppercase tracking-widest text-amber-300">TN10</span>
+        <span className="font-mono text-xs text-gray-300">TN10</span>
         <span className="min-w-0 break-all font-mono text-xs text-gray-400">
           node: {k.phase === 'ready' ? (k.node || 'public resolver') : k.phase === 'loading' ? 'connecting…' : 'unreachable'}
         </span>
@@ -42,12 +41,8 @@ export default function StatusStrip({ k }) {
         )}
       </div>
       <div className="mt-2 flex items-start gap-2">
-        {k.phase === 'loading' || !k.chain
-          ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin text-gray-500" aria-hidden />
-          : verified
-            ? <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden />
-            : <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" aria-hidden />}
-        <p className={`min-w-0 break-words text-xs ${verified ? 'text-emerald-300' : 'text-amber-200'}`}>
+        <span className={`mt-0.5 shrink-0 font-mono text-[13px] ${verified ? 'text-accent' : 'text-gray-400'}`} aria-hidden>{k.phase === 'loading' || !k.chain ? '…' : verified ? '✓' : '!'}</span>
+        <p className={`min-w-0 break-words text-xs ${verified ? 'text-accent' : 'text-gray-300'}`}>
           {verified
             ? 'Protocol state verified against the node by this browser.'
             : k.error && !k.chain ? k.error : `Actions are off: ${k.canAct.reason}`}
@@ -61,7 +56,7 @@ export default function StatusStrip({ k }) {
         </button>{' '}
         (kusd-client {source.commit.slice(0, 7)}; keys never leave this page — every transaction is signed here).
       </p>
-      <p className="mt-2 text-xs text-amber-200/80">
+      <p className="mt-2 text-xs text-gray-300">
         {DISCLAIMERS.research} {DISCLAIMERS.advice} Today all five operator keys are
         held by the deployer; independent operators are a pre-mainnet gate.
       </p>

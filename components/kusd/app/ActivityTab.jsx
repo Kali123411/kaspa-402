@@ -1,6 +1,5 @@
 // What this browser broadcast, newest first (kept on this device only).
 import { useEffect, useState } from 'react';
-import { ExternalLink } from 'lucide-react';
 import { list } from '../../../lib/kusd/app/activity.mjs';
 import { Panel, txUrl } from './ui';
 
@@ -17,11 +16,11 @@ export default function ActivityTab({ version, owner }) {
         {entries.map((e) => (
           <li key={e.txid} className="py-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <span className="text-sm text-white"><span className="mr-2 font-mono text-[10px] uppercase tracking-wider text-neon-purple">{FLOW_LABEL[e.flow] || e.flow}</span>{e.summary}</span>
+              <span className="text-sm text-white"><span className="mr-2 font-mono text-[10px] text-accent">{FLOW_LABEL[e.flow] || e.flow}</span>{e.summary}</span>
               <span className="font-mono text-[11px] text-gray-600">{new Date(e.at).toISOString().replace('T', ' ').slice(0, 16)} UTC</span>
             </div>
-            <a href={txUrl(e.txid)} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-neon-purple hover:underline">
-              {e.txid.slice(0, 12)}…{e.txid.slice(-4)} <ExternalLink className="h-3 w-3" aria-hidden />
+            <a href={txUrl(e.txid)} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 font-mono text-xs text-accent hover:underline">
+              {e.txid.slice(0, 12)}…{e.txid.slice(-4)} 
             </a>
           </li>
         ))}

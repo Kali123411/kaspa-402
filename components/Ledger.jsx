@@ -9,6 +9,7 @@ export const H3 = 'font-orbitron text-[clamp(20px,1.6vw,24px)] font-medium track
 export const LINK = 'underline decoration-gray-700 underline-offset-4 hover:text-accent hover:decoration-accent';
 export const BUTTON = 'btn-kaspa px-5 py-3 font-mono text-[14px] font-medium';
 export const FIELD = 'border border-gray-800 bg-panel px-3 py-2 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-accent';
+export const notice = 'border border-dashed border-gray-500 bg-panel p-3 text-[14px] text-gray-200';
 export const NUM = 'font-orbitron text-[clamp(28px,2.6vw,44px)] font-medium leading-none tracking-[-0.03em] text-gray-100 tabular-nums';
 
 /** a numbered section: § mark + side note in the margin column, content beside it; one column on phones */
