@@ -269,7 +269,31 @@ export default function Marketplace() {
             <p className="mt-4 font-mono text-[12px] text-gray-600">{DISCLAIMERS.operators}</p>
           </Section>
 
-          <Section mark="6" note="Pay from an agent: the same call in three languages." className="mt-16 mb-4">
+          <Section id="attested" mark="6" note="Attested data: answers from our own mainnet node, signed by a registered attester, anchored on chain every hour." className="mt-16">
+            <h2 className={H2}>Attested data, from a node that signs its answers</h2>
+            <p className="mt-2 max-w-[70ch] text-[15px] leading-relaxed text-gray-300">
+              Two paid endpoints run next to our mainnet node. Each answer is a signed envelope that states exactly what the node&apos;s index holds, the hash of every served answer is merkle-anchored in a mainnet transaction once an hour, and a node-less agent can verify both offline. Each costs 1 kUSD cent per call (KAS accepted); both are listed on the {MARKET_NAME}.
+            </p>
+            <div className="mt-4 grid gap-8 sm:grid-cols-2">
+              <div className="border-t border-gray-800 pt-4">
+                <div className={MARK}>attest.receipt</div>
+                <h3 className={`mt-1 ${H3}`}>Settlement receipt</h3>
+                <p className="mt-2 text-[14.5px] leading-relaxed text-gray-400">For a Kaspa mainnet txid: accepted, seen or unknown, the accepting block, blue score, confirmations and when our node first saw it. Unknown always comes with the coverage window it was judged against.</p>
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[12.5px]"><a href="https://attest.kaspa-402.org/receipt" className={LINK}>POST attest.kaspa-402.org/receipt</a><a href="https://attest.kaspa-402.org/methodology/receipt" className={`text-gray-400 ${LINK}`}>method and limits</a></div>
+              </div>
+              <div className="border-t border-gray-800 pt-4">
+                <div className={MARK}>attest.fees</div>
+                <h3 className={`mt-1 ${H3}`}>Fee and inclusion forecast</h3>
+                <p className="mt-2 text-[14.5px] leading-relaxed text-gray-400">The node&apos;s fee buckets plus what only a node operator watching its mempool can measure: first-seen to acceptance delays by feerate over the last hour, on a fixed grid with a 50-sample floor.</p>
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[12.5px]"><a href="https://attest.kaspa-402.org/fees" className={LINK}>GET attest.kaspa-402.org/fees</a><a href="https://attest.kaspa-402.org/methodology/fees" className={`text-gray-400 ${LINK}`}>method and limits</a></div>
+              </div>
+            </div>
+            <p className="mt-5 max-w-[70ch] font-mono text-[12.5px] leading-relaxed text-gray-500">
+              Verify any answer: <a href="https://github.com/kaspa-402/k402-attest" className={LINK}>verify.py</a> checks the signature offline; with the proof from <a href="https://attest.kaspa-402.org/audit/2026-11-19T01" className={LINK}>attest.kaspa-402.org/audit/&lt;hour&gt;</a> and any Kaspa node it checks the hourly anchor on chain. Attesters, weights and disputes: <a href="https://attest.kaspa-402.org/attesters" className={LINK}>/attesters</a>.
+            </p>
+          </Section>
+
+          <Section mark="7" note="Pay from an agent: the same call in three languages." className="mt-16 mb-4">
             <CodeTabs samples={SAMPLES} />
             <p className="mt-3 font-mono text-[12px] text-gray-600">Full example: <a href="https://github.com/kaspa-402/kaspa-402/blob/main/examples/agent-quickstart.mjs" target="_blank" rel="noopener noreferrer" className={LINK}>examples/agent-quickstart.mjs</a> on GitHub.</p>
           </Section>
