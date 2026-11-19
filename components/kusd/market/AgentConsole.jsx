@@ -5,7 +5,6 @@
 // What each move of the review sheet means for the reservation is decided by lib/kusd/market/flow.mjs
 // (followSheet): voided only when nothing can have been signed; kept once sending began.
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ExternalLink, Loader2, XCircle } from 'lucide-react';
 import { input, primary, secondary, usdText, kasText, Panel, Row, txUrl } from '../app/ui';
 import { UnlockForm, storedWallet, WALLET_KEY } from '../app/WalletTab';
 import { writeStored } from '../app/useKusd';
@@ -24,8 +23,8 @@ const when = (t) => (t ? `${new Date(t * 1000).toISOString().replace('T', ' ').s
 
 const Check = ({ ok, children }) => (
   <li className="flex items-start gap-2 text-sm">
-    {ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" aria-hidden />}
-    <span className={ok ? 'text-gray-200' : 'text-red-300'}>{children}</span>
+    {ok ? <span className="font-mono text-accent" aria-hidden>✓</span> : <span className="font-mono text-gray-300" aria-hidden>×</span>}
+    <span className={ok ? 'text-gray-200' : 'text-gray-200'}>{children}</span>
   </li>
 );
 
@@ -42,7 +41,7 @@ function ProviderDetail({ listing, fromSnapshot }) {
   if (!listing) return null;
   const rep = p?.reputation || listing.reputation || {};
   return (
-    <details className="rounded-lg border border-gray-800 bg-black/20 p-3 text-xs text-gray-400">
+    <details className="border border-gray-800 bg-panel p-3 text-xs text-gray-400">
       <summary className="cursor-pointer text-gray-300">About this provider</summary>
       <div className="mt-2 space-y-1">
         <Row k="listed key" v={<span className="break-all">{listing.payee_pubkey}</span>} />
@@ -50,7 +49,7 @@ function ProviderDetail({ listing, fromSnapshot }) {
         <Row k="settled" v={`${usdText(rep.settled_cents || 0)} over ${rep.closes || 0} report(s)`} />
         <Row k="first / last" v={`${when(rep.first_settled)} / ${when(rep.last_settled)}`} />
         <Row k="listings" v={(p?.listings || [listing]).map((l) => `${l.capability} ${usdText(l.price_cents)}`).join(' · ')} />
-        {p?.error && <p className="text-amber-200">The registry did not answer for this provider; showing the listing's own figures.</p>}
+        {p?.error && <p className="text-gray-300">The registry did not answer for this provider; showing the listing's own figures.</p>}
       </div>
     </details>
   );
@@ -153,18 +152,18 @@ export default function AgentConsole({ k, session, review, listing, live, author
 
   return (
     <Panel title="Buy a call — be the agent">
-      <ol className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-wider">
+      <ol className="flex flex-wrap gap-2 font-mono text-[11px]">
         {[['1 · wallet', Boolean(wallet)], ['2 · pick a listing', Boolean(wallet && listing)], ['3 · quote & pay', Boolean(q)]].map(([label, done], i, arr) => {
           const current = !done && (i === 0 || arr[i - 1][1]);
-          return <li key={label} className={`rounded-full border px-2.5 py-0.5 ${done ? 'border-emerald-400/50 text-emerald-300' : current ? 'border-neon-purple text-neon-purple' : 'border-gray-800 text-gray-600'}`}>{label}{done ? ' ✓' : ''}</li>;
+          return <li key={label} className={`border px-2.5 py-0.5 ${done ? 'border-accent text-accent' : current ? 'border-accent text-accent' : 'border-gray-800 text-gray-600'}`}>{label}{done ? ' ✓' : ''}</li>;
         })}
       </ol>
       {stored === false && (
-        <div className="rounded-lg border border-neon-purple/40 bg-neon-purple/5 p-4 text-sm text-gray-300">
+        <div className="border border-accent bg-panel p-4 text-sm text-gray-300">
           <p>Step 1 is a browser wallet. It never leaves this browser: a key sealed with your passphrase, funded with free testnet-10 KAS, holding a few cents of kUSD.</p>
           <div className="mt-3 flex flex-wrap gap-3">
-            <a href="/kusd/app" className="rounded-lg bg-neon-purple px-4 py-2 text-sm font-semibold text-black hover:bg-neon-purple/90">Create a wallet in the kUSD app →</a>
-            <a href="/get-started" className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:border-neon-purple/60">Get test funds first</a>
+            <a href="/kusd/app" className="bg-accent px-4 py-2 text-sm font-semibold text-ground hover:bg-accent">Create a wallet in the kUSD app →</a>
+            <a href="/get-started" className="border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:border-accent">Get test funds first</a>
           </div>
         </div>
       )}
@@ -178,10 +177,10 @@ export default function AgentConsole({ k, session, review, listing, live, author
           {!listing && <p className="text-sm text-gray-400">Pick a listing on the board.</p>}
           {listing && (
             <>
-              <div className="rounded-lg border border-gray-800 bg-black/30 p-3 text-sm">
+              <div className="border border-gray-800 bg-panel p-3 text-sm">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="font-mono text-white">{listing.capability}</span>
-                  <span className="font-mono text-neon-purple" title={`${listing.price_cents}¢`}>{usdText(listing.price_cents)}/call</span>
+                  <span className="font-mono text-accent" title={`${listing.price_cents}¢`}>{usdText(listing.price_cents)}/call</span>
                 </div>
                 <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
                   <span className="break-all font-mono">{listing.endpoint}</span>
@@ -194,12 +193,12 @@ export default function AgentConsole({ k, session, review, listing, live, author
                 <textarea className={`${input} mt-1 min-h-[88px]`} value={text} onChange={(e) => setText(e.target.value)} />
               </label>
               <div className="flex flex-wrap gap-2">
-                <button type="button" className={secondary} onClick={getQuote} disabled={!canQuote}>{busy === 'quoting' ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Asking…</> : 'Quote'}</button>
+                <button type="button" className={secondary} onClick={getQuote} disabled={!canQuote}>{busy === 'quoting' ? <> Asking…</> : 'Quote'}</button>
                 <button type="button" className={primary} onClick={pay} disabled={!canPay}>{q ? `Pay ${usdText(q.cents)}` : 'Pay'}</button>
               </div>
-              {fromSnapshot && <p className="text-xs text-amber-200">The registry is unreachable from this browser; quoting and paying are off until it is back.</p>}
+              {fromSnapshot && <p className="text-xs text-gray-300">The registry is unreachable from this browser; quoting and paying are off until it is back.</p>}
               {q && (
-                <ul className="space-y-1 rounded-lg border border-gray-800 bg-black/30 p-3">
+                <ul className="space-y-1  border border-gray-800 bg-panel p-3">
                   <Check ok>the provider answered 402 with an x402 <span className="font-mono">PAYMENT-REQUIRED</span> for <span className="font-mono">{usdText(q.cents)}</span></Check>
                   <Check ok>asset is our kUSD family <span className="font-mono">{authority.slice(0, 8)}…</span>, network {q.network}</Check>
                   <Check ok>pays to the listed key tweaked by offer <span className="font-mono">{q.paymentId}</span>: <span className="font-mono">{q.payTo.slice(0, 12)}…</span> (recomputed here)</Check>
@@ -207,28 +206,28 @@ export default function AgentConsole({ k, session, review, listing, live, author
                   <li className="pt-1 text-xs text-gray-400">Outlay if you pay: {usdText(q.cents)} + {kasText(HOLDER_VALUE_SOMPI)} locked in the box (the provider&apos;s to recover) + up to {kasText(SEND_FEE_SOMPI)} fee. The quote expires {Math.max(0, Math.round((q.expiresAt - Date.now()) / 1000))}s from now.</li>
                 </ul>
               )}
-              {wallet && q && kusd < q.cents && <p className="text-xs text-amber-200">Not enough kUSD in this wallet ({usdText(kusd)}); buy some on the kUSD app first.</p>}
+              {wallet && q && kusd < q.cents && <p className="text-xs text-gray-300">Not enough kUSD in this wallet ({usdText(kusd)}); buy some on the kUSD app first.</p>}
             </>
           )}
           {refusal && (
-            <div className={`rounded-lg border p-3 text-sm ${refusal.nothingMoved ? 'border-red-900/60 bg-red-950/30 text-red-200' : 'border-amber-700/60 bg-amber-950/20 text-amber-100'}`}>
-              <span className={`font-mono text-xs uppercase tracking-wider ${refusal.nothingMoved ? 'text-red-400' : 'text-amber-300'}`}>{refusal.nothingMoved ? 'refused' : 'outcome unknown'} · {refusal.code}</span>
+            <div className={`border p-3 text-sm ${refusal.nothingMoved ? 'border-dashed border-gray-500 bg-panel text-gray-200' : 'border-dashed border-gray-500 bg-panel text-gray-300'}`}>
+              <span className={`font-mono text-xs ${refusal.nothingMoved ? 'text-gray-200' : 'text-gray-300'}`}>{refusal.nothingMoved ? 'refused' : 'outcome unknown'} · {refusal.code}</span>
               <div className="mt-1">{refusal.reason}</div>
               <div className="mt-1 text-xs opacity-80">{refusal.nothingMoved ? 'Nothing was built or broadcast.' : 'Counted in the ledger as paid.'}</div>
             </div>
           )}
-          {busy === 'presenting' && <p className="inline-flex items-center gap-2 text-sm text-gray-300"><Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Box broadcast; presenting <span className="font-mono">PAYMENT-SIGNATURE</span> and waiting for the provider&apos;s node to see it…</p>}
+          {busy === 'presenting' && <p className="inline-flex items-center gap-2 text-sm text-gray-300"> Box broadcast; presenting <span className="font-mono">PAYMENT-SIGNATURE</span> and waiting for the provider&apos;s node to see it…</p>}
           {result && (
-            <div className={`rounded-lg border p-3 text-sm ${result.failed ? 'border-amber-700/60 bg-amber-950/20' : 'border-emerald-900/60 bg-emerald-950/20'}`}>
-              <div className="font-mono text-xs uppercase tracking-wider text-gray-400">{result.failed ? 'paid, not served' : 'served'}</div>
+            <div className={`border p-3 text-sm ${result.failed ? 'border-dashed border-gray-500 bg-panel' : 'border-gray-100 bg-panel'}`}>
+              <div className="font-mono text-xs text-gray-400">{result.failed ? 'paid, not served' : 'served'}</div>
               {result.json?.summary && <p className="mt-1 text-gray-100">{result.json.summary}</p>}
-              {result.failed && <p className="mt-1 text-amber-200">{result.failed}</p>}
+              {result.failed && <p className="mt-1 text-gray-300">{result.failed}</p>}
               <div className="mt-2 space-y-1">
                 <Row k="paid" v={usdText(result.cents)} />
                 <Row k="KAS in the box" v={`${kasText(HOLDER_VALUE_SOMPI)} (the provider's to recover)`} />
                 <Row k="network fee" v={`up to ${kasText(SEND_FEE_SOMPI)}`} />
                 <Row k="HTTP" v={`${result.status} after ${result.attempts} attempt(s)`} />
-                <Row k="box" v={<a href={txUrl(result.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-neon-purple hover:underline">{result.txid.slice(0, 16)}… <ExternalLink className="h-3 w-3" aria-hidden /></a>} />
+                <Row k="box" v={<a href={txUrl(result.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">{result.txid.slice(0, 16)}… </a>} />
               </div>
               <p className="mt-2 text-xs text-gray-400">Watch the settlements feed: the provider reports this box to the registry, which checks it on its node.</p>
             </div>

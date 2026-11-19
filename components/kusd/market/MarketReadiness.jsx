@@ -1,4 +1,3 @@
-import { Lock, Unlock } from 'lucide-react';
 
 /**
  * What the market can do right now (UI/UX brief, Phase 3 /market): whether payments are frozen (the operator's kill
@@ -9,8 +8,8 @@ export default function MarketReadiness({ k, frozen, onFreeze, hasLedger, checke
   const since = checkedAt ? Math.max(0, Math.round((Date.now() - checkedAt) / 1000)) : null;
   const state = frozen ? 'FROZEN' : ready ? 'ON' : 'PENDING';
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-gray-800 bg-gray-900/60 px-4 py-3 text-sm">
-      <span role="status" className={`rounded-full border px-2.5 py-0.5 font-mono text-xs uppercase tracking-widest ${frozen ? 'border-rose-400/60 text-rose-300' : ready ? 'border-emerald-400/50 text-emerald-300' : 'border-gray-600 text-gray-400'}`}>
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2  border border-gray-800 bg-panel px-4 py-3 text-sm">
+      <span role="status" className={`font-mono text-xs ${frozen ? 'border-gray-500 text-gray-200' : ready ? 'border-accent text-accent' : 'border-gray-600 text-gray-400'}`}>
         payments: {state}
       </span>
       <span className="text-xs text-gray-400">
@@ -23,8 +22,8 @@ export default function MarketReadiness({ k, frozen, onFreeze, hasLedger, checke
               : `Payments unlock once ${k.canAct?.reason || 'the wallet is open and the chain is verified'}.`}
       </span>
       <button type="button" onClick={onFreeze} disabled={!hasLedger} title={hasLedger ? '' : 'unlock a wallet first'}
-        className="inline-flex items-center gap-1 rounded-lg border border-gray-700 px-3 py-1 font-mono text-xs text-gray-300 hover:border-rose-400/50 hover:text-rose-200 disabled:opacity-50">
-        {frozen ? <><Unlock className="h-3.5 w-3.5" aria-hidden /> Unfreeze</> : <><Lock className="h-3.5 w-3.5" aria-hidden /> Freeze (kill switch)</>}
+        className="inline-flex items-center gap-1  border border-gray-700 px-3 py-1 font-mono text-xs text-gray-300 hover:border-gray-500 hover:text-gray-200 disabled:opacity-50">
+        {frozen ? <> Unfreeze</> : <> Freeze (kill switch)</>}
       </button>
       <span className="ml-auto font-mono text-[11px] text-gray-500">
         {fromSnapshot ? 'registry: snapshot' : `registry refreshes every 10 s${since != null ? ` · ${since}s ago` : ''}`}

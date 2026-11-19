@@ -2,7 +2,6 @@
 // on each, the kill switch, and the ledger. In a browser the operator and the agent are the same person; this
 // shows the mechanism that k402 / k402-mcp enforce for real agents.
 import { useEffect, useState } from 'react';
-import { ExternalLink, Lock, Unlock } from 'lucide-react';
 import { input, primary, secondary, usdText, Panel, txUrl } from '../app/ui';
 import { SpendPolicy } from '../../../lib/kusd/market/spend.mjs';
 
@@ -18,8 +17,8 @@ const FIELDS = [
 const Meter = ({ label, used, max }) => (
   <div>
     <div className="flex justify-between text-xs text-gray-400"><span>{label}</span><span className="font-mono">{max == null ? `${used} · no limit` : `${used} / ${max}`}</span></div>
-    <div className="mt-1 h-1.5 overflow-hidden rounded bg-gray-800">
-      <div className={`h-full ${max != null && used >= max ? 'bg-red-400' : 'bg-neon-purple'}`} style={{ width: max == null ? '0%' : `${Math.min(100, (100 * used) / Math.max(1, max))}%` }} />
+    <div className="mt-1 h-1.5 overflow-hidden  bg-gray-800">
+      <div className={`h-full ${max != null && used >= max ? 'bg-gray-300' : 'bg-accent'}`} style={{ width: max == null ? '0%' : `${Math.min(100, (100 * used) / Math.max(1, max))}%` }} />
     </div>
   </div>
 );
@@ -48,11 +47,11 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
     <Panel title="Operator">
       <p className="text-sm text-gray-300">
         The person who funds an agent&apos;s wallet sets these; the agent cannot loosen them from a call. Here you are both, so this is the
-        mechanism on display — <a className="text-neon-purple hover:underline" href="https://github.com/kaspa-402/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy <ExternalLink className="inline h-3 w-3" aria-hidden /></a> enforces the same bounds for real agents and MCP servers.
+        mechanism on display — <a className="text-accent hover:underline" href="https://github.com/kaspa-402/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy </a> enforces the same bounds for real agents and MCP servers.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" onClick={onFreeze} className={frozen ? primary : secondary}>
-          {frozen ? <><Unlock className="h-4 w-4" aria-hidden /> Unfreeze</> : <><Lock className="h-4 w-4" aria-hidden /> Freeze (kill switch)</>}
+          {frozen ? <> Unfreeze</> : <> Freeze (kill switch)</>}
         </button>
         <span className="text-xs text-gray-400">{frozen ? 'Every payment is refused until you unfreeze.' : 'Freezing refuses every payment at once, without touching the wallet.'}</span>
       </div>
@@ -80,11 +79,11 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
         </label>
         <div className="flex items-center gap-3 sm:col-span-2">
           <button type="submit" className={primary}>Apply policy</button>
-          {err && <span className="text-sm text-red-400">{err}</span>}
+          {err && <span className="text-sm text-gray-200">{err}</span>}
         </div>
       </form>
       <div>
-        <div className="text-xs uppercase tracking-wider text-gray-500">Ledger (this wallet, this browser)</div>
+        <div className="text-xs text-gray-500">Ledger (this wallet, this browser)</div>
         {(!history || history.length === 0) && <p className="mt-1 text-sm text-gray-400">Nothing reserved or paid yet.</p>}
         <ul className="mt-1 divide-y divide-gray-800">
           {(history || []).map((r) => (
@@ -92,7 +91,7 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
               <span><span className="font-mono text-gray-500">{new Date(r.ts).toISOString().replace('T', ' ').slice(5, 16)}</span> <span className="font-mono text-gray-200">{usdText(r.cents)}</span> <span className="text-gray-400">{r.capability || '—'}</span> <span className="font-mono text-gray-500">{r.provider.slice(0, 8)}…</span></span>
               <span className="font-mono text-gray-400">
                 {r.state}{r.http != null ? ` · HTTP ${r.http}` : ''}
-                {r.txid && <> · <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="text-neon-purple hover:underline">{r.txid.slice(0, 10)}…</a></>}
+                {r.txid && <> · <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="text-accent hover:underline">{r.txid.slice(0, 10)}…</a></>}
               </span>
             </li>
           ))}

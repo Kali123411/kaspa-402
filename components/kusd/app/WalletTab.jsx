@@ -1,7 +1,6 @@
 // Create, import, unlock and export the TN10 wallet. The key is stored only as a passphrase-sealed blob
 // in this browser; the open key lives in page memory until the wallet locks.
 import { useState } from 'react';
-import { Copy, Check, Download, Eye, Lock, Droplets, KeyRound } from 'lucide-react';
 import { newSecret, sealSecret, openSecret } from '../../../lib/kusd/app/keystore.mjs';
 import { parseUsd } from '../../../lib/kusd/app/amounts.mjs';
 import { recipientKey } from '../../../lib/kusd/app/recipient.mjs';
@@ -22,7 +21,7 @@ function CopyButton({ value, label = 'Copy' }) {
   };
   return (
     <button type="button" onClick={copy} className={secondary}>
-      {done ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />} {done ? 'Copied' : label}
+      {done ?  : } {done ? 'Copied' : label}
     </button>
   );
 }
@@ -75,7 +74,7 @@ function NewWallet({ k, onOpen }) {
     <Panel title="Set up a TN10 wallet">
       <div className="flex flex-wrap gap-2">
         {[['create', 'Create new'], ['import', 'Import key'], ['file', 'Open wallet file']].map(([m, label]) => (
-          <button key={m} type="button" onClick={() => setMode(m)} className={`rounded-full px-3 py-1 text-xs ${mode === m ? 'bg-neon-purple text-black' : 'border border-gray-700 text-gray-300'}`}>{label}</button>
+          <button key={m} type="button" onClick={() => setMode(m)} className={`-mb-px border-b-2 px-1 py-1.5 font-mono text-[13px] ${mode === m ? 'border-accent text-gray-100' : 'border-transparent text-gray-500 hover:text-gray-100'}`}>{label}</button>
         ))}
       </div>
       {mode === 'file' ? (
@@ -91,11 +90,11 @@ function NewWallet({ k, onOpen }) {
           <input className={input} type="password" value={pass} onChange={(e) => setPass(e.target.value)} placeholder="passphrase (8+ characters)" autoComplete="new-password" />
           <input className={input} type="password" value={again} onChange={(e) => setAgain(e.target.value)} placeholder="passphrase again" autoComplete="new-password" />
           <button type="submit" className={primary} disabled={!ready || busy || pass.length < 8}>
-            <KeyRound className="h-4 w-4" aria-hidden /> {busy ? 'Sealing…' : mode === 'create' ? 'Create wallet' : 'Import wallet'}
+             {busy ? 'Sealing…' : mode === 'create' ? 'Create wallet' : 'Import wallet'}
           </button>
         </form>
       )}
-      {err && <p className="text-sm text-red-400">{err}</p>}
+      {err && <p className="text-sm text-gray-200">{err}</p>}
       <p className="text-xs text-gray-500">
         The key is made in this browser and stored here only, sealed with your passphrase. There is no recovery: export the wallet
         file and keep the passphrase.
@@ -133,7 +132,7 @@ export function UnlockForm({ k, onOpen, onForget }) {
           <button type="button" className={secondary} onClick={forget}>Remove from this browser</button>
         </div>
       </form>
-      {err && <p className="text-sm text-red-400">{err}</p>}
+      {err && <p className="text-sm text-gray-200">{err}</p>}
     </Panel>
   );
 }
@@ -181,7 +180,7 @@ function SendPanel({ k, wallet, review }) {
       <input className={input} value={to} onChange={(e) => setTo(e.target.value)} placeholder="kaspatest: address, or me" spellCheck={false} autoComplete="off" />
       <AmountForm placeholder="kUSD to send" disabled={!k.canAct.ok || holders.length === 0} onReview={send} />
       <p className="text-xs text-gray-500">Sending to <span className="font-mono">me</span> splits your kUSD into a box of exactly that amount — for a partial redeem or an exact repay.</p>
-      {err && <p className="text-sm text-red-400">{err}</p>}
+      {err && <p className="text-sm text-gray-200">{err}</p>}
     </Panel>
   );
 }
@@ -224,24 +223,24 @@ export default function WalletTab({ k, secret, wallet, onOpen, onLock, review })
       <Panel title="Your wallet">
         <p className="break-all font-mono text-sm text-gray-200">{wallet.address}</p>
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg bg-black/30 p-3">
-            <div className="text-xs uppercase tracking-wider text-gray-500">KAS</div>
+          <div className="bg-panel p-3">
+            <div className="text-xs text-gray-500">KAS</div>
             <div className="mt-1 font-mono text-lg text-white">{kasText(kasBalance)}</div>
           </div>
-          <div className="rounded-lg bg-black/30 p-3">
-            <div className="text-xs uppercase tracking-wider text-gray-500">kUSD</div>
+          <div className="bg-panel p-3">
+            <div className="text-xs text-gray-500">kUSD</div>
             <div className="mt-1 font-mono text-lg text-white">{usdText(kusdBalance)}</div>
             <div className="text-xs text-gray-500">{(k.chain?.holders || []).length} box{(k.chain?.holders || []).length === 1 ? '' : 'es'}</div>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <CopyButton value={wallet.address} label="Copy address" />
-          <button type="button" className={secondary} onClick={faucet}><Droplets className="h-4 w-4" aria-hidden /> Get test KAS</button>
-          <button type="button" className={secondary} onClick={exportFile}><Download className="h-4 w-4" aria-hidden /> Export wallet file</button>
-          <button type="button" className={secondary} onClick={reveal}><Eye className="h-4 w-4" aria-hidden /> {shown ? 'Hide key' : 'Show key'}</button>
-          <button type="button" className={secondary} onClick={onLock}><Lock className="h-4 w-4" aria-hidden /> Lock</button>
+          <button type="button" className={secondary} onClick={faucet}> Get test KAS</button>
+          <button type="button" className={secondary} onClick={exportFile}> Export wallet file</button>
+          <button type="button" className={secondary} onClick={reveal}> {shown ? 'Hide key' : 'Show key'}</button>
+          <button type="button" className={secondary} onClick={onLock}> Lock</button>
         </div>
-        {shown && <p className="break-all rounded-lg border border-red-500/40 bg-red-950/30 p-3 font-mono text-xs text-red-200">{secret}</p>}
+        {shown && <p className="break-all  border border-dashed border-gray-500 bg-panel p-3 font-mono text-xs text-gray-200">{secret}</p>}
         <p className="text-xs text-gray-500">&ldquo;Get test KAS&rdquo; copies your address and opens the official TN10 faucet. Paste it there.</p>
       </Panel>
       <SendPanel k={k} wallet={wallet} review={review} />

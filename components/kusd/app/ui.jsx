@@ -1,22 +1,36 @@
-// Shared pieces of the kUSD app's tabs.
-export const input = 'w-full min-w-0 rounded-lg border border-gray-700 bg-black/40 px-3 py-2 font-mono text-sm text-gray-100 placeholder:text-gray-600 focus:border-neon-purple focus:outline-none';
-const button = 'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40';
-export const primary = `${button} bg-neon-purple text-black hover:bg-neon-purple/90`;
-export const secondary = `${button} border border-gray-700 text-gray-200 hover:border-neon-purple`;
+// Shared pieces of the kUSD app's tabs, derived from the site's Ledger grammar (components/Ledger.jsx).
+import { FIELD, H3, LINK } from '../Ledger';
+
+export const input = `w-full min-w-0 ${FIELD}`;
+const button = 'inline-flex items-center justify-center gap-2 px-4 py-2 font-mono text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-40';
+export const primary = `${button} btn-kaspa`;
+export const secondary = `${button} border border-gray-100 text-gray-100 hover:border-accent hover:text-accent`;
+export const link = LINK;
 
 export const kasText = (s) => `${(s / 1e8).toLocaleString('en-US', { maximumFractionDigits: 4 })} KAS`;
 export const usdText = (c) => `${(c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kUSD`;
 export const usdPerKas = (p) => `$${(p / 1e4).toFixed(4)}`;
 export const txUrl = (id) => `https://api-tn10.kaspa.org/transactions/${id}`;
 
+/** a ruled block with a heading: the ledger's unit of grouping (no card) */
 export function Panel({ title, children }) {
   return (
-    <section className="rounded-xl border border-gray-800 bg-gray-900/60 p-4 sm:p-5">
-      {title && <h3 className="font-semibold text-neon-purple">{title}</h3>}
+    <section className="border-t border-gray-100 pt-4">
+      {title && <h3 className={H3}>{title}</h3>}
       <div className={title ? 'mt-3 space-y-3' : 'space-y-3'}>{children}</div>
     </section>
   );
 }
+
+/** a small mono label above a value (replaces the uppercase micro-labels) */
+export function Label({ children }) {
+  return <div className="font-mono text-[12px] text-gray-500">{children}</div>;
+}
+
+/** an inset for a value or a form: the panel surface, square */
+export const inset = 'border border-gray-800 bg-panel p-3';
+/** a notice the reader must not miss (a refusal, an unknown outcome, a caveat): a dashed rule, plain words */
+export const notice = 'border border-dashed border-gray-500 bg-panel p-3 text-[14px] text-gray-200';
 
 export function Row({ k, v }) {
   return (

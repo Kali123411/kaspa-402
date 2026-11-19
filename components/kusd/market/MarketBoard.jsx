@@ -1,11 +1,10 @@
 // Every kUSD-priced listing on the registry: what it does, what it costs, who runs it, what it has earned, and
 // whether it is answering right now.
 import { useEffect, useMemo, useState } from 'react';
-import { Radio, Search } from 'lucide-react';
 import { input, usdText, Panel } from '../app/ui';
 
 const short = (k) => `${k.slice(0, 8)}…${k.slice(-4)}`;
-// relative times are computed from a clock set after mount: the server-rendered HTML must not carry a "now"
+// relative times are computed from a clock set after mount: the server-rendered HTML must not carry a"now"
 const ago = (t, now) => {
   if (!t || !now) return '—';
   const s = Math.max(0, Math.round(now / 1000 - t));
@@ -23,10 +22,10 @@ function useNow(everyMs = 30_000) {
 const SORTS = { reputation: 'most settled', price: 'cheapest', newest: 'newest' };
 
 export function LiveDot({ probe }) {
-  if (!probe) return <span className="inline-flex items-center gap-1 text-[11px] text-gray-500"><Radio className="h-3 w-3" aria-hidden /> checking…</span>;
+  if (!probe) return <span className="inline-flex items-center gap-1 text-[11px] text-gray-500"> checking…</span>;
   return probe.live
-    ? <span className="inline-flex items-center gap-1 text-[11px] text-emerald-300"><span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden /> live, quoting {usdText(probe.cents ?? 0)}</span>
-    : <span className="inline-flex items-center gap-1 text-[11px] text-gray-500"><span className="h-2 w-2 rounded-full bg-gray-600" aria-hidden /> not answering</span>;
+    ? <span className="inline-flex items-center gap-1 text-[11px] text-accent"><span className="h-2 w-2  bg-accent" aria-hidden /> live, quoting {usdText(probe.cents ?? 0)}</span>
+    : <span className="inline-flex items-center gap-1 text-[11px] text-gray-500"><span className="h-2 w-2  bg-gray-600" aria-hidden /> not answering</span>;
 }
 
 export default function MarketBoard({ providers, live, fromSnapshot, loading, selected, onPick }) {
@@ -48,7 +47,7 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
     <Panel title="Market">
       <div className="flex flex-wrap gap-2">
         <label className="relative min-w-0 flex-1">
-          <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-500" aria-hidden />
+          
           <input className={`${input} pl-9`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="capability, provider, model…" aria-label="Search listings" />
         </label>
         <select className={`${input} w-auto`} value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort listings">
@@ -63,10 +62,10 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
           return (
             <li key={key} className="h-full">
               <button type="button" onClick={() => onPick(p)} aria-pressed={isSel}
-                className={`flex h-full w-full flex-col rounded-xl border p-4 text-left transition ${isSel ? 'border-neon-purple bg-neon-purple/10' : 'border-gray-800 bg-black/30 hover:border-gray-600'}`}>
+                className={`flex h-full w-full flex-col  border p-4 text-left transition ${isSel ? 'border-accent bg-panel' : 'border-gray-800 bg-panel hover:border-gray-600'}`}>
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-mono text-base text-white">{p.capability}</span>
-                  <span className="font-mono text-sm text-neon-purple" title={`${p.price_cents}¢`}>{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
+                  <span className="font-mono text-sm text-accent" title={`${p.price_cents}¢`}>{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
                 </div>
                 <div className="mt-1 text-xs text-gray-400">
                   {p.meta?.provider || `provider ${short(p.payee_pubkey)}`}{p.meta?.model ? ` · ${p.meta.model}` : ''}

@@ -1,6 +1,5 @@
 // Every action ends here: the signed transaction described in words, then one tap to broadcast it.
 import { useCallback, useRef, useState } from 'react';
-import { ExternalLink, Loader2, X } from 'lucide-react';
 import { record } from '../../../lib/kusd/app/activity.mjs';
 import { applyPreview } from '../../../lib/kusd/app/sheet.mjs';
 import { ContentionError } from '../../../lib/kusd/app/flow.mjs';
@@ -53,7 +52,7 @@ const signed = (n, fmt) => (n > 0 ? `+${fmt(n)}` : n < 0 ? `−${fmt(-n)}` : fmt
 function Lines({ title, lines }) {
   return (
     <div>
-      <div className="text-xs uppercase tracking-wider text-gray-500">{title}</div>
+      <div className="text-xs text-gray-500">{title}</div>
       <ul className="mt-1 space-y-1">
         {lines.map((l, i) => (
           <li key={i} className="flex justify-between gap-3 text-sm">
@@ -72,19 +71,19 @@ export default function ReviewSheet({ review }) {
   const busy = sheet.status === 'building' || sheet.status === 'sending';
   const d = sheet.description;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center" role="dialog" aria-modal="true" aria-label="Review transaction">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-gray-800 bg-gray-950 p-5 sm:rounded-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ground/80 sm:items-center" role="dialog" aria-modal="true" aria-label="Review transaction">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto  border border-gray-800 bg-ground p-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="min-w-0 break-words font-semibold text-white">{sheet.summary}</h3>
-          <button type="button" onClick={close} disabled={sheet.status === 'sending'} className="text-gray-500 hover:text-white" aria-label="Close"><X className="h-5 w-5" /></button>
+          <button type="button" onClick={close} disabled={sheet.status === 'sending'} className="text-gray-500 hover:text-white" aria-label="Close"><span aria-hidden>×</span></button>
         </div>
-        {sheet.status === 'building' && <p className="mt-4 flex items-center gap-2 text-sm text-gray-400"><Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Verifying state and building…</p>}
-        {sheet.notice && sheet.status === 'review' && <p className="mt-4 rounded-lg border border-amber-400/40 bg-amber-400/5 p-3 text-sm text-amber-200">{sheet.notice}</p>}
+        {sheet.status === 'building' && <p className="mt-4 flex items-center gap-2 text-sm text-gray-400"> Verifying state and building…</p>}
+        {sheet.notice && sheet.status === 'review' && <p className="mt-4  border border-dashed border-gray-500 bg-panel p-3 text-sm text-gray-300">{sheet.notice}</p>}
         {d && sheet.status !== 'done' && (
           <div className="mt-4 space-y-4">
-            <div className="grid grid-cols-2 gap-2 rounded-lg bg-black/30 p-3">
-              <div><div className="text-xs uppercase tracking-wider text-gray-500">Your KAS</div><div className="font-mono text-white">{signed(d.net.kasSompi, kasText)}</div></div>
-              <div><div className="text-xs uppercase tracking-wider text-gray-500">Your kUSD</div><div className="font-mono text-white">{signed(d.net.kusdCents, usdText)}</div></div>
+            <div className="grid grid-cols-2 gap-2  bg-panel p-3">
+              <div><div className="text-xs text-gray-500">Your KAS</div><div className="font-mono text-white">{signed(d.net.kasSompi, kasText)}</div></div>
+              <div><div className="text-xs text-gray-500">Your kUSD</div><div className="font-mono text-white">{signed(d.net.kusdCents, usdText)}</div></div>
               <p className="col-span-2 text-xs text-gray-500">From the signed transaction: spendable KAS (including the fee and any KAS locked in new boxes) and kUSD you hold.</p>
             </div>
             <Lines title="Spends" lines={d.inputs} />
@@ -96,18 +95,18 @@ export default function ReviewSheet({ review }) {
             <p className="text-xs text-gray-500">Signed in this browser{d.clock ? `; valid from DAA ${d.clock}` : ''}. Covenants check every rule again on chain.</p>
           </div>
         )}
-        {sheet.status === 'error' && <p className="mt-4 break-words rounded-lg border border-red-500/40 bg-red-950/30 p-3 text-sm text-red-200">{sheet.error}</p>}
+        {sheet.status === 'error' && <p className="mt-4 break-words  border border-dashed border-gray-500 bg-panel p-3 text-sm text-gray-200">{sheet.error}</p>}
         {sheet.status === 'done' && (
           <div className="mt-4 space-y-2">
-            <p className="text-sm text-emerald-300">Accepted by the node.</p>
-            <a href={txUrl(sheet.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 break-all font-mono text-xs text-neon-purple hover:underline">
-              {sheet.txid} <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+            <p className="text-sm text-accent">Accepted by the node.</p>
+            <a href={txUrl(sheet.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 break-all font-mono text-xs text-accent hover:underline">
+              {sheet.txid} 
             </a>
           </div>
         )}
         <div className="mt-5 flex flex-wrap gap-2">
           {sheet.status === 'review' && <button type="button" className={primary} onClick={confirm}>Sign &amp; broadcast</button>}
-          {sheet.status === 'sending' && <button type="button" className={primary} disabled><Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Broadcasting…</button>}
+          {sheet.status === 'sending' && <button type="button" className={primary} disabled> Broadcasting…</button>}
           {!busy && <button type="button" className={secondary} onClick={close}>{sheet.status === 'done' ? 'Done' : 'Cancel'}</button>}
         </div>
       </div>

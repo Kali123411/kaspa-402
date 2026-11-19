@@ -2,7 +2,6 @@
 // the offer's derived key, reported by the provider while the box was unspent.
 import { useEffect, useRef, useState } from 'react';
 import Freshness from '../../Freshness';
-import { ExternalLink } from 'lucide-react';
 import { usdText, Panel, txUrl } from '../app/ui';
 
 const short = (k) => `${k.slice(0, 8)}…`;
@@ -39,15 +38,15 @@ export default function SettlementsFeed({ activity, fromSnapshot, loading, gener
         {rows.map((r) => {
           const id = `${r.txid}:${r.idx}`;
           return (
-            <li key={id} className={`py-2 transition-colors ${fresh.has(id) ? 'bg-neon-purple/10' : ''}`}>
+            <li key={id} className={`py-2 transition-colors ${fresh.has(id) ? 'bg-panel' : ''}`}>
               <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
                 <span><span className="font-mono text-white">{usdText(r.cents)}</span> <span className="text-gray-400">for</span> <span className="font-mono text-gray-200">{r.capability || '—'}</span></span>
                 <span className="font-mono text-[11px] text-gray-500">{when(r.t)} UTC</span>
               </div>
               <div className="mt-0.5 flex flex-wrap items-center gap-x-3 text-xs text-gray-500">
                 <span>to <span className="font-mono">{short(r.payee_pubkey)}</span></span>
-                <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-mono text-neon-purple hover:underline">
-                  {r.txid.slice(0, 12)}… <ExternalLink className="h-3 w-3" aria-hidden />
+                <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-mono text-accent hover:underline">
+                  {r.txid.slice(0, 12)}… 
                 </a>
               </div>
             </li>

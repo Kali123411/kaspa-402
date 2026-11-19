@@ -32,7 +32,7 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
       <Row k="Most it can borrow (175%)" v={usdText(view.maxMintCents)} />
 
       <div className="space-y-2 border-t border-gray-800 pt-3">
-        <div className="text-xs uppercase tracking-wider text-gray-500">Borrow kUSD</div>
+        <div className="text-xs text-gray-500">Borrow kUSD</div>
         <AmountForm placeholder="kUSD to borrow" disabled={!canAct} onReview={go((t) => {
           const c = parseUsd(t);
           if (c > view.maxMintCents) throw new Error(`this vault can borrow at most ${usdText(view.maxMintCents)} more`);
@@ -44,7 +44,7 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
       </div>
 
       <div className="space-y-2">
-        <div className="text-xs uppercase tracking-wider text-gray-500">Collateral</div>
+        <div className="text-xs text-gray-500">Collateral</div>
         <AmountForm placeholder="KAS to add" label="Add" disabled={!canAct} onReview={go((t) => {
           const d = parseKas(t);
           checkFunds(coins, fundingNeed('adjust', { delta: d }, protocol));
@@ -59,13 +59,13 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
 
       {owed > 0 && (
         <div className="space-y-2">
-          <div className="text-xs uppercase tracking-wider text-gray-500">Repay with a kUSD box</div>
+          <div className="text-xs text-gray-500">Repay with a kUSD box</div>
           {plans.length === 0 && <p className="text-sm text-gray-400">No box of yours can repay this vault. Split or merge boxes in the Wallet tab: {usdText(owed)} (up to {usdText(owed + REPAY_SLACK)}) clears it.</p>}
           {plans.map(({ h, plan }) => (
-            <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-black/30 p-3">
+            <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2  bg-panel p-3">
               <span className="font-mono text-sm text-white">
                 {usdText(h.state.amount)}{plan.full ? ' · repays all' : ` · leaves ${usdText(plan.remaining)}`}
-                {plan.excess > 0 && <span className="text-xs text-amber-200"> ({usdText(plan.excess)} above the debt is kept by the protocol)</span>}
+                {plan.excess > 0 && <span className="text-xs text-gray-300"> ({usdText(plan.excess)} above the debt is kept by the protocol)</span>}
               </span>
               <button type="button" className={secondary} disabled={!canAct}
                 onClick={() => review.start('repay', { vault: v, holder: h, withdraw_all: plan.full && releaseAll },
@@ -88,7 +88,7 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
           Close vault
         </button>
       )}
-      {err && <p className="text-sm text-red-400">{err}</p>}
+      {err && <p className="text-sm text-gray-200">{err}</p>}
     </Panel>
   );
 }
@@ -97,7 +97,7 @@ export default function VaultTab({ k, wallet, review }) {
   const [err, setErr] = useState(null);
   const protocol = k.chain?.protocol;
   if (!wallet) return <Panel><p className="text-sm text-gray-400">Unlock or create a wallet in the Wallet tab first.</p></Panel>;
-  if (!protocol) return <Panel><p className="text-sm text-amber-200">{k.canAct.reason}</p></Panel>;
+  if (!protocol) return <Panel><p className="text-sm text-gray-300">{k.canAct.reason}</p></Panel>;
   const oracle = protocol.oracle.state;
 
   const open = (text) => {
@@ -122,7 +122,7 @@ export default function VaultTab({ k, wallet, review }) {
           Lock KAS, then borrow kUSD up to the collateral&apos;s value at the mint price ({usdPerKas(oracle.mint)}) divided by 1.75.
         </p>
         <AmountForm placeholder="KAS to lock, at least 2" label="Review" disabled={!k.canAct.ok} onReview={open} />
-        {err && <p className="text-sm text-red-400">{err}</p>}
+        {err && <p className="text-sm text-gray-200">{err}</p>}
       </Panel>
     </div>
   );
