@@ -47,7 +47,7 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
     <Panel title="Operator">
       <p className="text-sm text-gray-300">
         The person who funds an agent&apos;s wallet sets these; the agent cannot loosen them from a call. Here you are both, so this is the
-        mechanism on display — <a className="text-accent hover:underline" href="https://github.com/kaspa-402/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy </a> enforces the same bounds for real agents and MCP servers.
+        mechanism on display — <a className="text-accent underline decoration-gray-700 underline-offset-4 hover:decoration-accent" href="https://github.com/kaspa-402/k402/blob/main/DESIGN-kusd-spend-controls.md" target="_blank" rel="noreferrer">k402&apos;s SpendPolicy </a> enforces the same bounds for real agents and MCP servers.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" onClick={onFreeze} className={frozen ? primary : secondary}>
@@ -91,7 +91,7 @@ export default function OperatorDrawer({ policy, onPolicy, status, ledger, froze
               <span><span className="font-mono text-gray-500">{new Date(r.ts).toISOString().replace('T', ' ').slice(5, 16)}</span> <span className="font-mono text-gray-200">{usdText(r.cents)}</span> <span className="text-gray-400">{r.capability || '—'}</span> <span className="font-mono text-gray-500">{r.provider.slice(0, 8)}…</span></span>
               <span className="font-mono text-gray-400">
                 {r.state}{r.http != null ? ` · HTTP ${r.http}` : ''}
-                {r.txid && <> · <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="text-accent hover:underline">{r.txid.slice(0, 10)}…</a></>}
+                {r.txid && <> · <a href={txUrl(r.txid)} target="_blank" rel="noreferrer" className="text-accent underline decoration-gray-700 underline-offset-4 hover:decoration-accent">{r.txid.slice(0, 10)}…</a></>}
               </span>
             </li>
           ))}

@@ -3,8 +3,8 @@ import Term from './Term';
 import { BUTTON, FIELD, MARK } from './Ledger';
 
 // The provider's listing form (moved from the landing page: UI/UX brief, Phase 2 P1-7). One unpaid probe decides.
-const Field = ({ label, children, span }) => (
-  <div className={span ? 'sm:col-span-2' : ''}><label className={MARK}>{label}</label>{children}</div>
+const Field = ({ id, label, children, span }) => (
+  <div className={span ? 'sm:col-span-2' : ''}><label htmlFor={id} className={MARK}>{label}</label>{children}</div>
 );
 
 export default function SubmitForm({ onAdded }) {
@@ -30,13 +30,13 @@ export default function SubmitForm({ onAdded }) {
   const field = `${FIELD} mt-1.5 w-full`;
   return (
     <form onSubmit={submit} className="grid gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2">
-      <Field label="Service name" span><input className={field} value={f.serviceName} onChange={upd('serviceName')} placeholder="My inference API" required /></Field>
-      <Field label="Resource URL (the x402-paid endpoint)" span><input className={field} value={f.resource} onChange={upd('resource')} placeholder="https://your-host/run" inputMode="url" required /></Field>
-      <Field label="Description" span><textarea className={`${field} resize-y`} rows={2} value={f.description} onChange={upd('description')} placeholder="One or two lines: what it does, what you send and get back." /></Field>
-      <Field label="Scheme"><select className={field} value={f.scheme} onChange={upd('scheme')}><option value="exact">exact</option><option value="batch-settlement">batch-settlement</option></select></Field>
-      <Field label="Network"><select className={field} value={f.network} onChange={upd('network')}><option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option></select></Field>
-      <Field label="Price (sompi)"><input className={field} value={f.amountSompi} onChange={upd('amountSompi')} type="number" placeholder="20000000" required /></Field>
-      <Field label={<>Capability <span className="text-gray-600">(optional)</span></>}><input className={field} value={f.capability} onChange={upd('capability')} placeholder="summarize" /></Field>
+      <Field id="sf-serviceName" label="Service name" span><input id="sf-serviceName" className={field} value={f.serviceName} onChange={upd('serviceName')} placeholder="My inference API" required /></Field>
+      <Field id="sf-resource" label="Resource URL (the x402-paid endpoint)" span><input id="sf-resource" className={field} value={f.resource} onChange={upd('resource')} placeholder="https://your-host/run" inputMode="url" required /></Field>
+      <Field id="sf-description" label="Description" span><textarea id="sf-description" className={`${field} resize-y`} rows={2} value={f.description} onChange={upd('description')} placeholder="One or two lines: what it does, what you send and get back." /></Field>
+      <Field id="sf-scheme" label="Scheme"><select id="sf-scheme" className={field} value={f.scheme} onChange={upd('scheme')}><option value="exact">exact</option><option value="batch-settlement">batch-settlement</option></select></Field>
+      <Field id="sf-network" label="Network"><select id="sf-network" className={field} value={f.network} onChange={upd('network')}><option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option></select></Field>
+      <Field id="sf-amountSompi" label="Price (sompi)"><input id="sf-amountSompi" className={field} value={f.amountSompi} onChange={upd('amountSompi')} type="number" placeholder="20000000" required /></Field>
+      <Field id="sf-capability" label={<>Capability <span className="text-gray-600">(optional)</span></>}><input id="sf-capability" className={field} value={f.capability} onChange={upd('capability')} placeholder="summarize" /></Field>
       <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
         <button type="submit" disabled={busy} className={`${BUTTON} disabled:opacity-60`}>{busy ? 'probing endpoint…' : 'Submit for listing'}</button>
         {msg ? <span className={`font-mono text-[12.5px] ${msg.level === 'ok' ? 'text-accent' : 'text-gray-200'}`}>{msg.text}</span> : null}

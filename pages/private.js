@@ -82,7 +82,7 @@ export default function Private() {
 
         <Section mark="2" note="The loop, end to end. Recorded on testnet-10: mine → shield → withdraw (fresh address) → pay." className="mt-12">
           <figure className="overflow-hidden border border-gray-800 bg-panel motion-reduce:hidden">
-            <img src="/private-loop.gif" alt="Terminal recording: a Kaspa mining reward is shielded, withdrawn to a fresh unlinkable address, and used to pay an x402 service." className="w-full" />
+            <img src="/private-loop.gif" width={1056} height={770} alt="Terminal recording: a Kaspa mining reward is shielded, withdrawn to a fresh unlinkable address, and used to pay an x402 service." className="w-full" />
           </figure>
           <figcaption className="mt-2 font-mono text-[12px] text-gray-600 motion-reduce:hidden">Fig. 1 — recorded on testnet-10.</figcaption>
           <details className="mt-3 border-t border-gray-800 pt-3 motion-reduce:block [&_summary]:motion-reduce:hidden" open={false}>

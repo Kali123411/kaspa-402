@@ -35,7 +35,7 @@ export default function KusdApp() {
               Swap KAS for kUSD through the PSM, borrow against KAS in a vault, and send kUSD. Holding kUSD here also makes this wallet an
               agent on the <Link href="/market" className={LINK}>Kaspa Agent Market</Link>.
             </p>
-            <div className="mt-6"><StatusStrip k={k} /></div>
+            <div className="mt-6 min-h-[2.75rem]"><StatusStrip k={k} /></div>
           </Section>
           <Section mark="1" note="Wallet, swap, vault, activity." className="mt-12 mb-4">
             <nav className="flex gap-6 border-b border-gray-100" aria-label="kUSD app sections" role="tablist">
@@ -46,7 +46,7 @@ export default function KusdApp() {
                 </button>
               ))}
             </nav>
-            <div className="mt-6">
+            <div className="mt-6 min-h-[24rem]">
               {tab === 'Wallet' && <WalletTab k={k} secret={secret} wallet={wallet} onOpen={open} onLock={lock} review={review} />}
               {tab === 'Swap' && <SwapTab k={k} wallet={wallet} review={review} />}
               {tab === 'Vault' && <VaultTab k={k} wallet={wallet} review={review} />}

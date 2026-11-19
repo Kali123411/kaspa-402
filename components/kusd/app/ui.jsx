@@ -16,7 +16,7 @@ export const txUrl = (id) => `https://api-tn10.kaspa.org/transactions/${id}`;
 export function Panel({ title, children }) {
   return (
     <section className="border-t border-gray-100 pt-4">
-      {title && <h3 className={H3}>{title}</h3>}
+      {title && <h2 className={H3}>{title}</h2>}
       <div className={title ? 'mt-3 space-y-3' : 'space-y-3'}>{children}</div>
     </section>
   );

@@ -3,7 +3,6 @@
 import Head from 'next/head';
 import { EXTERNAL } from '../../lib/brand.mjs';
 import ExternalLink from '../../components/ExternalLink';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { capInfo, categoryOf } from '../../lib/catalog';
 import { H1, H2, LINK, MARK, PAGE, Section } from '../../components/Ledger';
@@ -12,9 +11,7 @@ const SOMPI = 1e8;
 const kas = (s) => { const n = Number(s) / SOMPI; return isFinite(n) ? parseFloat(n.toFixed(8)) : null; };
 const priceLabel = (l) => { const u = Number(l.priceUsd); return u > 0 ? `$${u.toFixed(2)}/call · in KAS at spot (min ${kas(l.amountSompi)} KAS)` : `${l.amountSompi} sompi · ${kas(l.amountSompi)} KAS`; };
 
-export default function Skill() {
-  const router = useRouter();
-  const cap = String(router.query.cap || '').replace(/\.md$/, '');
+export default function Skill({ cap }) {
   const [services, setServices] = useState([]);
   useEffect(() => {
     if (!cap) return;
@@ -26,7 +23,10 @@ export default function Skill() {
 
   return (
     <>
-      <Head><title>{cap} — k402 skill</title></Head>
+      <Head>
+        <title>{cap} — k402 skill</title>
+        <meta name="description" content={`${cap} on k402: ${info.what || 'a capability agents pay for per call over x402 v2 on Kaspa'} Listed services, how to call it, and what each one charges.`} />
+      </Head>
       <main className={`${PAGE} py-12 lg:py-16`}>
         <Section mark="0" top={false} note={<><a href="/" className={LINK}>← the directory</a><div className="mt-2">{categoryOf(cap)} · settled on Kaspa L1 via x402 v2</div></>}>
           <h1 className={H1}>{cap}</h1>
@@ -48,7 +48,7 @@ export default function Skill() {
 
         <Section mark="2" note="Listed services offering this capability, cheapest first. Each line is one unpaid 402 probe away from proof." className="mt-12 mb-4">
           <h2 className={H2}>Services ({services.length})</h2>
-          <ul className="m-0 mt-4 list-none p-0">
+          <ul className="m-0 mt-4 min-h-[6rem] list-none p-0">
             {services.map((l) => (
               <li key={l.id || l.resource} className="grid gap-1 border-t border-gray-800 py-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-6">
                 <div><div className="font-orbitron text-[17px] text-gray-100">{l.serviceName}</div>
@@ -67,4 +67,9 @@ export default function Skill() {
       </main>
     </>
   );
+}
+
+/** the capability comes from the URL on the server, so the page renders whole (no shift, and the description is in the HTML) */
+export async function getServerSideProps({ params }) {
+  return { props: { cap: String(params.cap || '').replace(/\.md$/, '') } };
 }

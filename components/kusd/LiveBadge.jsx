@@ -20,7 +20,7 @@ const DOT = {
 
 export function Dot({ state }) {
   const label = { current: 'matches chain', moved: 'chain has moved', unknown: 'not checked', loading: 'checking' }[state];
-  return <span title={label} aria-label={label} className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[state] || DOT.unknown}`} />;
+  return <span role="img" title={label} aria-label={label} className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[state] || DOT.unknown}`} />;
 }
 
 function useSecondsSince(iso) {

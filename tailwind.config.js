@@ -31,7 +31,7 @@ module.exports = {
           300: '#C9CDD4',
           400: '#B9BDC6',
           500: muted,
-          600: '#5B616B',
+          600: '#858A94',
           700: '#3A3F48',
           800: rule,
           900: panel,

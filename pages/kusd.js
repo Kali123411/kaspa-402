@@ -193,7 +193,7 @@ export default function Kusd() {
           <h2 className={H2}>System state</h2>
           <table className="mt-4 w-full border-collapse text-[14px]">
             <thead>
-              <tr className="font-mono text-[11.5px] text-gray-500"><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal">covenant</th><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal">value</th><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal"></th><th scope="col" className="border-b border-gray-100 pb-2 text-right font-normal">on chain</th></tr>
+              <tr className="font-mono text-[11.5px] text-gray-500"><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal">covenant</th><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal">item</th><th scope="col" className="border-b border-gray-100 pb-2 text-left font-normal">value</th><th scope="col" className="border-b border-gray-100 pb-2 text-right font-normal">on chain</th></tr>
             </thead>
             <tbody className="tabular-nums">
               {covenantRows.map(([title, d, rows]) => rows.map(([k, v], i) => (

@@ -70,15 +70,15 @@ export default function Validate() {
 
         <Section mark="1" note="The probe. One unpaid request, from this site's server." className="mt-12">
           <form onSubmit={run} className="flex max-w-[760px] flex-col gap-3">
-            <label className={MARK}>Service endpoint (the paid URL)</label>
-            <input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} inputMode="url" spellCheck={false}
+            <label htmlFor="v-endpoint" className={MARK}>Service endpoint (the paid URL)</label>
+            <input id="v-endpoint" value={endpoint} onChange={(e) => setEndpoint(e.target.value)} inputMode="url" spellCheck={false}
               placeholder="https://your-host/run   (the URL an agent calls, which answers 402 unpaid)"
               className={`${FIELD} w-full py-3`} />
             <button type="button" onClick={() => setEndpoint('https://kaspa-402-ask.kaspadev.workers.dev/exact')} className={`self-start font-mono text-[12px] text-gray-500 ${LINK}`}>try a listed example</button>
             <div className="flex flex-wrap items-end gap-3">
               <div>
-                <label className={MARK}>Network you expect <span className="text-gray-600">(optional)</span></label>
-                <select value={network} onChange={(e) => setNetwork(e.target.value)} className={`${FIELD} mt-2`}>
+                <label htmlFor="v-net" className={MARK}>Network you expect <span className="text-gray-600">(optional)</span></label>
+                <select id="v-net" value={network} onChange={(e) => setNetwork(e.target.value)} className={`${FIELD} mt-2`}>
                   <option value="">any network</option>
                   <option value="kaspa:testnet-10">kaspa:testnet-10</option>
                   <option value="kaspa:mainnet">kaspa:mainnet</option>

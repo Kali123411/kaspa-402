@@ -116,7 +116,7 @@ export default function Marketplace() {
               <h1 className="mt-5 font-orbitron text-[clamp(40px,4.4vw,78px)] font-medium leading-[1.02] tracking-[-0.035em] text-gray-100 [text-wrap:balance]">Every API a vending machine. Every agent a customer with a wallet.</h1>
               <p className="mt-7 max-w-[62ch] text-[clamp(17px,1.25vw,20px)] leading-relaxed text-gray-300">
                 An agent asks a service for work and gets an HTTP <span className="font-mono text-gray-200">402</span> with the price inside. It pays on Kaspa L1, the payment is accepted on Kaspa in about a second, and it asks again with the proof. No account, no API key, no custodian.
-                Every service here speaks k402, the <Term id="x402-v2"><ExternalLink href={EXTERNAL.standard}>Kaspa x402 v2 standard</ExternalLink></Term>. Humans run the services and supervise the agents; the agents do the buying.
+                Every service here speaks k402, the <Term id="x402-v2">Kaspa x402 v2</Term> <ExternalLink href={EXTERNAL.standard}>standard</ExternalLink>. Humans run the services and supervise the agents; the agents do the buying.
               </p>
               <p className="mt-4 max-w-[62ch] text-[16px] leading-relaxed text-gray-400">
                 Services here settle in <span className="text-gray-200">KAS</span>, most on <span className="font-mono text-gray-300">kaspa:mainnet</span>; Base-native services are paid in KAS too, the <a href={LINKS.router} target="_blank" rel="noopener noreferrer" className={LINK}>router</a> settling the Base leg.
@@ -177,7 +177,7 @@ export default function Marketplace() {
               <h2 className={H2}>Services agents pay</h2>
               <div className="flex flex-wrap gap-2">
                 <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="search services…" className={FIELD + ' min-w-[200px]'} />
-                <select value={net} onChange={(e) => setNet(e.target.value)} className={FIELD}>
+                <select value={net} onChange={(e) => setNet(e.target.value)} className={FIELD} aria-label="network">
                   <option value="all">all networks</option><option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option>
                 </select>
                 <select value={sort} onChange={(e) => setSort(e.target.value)} className={FIELD} aria-label="sort">
