@@ -48,7 +48,8 @@ export default function Skill({ cap }) {
 
         <Section mark="2" note="Listed services offering this capability, cheapest first. Each line is one unpaid 402 probe away from proof." className="mt-12 mb-4">
           <h2 className={H2}>Services ({services.length})</h2>
-          <ul className="m-0 mt-4 min-h-[6rem] list-none p-0">
+          <div className="mt-4 min-h-[6rem]">
+          <ul className="m-0 list-none p-0">
             {services.map((l) => (
               <li key={l.id || l.resource} className="grid gap-1 border-t border-gray-800 py-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-6">
                 <div><div className="font-orbitron text-[17px] text-gray-100">{l.serviceName}</div>
@@ -58,6 +59,7 @@ export default function Skill({ cap }) {
             ))}
           </ul>
           {services.length === 0 ? <p className="mt-3 font-mono text-[13px] text-gray-500">No services listed for this capability yet.</p> : null}
+          </div>
           <p className="mt-10 border-t border-gray-800 pt-5 font-mono text-[12.5px] text-gray-500">
             <a href={`/skill/${encodeURIComponent(cap)}.md`} className={LINK}>SKILL.md</a> ·
             <a href="/llms.txt" className={LINK}> /llms.txt</a> ·

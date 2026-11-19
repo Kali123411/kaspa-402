@@ -27,9 +27,9 @@ export default function RoundTrip() {
   }, [run]);
   return (
     <figure className="m-0 font-mono text-[12.5px] leading-relaxed" aria-live="polite">
-      <figcaption className="flex items-baseline justify-between border-b border-gray-100 pb-2 text-gray-500">
+      <figcaption className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-gray-100 pb-2 text-gray-500">
         <span>Fig. 1 — one paid call, as it happened on {RECORDING.network}</span>
-        <span className="tabular-nums">t = {clock.toFixed(2)} s</span>
+        <span className="whitespace-nowrap tabular-nums">t = {clock.toFixed(2)} s</span>
       </figcaption>
       <ol className="m-0 list-none p-0">
         {ROWS.map((r, i) => (

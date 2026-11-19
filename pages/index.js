@@ -112,7 +112,7 @@ export default function Marketplace() {
           {/* the hero: the claim on the left, the recorded round trip replaying on the right; one column on phones */}
           <section className="grid gap-12 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(400px,38%)] lg:items-start lg:gap-16 lg:pt-16">
             <div className="min-w-0">
-              <p className="font-mono text-[12.5px] text-accent">Agents are paying agents on this rail. Watch one, on the right.</p>
+              <p className="font-mono text-[12.5px] text-accent">Agents are paying agents on this rail. Watch one, <span className="lg:hidden">below</span><span className="hidden lg:inline">on the right</span>.</p>
               <h1 className="mt-5 font-orbitron text-[clamp(40px,4.4vw,78px)] font-medium leading-[1.02] tracking-[-0.035em] text-gray-100 [text-wrap:balance]">Every API a vending machine. Every agent a customer with a wallet.</h1>
               <p className="mt-7 max-w-[62ch] text-[clamp(17px,1.25vw,20px)] leading-relaxed text-gray-300">
                 An agent asks a service for work and gets an HTTP <span className="font-mono text-gray-200">402</span> with the price inside. It pays on Kaspa L1, the payment is accepted on Kaspa in about a second, and it asks again with the proof. No account, no API key, no custodian.

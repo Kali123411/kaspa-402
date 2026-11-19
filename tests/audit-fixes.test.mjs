@@ -57,7 +57,7 @@ test('/skill/<cap> renders on the server with a description, and reserves the li
   const s = read('pages/skill/[cap].js');
   assert.match(s, /export async function getServerSideProps/); assert.doesNotMatch(s, /useRouter/);
   assert.match(s, /<meta name="description"/);
-  assert.match(s, /<ul className="m-0 mt-4 min-h-\[/);
+  assert.match(s, /<div className="mt-4 min-h-\[6rem\]">/);
 });
 
 test('/kusd/app reserves the status strip and tab panel heights before the wallet loads (CLS 0.19)', () => {
@@ -69,4 +69,10 @@ test('no glossary term wraps a link: nested anchors broke hydration on the landi
   for (const p of ['pages/index.js', 'pages/kusd.js', 'pages/market.js', 'pages/validate.js', 'pages/private.js', 'pages/list.js', 'pages/get-started.js']) {
     assert.doesNotMatch(read(p), /<Term[^>]*>\s*<(a|ExternalLink|Link)\b/, `${p}: a Term wrapping a link`);
   }
+});
+
+test('phone copy and layout: the hero points below on phones, the replay clock never splits across lines, the skill empty state sits in its reserved block', () => {
+  assert.match(read('pages/index.js'), /Watch one, <span className="lg:hidden">below<\/span><span className="hidden lg:inline">on the right<\/span>\./);
+  assert.match(read('components/RoundTrip.jsx'), /<span className="whitespace-nowrap tabular-nums">t = /);
+  assert.match(read('pages/skill/[cap].js'), /<div className="mt-4 min-h-\[6rem\]">\s*<ul className="m-0 list-none p-0">/);
 });
