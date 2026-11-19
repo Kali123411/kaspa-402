@@ -12,10 +12,10 @@ export function overallState(status) {
 }
 
 const DOT = {
-  current: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]',
+  current: 'bg-accent',
   moved: 'bg-amber-400',
   unknown: 'bg-gray-500',
-  loading: 'bg-gray-600 animate-pulse',
+  loading: 'bg-gray-600',
 };
 
 export function Dot({ state }) {
