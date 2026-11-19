@@ -148,7 +148,7 @@ export default function Validate() {
           {!res ? (
             <div className="mt-8 max-w-[760px]">
               <div className={`mb-2 ${MARK}`}>What a pass looks like</div>
-              <div className="border-t border-gray-100 opacity-80">
+              <div className="border-t border-gray-100">
                 {[['Endpoint URL', 'public https URL'], ['Reachable', 'responded in 240 ms (HTTP 402)'], ['Returns 402', 'HTTP 402 Payment Required to an unpaid request'], ['Speaks x402 v2', 'PAYMENT-REQUIRED decodes to a valid offer'], ['Payment terms', 'exact · kaspa:mainnet · 1.1 KAS → kaspa:qzws…pde4']].map(([k, v]) => (
                   <div key={k} className="grid grid-cols-[20px_minmax(0,1fr)] gap-3 border-b border-gray-800 py-2.5"><span className="font-mono text-[13px] text-accent" aria-hidden>✓</span><div><div className="font-mono text-[13px] text-gray-200">{k}</div><div className="font-mono text-[11.5px] text-gray-500">{v}</div></div></div>
                 ))}

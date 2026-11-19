@@ -76,3 +76,10 @@ test('phone copy and layout: the hero points below on phones, the replay clock n
   assert.match(read('components/RoundTrip.jsx'), /<span className="whitespace-nowrap tabular-nums">t = /);
   assert.match(read('pages/skill/[cap].js'), /<div className="mt-4 min-h-\[6rem\]">\s*<ul className="m-0 list-none p-0">/);
 });
+
+test('the status strip keeps its height when the live feed arrives (the 0.19 CLS on /kusd/app and 0.056 on /market were its first row re-wrapping and the sources line appearing)', () => {
+  const s = read('components/kusd/app/StatusStrip.jsx');
+  assert.match(s, /<p className="mt-1 text-xs text-gray-500">\{sources \? `Latest price prints from \$\{sources\.join\(', '\)\}\.` : 'Latest price prints: reading the feed…'\}<\/p>/);
+  assert.match(s, /<span title=\{k\.node \|\| ''\} className="min-w-0 truncate font-mono text-xs text-gray-400">/, 'the node name truncates instead of wrapping');
+  assert.match(s, /<div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">\s*\{shown && \(/, 'price line and badge on their own row');
+});

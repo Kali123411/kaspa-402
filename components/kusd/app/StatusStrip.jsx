@@ -23,11 +23,13 @@ export default function StatusStrip({ k }) {
   const verified = k.canAct.ok;
   return (
     <div className="border border-gray-800 bg-panel p-4 text-sm">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="font-mono text-xs text-gray-300">TN10</span>
-        <span className="min-w-0 break-all font-mono text-xs text-gray-400">
+      <div className="flex items-center gap-x-4">
+        <span className="shrink-0 font-mono text-xs text-gray-300">TN10</span>
+        <span title={k.node || ''} className="min-w-0 truncate font-mono text-xs text-gray-400">
           node: {k.phase === 'ready' ? (k.node || 'public resolver') : k.phase === 'loading' ? 'connecting…' : 'unreachable'}
         </span>
+      </div>
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
         {shown && (
           <span className={`font-mono text-xs ${shown.verified ? 'text-gray-300' : 'text-gray-500'}`}>
             KAS {usdPerKas(shown.state.price)} · <Term id="mint-price">mint</Term> {usdPerKas(shown.state.mint)} · <Term id="liq-price">liq</Term> {usdPerKas(shown.state.liq)}
@@ -48,7 +50,7 @@ export default function StatusStrip({ k }) {
             : k.error && !k.chain ? k.error : `Actions are off: ${k.canAct.reason}`}
         </p>
       </div>
-      {sources && <p className="mt-1 text-xs text-gray-500">Latest price prints from {sources.join(', ')}.</p>}
+      <p className="mt-1 text-xs text-gray-500">{sources ? `Latest price prints from ${sources.join(', ')}.` : 'Latest price prints: reading the feed…'}</p>
       <p className="mt-2 text-xs text-gray-500">
         Client build{' '}
         <button type="button" onClick={() => setFullHash((v) => !v)} className="break-all font-mono text-gray-400 underline decoration-dotted">
