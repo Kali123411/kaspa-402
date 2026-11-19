@@ -31,18 +31,10 @@
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 }
 
-/* 4. The old utility names, redefined flat so the pages keep working until each is restyled */
+/* 4. The one filled button */
 @layer utilities {
-  .neon-text, .neon-text-pink { }
-  .gradient-text-kaspa { color: var(--accent); }
-  .card-hover { transition: border-color 150ms ease; }
-  .card-hover:hover { border-color: var(--text); }
-  .glass, .glass-light { background: var(--panel); border: 1px solid var(--rule); }
   .btn-kaspa { background: var(--accent); color: var(--accent-ink); }
   .btn-kaspa:hover { background: #E4FF8F; }
-  .skeleton { background: var(--panel); }
-  .search-input { background: var(--panel); border: 1px solid var(--rule); color: var(--text); }
-  .search-input:focus { border-color: var(--accent); }
 }
 
 /* 5. Reduced motion: the only motion on the site is the data moving; stop it on request */

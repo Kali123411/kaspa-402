@@ -13,14 +13,14 @@ export function overallState(status) {
 
 const DOT = {
   current: 'bg-accent',
-  moved: 'bg-amber-400',
+  moved: 'bg-gray-100',
   unknown: 'bg-gray-500',
   loading: 'bg-gray-600',
 };
 
 export function Dot({ state }) {
   const label = { current: 'matches chain', moved: 'chain has moved', unknown: 'not checked', loading: 'checking' }[state];
-  return <span title={label} aria-label={label} className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[state] || DOT.unknown}`} />;
+  return <span role="img" title={label} aria-label={label} className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[state] || DOT.unknown}`} />;
 }
 
 function useSecondsSince(iso) {

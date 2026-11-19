@@ -38,7 +38,7 @@ export default function ProbeDemo() {
       <pre aria-live="polite" className="mt-3 min-h-[5.5rem] overflow-x-auto whitespace-pre font-mono text-[12.5px] leading-relaxed text-gray-200">
         {(lines || ['$ curl -si "<a listed service>"', '# → 402 Payment Required, a payment-required header, then an agent pays and retries. Press the button to see it live.']).join('\n')}
       </pre>
-      <p className="mt-2 font-mono text-[11px] text-gray-600">To run the paid leg yourself: <a href="/get-started" className="text-teal-400 hover:underline">get set up on testnet-10</a>.</p>
+      <p className="mt-2 font-mono text-[11px] text-gray-600">To run the paid leg yourself: <a href="/get-started" className="underline decoration-gray-700 underline-offset-4 hover:text-accent hover:decoration-accent">get set up on testnet-10</a>.</p>
     </div>
   );
 }

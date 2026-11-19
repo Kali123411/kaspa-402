@@ -17,12 +17,12 @@ export default function App({ Component, pageProps }) {
             {BRAND}
           </a>
           <nav className="flex items-center gap-5 font-mono text-[13px] text-gray-400">
-            <a href="/kusd" className="hover:text-teal-400">kUSD</a>
-            <a href="/market" className="hover:text-teal-400">market</a>
-            <a href="/validate" className="hover:text-teal-400">validate</a>
-            <a href="/private" className="hidden hover:text-teal-400 sm:inline">private</a>
-            <ExternalLink href={EXTERNAL.standard} className="hidden hover:text-teal-400 md:inline" domainClassName="text-gray-600">standard</ExternalLink>
-            <ExternalLink href={EXTERNAL.sdk} className="hidden hover:text-teal-400 md:inline" domainClassName="text-gray-600">SDK</ExternalLink>
+            <a href="/kusd" className="hover:text-accent">kUSD</a>
+            <a href="/market" className="hover:text-accent">market</a>
+            <a href="/validate" className="hover:text-accent">validate</a>
+            <a href="/private" className="hidden hover:text-accent sm:inline">private</a>
+            <ExternalLink href={EXTERNAL.standard} className="hidden hover:text-accent md:inline" domainClassName="text-gray-600">standard</ExternalLink>
+            <ExternalLink href={EXTERNAL.sdk} className="hidden hover:text-accent md:inline" domainClassName="text-gray-600">SDK</ExternalLink>
           </nav>
         </header>
         <div role="note" className="border-b border-gray-800 px-6 py-1.5 font-mono text-[11.5px] text-gray-500 lg:px-14">

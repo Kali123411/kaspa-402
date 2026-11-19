@@ -18,10 +18,8 @@ export default function Glossary() {
             {GLOSSARY.map((g) => (
               <div key={g.id} id={g.id} className="grid scroll-mt-20 gap-1 border-b border-gray-800 py-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-8">
                 <dt className="font-mono text-[14px] text-gray-100"><a href={`#${g.id}`} className={LINK}>{g.term}</a></dt>
-                <div className="min-w-0">
-                  <dd className="text-[15px] leading-relaxed text-gray-200">{g.short}</dd>
-                  {g.long && <dd className="mt-1 text-[14px] leading-relaxed text-gray-400">{g.long}</dd>}
-                </div>
+                <dd className="min-w-0 text-[15px] leading-relaxed text-gray-200">{g.short}</dd>
+                {g.long && <dd className="min-w-0 lg:col-start-2 text-[14px] leading-relaxed text-gray-400">{g.long}</dd>}
               </div>
             ))}
           </dl>

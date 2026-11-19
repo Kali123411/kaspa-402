@@ -22,8 +22,8 @@ test('the theme is the identity: graphite neutrals, one acid accent, serif displ
   assert.equal(t.colors.gray[900].toUpperCase(), '#1F2229', 'panel');
   assert.equal(t.colors.gray[800].toUpperCase(), '#2B2F37', 'rule');
   assert.equal(t.colors.gray[500].toUpperCase(), '#8B9099', 'muted');
-  assert.equal(t.colors.teal[400].toUpperCase(), '#D1FF4A', 'the accent (every text-teal-400 in the site)');
-  assert.equal(t.colors.neon.purple.toUpperCase(), '#D1FF4A', 'neon-purple is the same accent');
+  assert.equal(t.colors.accent.toUpperCase(), '#D1FF4A', 'the one accent');
+  assert.equal(t.colors.teal, undefined, 'the teal alias is retired (Phase 4 PR 6)'); assert.equal(t.colors.neon, undefined, 'the neon alias is retired');
   assert.ok(t.fontFamily.orbitron[0].includes('Fraunces') && t.fontFamily.sans[0].includes('Source Serif') && t.fontFamily.mono[0].includes('JetBrains'));
   assert.deepEqual(Object.values(t.boxShadow || {}).filter((v) => /rgba/.test(v)), [], 'no glow shadows');
   assert.equal(t.borderRadius?.xl, '0px'); assert.equal(t.borderRadius?.['2xl'], '0px');
