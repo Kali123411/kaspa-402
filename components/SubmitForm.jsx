@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import Term from './Term';
+import { BUTTON, FIELD, MARK } from './Ledger';
 
 // The provider's listing form (moved from the landing page: UI/UX brief, Phase 2 P1-7). One unpaid probe decides.
-const FIELD = 'rounded-xl border border-teal-400/20 bg-gray-950/70 px-4 py-2.5 font-mono text-[13px] text-gray-100 outline-none placeholder:text-gray-600 focus:border-teal-400/60';
+const Field = ({ label, children, span }) => (
+  <div className={span ? 'sm:col-span-2' : ''}><label className={MARK}>{label}</label>{children}</div>
+);
 
 export default function SubmitForm({ onAdded }) {
   const empty = { serviceName: '', resource: '', description: '', capability: '', scheme: 'exact', network: 'kaspa:testnet-10', amountSompi: '', payTo: '' };
@@ -24,31 +27,21 @@ export default function SubmitForm({ onAdded }) {
     } catch { setMsg({ level: 'err', text: 'request failed — check the endpoint and try again' }); }
     finally { setBusy(false); }
   }
-
+  const field = `${FIELD} mt-1.5 w-full`;
   return (
-    <form onSubmit={submit} className="glass grid gap-3 rounded-2xl border border-teal-400/15 p-5 sm:grid-cols-2">
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Service name</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.serviceName} onChange={upd('serviceName')} placeholder="My inference API" required /></div>
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Resource URL (the x402-paid endpoint)</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.resource} onChange={upd('resource')} placeholder="https://your-host/run" inputMode="url" required /></div>
-      <div className="sm:col-span-2"><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Description</label>
-        <textarea className={FIELD + ' mt-1.5 w-full resize-y'} rows={2} value={f.description} onChange={upd('description')} placeholder="One or two lines: what it does, what you send and get back." /></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Scheme</label>
-        <select className={FIELD + ' mt-1.5 w-full'} value={f.scheme} onChange={upd('scheme')}>
-          <option value="exact">exact</option><option value="batch-settlement">batch-settlement</option></select></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Network</label>
-        <select className={FIELD + ' mt-1.5 w-full'} value={f.network} onChange={upd('network')}>
-          <option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option></select></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Price (sompi)</label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.amountSompi} onChange={upd('amountSompi')} type="number" placeholder="20000000" required /></div>
-      <div><label className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Capability <span className="text-gray-600">(optional)</span></label>
-        <input className={FIELD + ' mt-1.5 w-full'} value={f.capability} onChange={upd('capability')} placeholder="summarize" /></div>
-      <div className="flex items-center gap-4 sm:col-span-2">
-        <button type="submit" disabled={busy} className="btn-kaspa rounded-lg px-5 py-2.5 font-orbitron text-[12.5px] font-bold uppercase tracking-wide text-[#04121a] disabled:opacity-60">
-          {busy ? 'probing endpoint…' : 'Submit for listing →'}</button>
-        {msg ? <span className={`font-mono text-[12px] ${msg.level === 'ok' ? 'text-teal-400' : 'text-rose-400'}`}>{msg.text}</span> : null}
+    <form onSubmit={submit} className="grid gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2">
+      <Field label="Service name" span><input className={field} value={f.serviceName} onChange={upd('serviceName')} placeholder="My inference API" required /></Field>
+      <Field label="Resource URL (the x402-paid endpoint)" span><input className={field} value={f.resource} onChange={upd('resource')} placeholder="https://your-host/run" inputMode="url" required /></Field>
+      <Field label="Description" span><textarea className={`${field} resize-y`} rows={2} value={f.description} onChange={upd('description')} placeholder="One or two lines: what it does, what you send and get back." /></Field>
+      <Field label="Scheme"><select className={field} value={f.scheme} onChange={upd('scheme')}><option value="exact">exact</option><option value="batch-settlement">batch-settlement</option></select></Field>
+      <Field label="Network"><select className={field} value={f.network} onChange={upd('network')}><option value="kaspa:testnet-10">kaspa:testnet-10</option><option value="kaspa:mainnet">kaspa:mainnet</option></select></Field>
+      <Field label="Price (sompi)"><input className={field} value={f.amountSompi} onChange={upd('amountSompi')} type="number" placeholder="20000000" required /></Field>
+      <Field label={<>Capability <span className="text-gray-600">(optional)</span></>}><input className={field} value={f.capability} onChange={upd('capability')} placeholder="summarize" /></Field>
+      <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
+        <button type="submit" disabled={busy} className={`${BUTTON} disabled:opacity-60`}>{busy ? 'probing endpoint…' : 'Submit for listing'}</button>
+        {msg ? <span className={`font-mono text-[12.5px] ${msg.level === 'ok' ? 'text-accent' : 'text-gray-200'}`}>{msg.text}</span> : null}
       </div>
-      <p className="sm:col-span-2 font-mono text-[11px] leading-relaxed text-gray-600">We send one unpaid request to your resource; it must return HTTP 402 with a valid <Term id="x402-v2">x402 v2</Term> <Term id="payment-required">PAYMENT-REQUIRED</Term> header before it appears. Nothing is charged.</p>
+      <p className="font-mono text-[12px] leading-relaxed text-gray-500 sm:col-span-2">We send one unpaid request to your resource; it must return HTTP 402 with a valid <Term id="x402-v2">x402 v2</Term> <Term id="payment-required">PAYMENT-REQUIRED</Term> header (a recognized Kaspa <Term id="scheme">scheme</Term> and a well-formed <Term id="payto">payTo</Term>) to be listed. Nothing is charged or stored.</p>
     </form>
   );
 }

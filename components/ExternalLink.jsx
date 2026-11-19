@@ -1,7 +1,7 @@
 import { externalLabel } from '../lib/brand.mjs';
 
 /** A link that leaves the site: marked ↗ with its destination domain, opened in a new tab. */
-export default function ExternalLink({ href, children, className = 'text-teal-400 hover:underline', domainClassName = 'text-gray-500' }) {
+export default function ExternalLink({ href, children, className = 'underline decoration-gray-700 underline-offset-4 hover:text-accent hover:decoration-accent', domainClassName = 'text-gray-500' }) {
   const domain = externalLabel(href);
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
