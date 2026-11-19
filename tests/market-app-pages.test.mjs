@@ -25,7 +25,7 @@ test('both pages sit on the ledger grid and use the shared primitives', () => {
     assert.ok(s.includes('<Section'), `${p} uses numbered sections`);
   }
   const ui = read('components/kusd/app/ui.jsx');
-  assert.ok(ui.includes("from '../Ledger'"), 'the app primitives derive from Ledger');
+  assert.ok(ui.includes("from '../../Ledger'"), 'the app primitives derive from Ledger');
   assert.match(ui, /export const primary = /); assert.match(ui, /export const secondary = /); assert.match(ui, /export function Panel/);
   const app = read('pages/kusd/app.js');
   assert.match(app, /role="tablist"/, 'the tabs are a real tablist');

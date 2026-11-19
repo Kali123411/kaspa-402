@@ -41,11 +41,7 @@ export default function StatusStrip({ k }) {
         )}
       </div>
       <div className="mt-2 flex items-start gap-2">
-        {k.phase === 'loading' || !k.chain
-          ? 
-          : verified
-            ? 
-            : }
+        <span className={`mt-0.5 shrink-0 font-mono text-[13px] ${verified ? 'text-accent' : 'text-gray-400'}`} aria-hidden>{k.phase === 'loading' || !k.chain ? '…' : verified ? '✓' : '!'}</span>
         <p className={`min-w-0 break-words text-xs ${verified ? 'text-accent' : 'text-gray-300'}`}>
           {verified
             ? 'Protocol state verified against the node by this browser.'

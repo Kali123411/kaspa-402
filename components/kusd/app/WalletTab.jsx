@@ -21,7 +21,7 @@ function CopyButton({ value, label = 'Copy' }) {
   };
   return (
     <button type="button" onClick={copy} className={secondary}>
-      {done ?  : } {done ? 'Copied' : label}
+      {done ? 'Copied' : label}
     </button>
   );
 }

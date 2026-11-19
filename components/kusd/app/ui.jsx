@@ -1,5 +1,5 @@
 // Shared pieces of the kUSD app's tabs, derived from the site's Ledger grammar (components/Ledger.jsx).
-import { FIELD, H3, LINK } from '../Ledger';
+import { FIELD, H3, LINK } from '../../Ledger';
 
 export const input = `w-full min-w-0 ${FIELD}`;
 const button = 'inline-flex items-center justify-center gap-2 px-4 py-2 font-mono text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-40';
