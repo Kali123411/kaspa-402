@@ -61,9 +61,9 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
           const key = `${p.payee_pubkey}:${p.capability}`;
           const isSel = selected && `${selected.payee_pubkey}:${selected.capability}` === key;
           return (
-            <li key={key}>
+            <li key={key} className="h-full">
               <button type="button" onClick={() => onPick(p)} aria-pressed={isSel}
-                className={`w-full rounded-xl border p-4 text-left transition ${isSel ? 'border-neon-purple bg-neon-purple/10' : 'border-gray-800 bg-black/30 hover:border-gray-600'}`}>
+                className={`flex h-full w-full flex-col rounded-xl border p-4 text-left transition ${isSel ? 'border-neon-purple bg-neon-purple/10' : 'border-gray-800 bg-black/30 hover:border-gray-600'}`}>
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-mono text-base text-white">{p.capability}</span>
                   <span className="font-mono text-sm text-neon-purple" title={`${p.price_cents}¢`}>{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
@@ -72,8 +72,8 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
                   {p.meta?.provider || `provider ${short(p.payee_pubkey)}`}{p.meta?.model ? ` · ${p.meta.model}` : ''}
                   {Array.isArray(p.meta?.wires) ? ` · ${p.meta.wires.join(' + ')}` : ''}
                 </div>
-                {p.description && <p className="mt-2 text-xs text-gray-300">{p.description}</p>}
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
+                {p.description && <p className="mt-2 line-clamp-3 text-xs text-gray-300" title={p.description}>{p.description}</p>}
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3 text-xs text-gray-400">
                   <span>settled to this provider <span className="font-mono text-gray-200">{usdText(p.reputation?.settled_cents || 0)}</span>{p.reputation?.last_settled ? `, last ${ago(p.reputation.last_settled, now)}` : ''}</span>
                   {loading ? <span className="text-[11px] text-gray-500">…</span> : fromSnapshot ? <span className="text-[11px] text-gray-500">snapshot</span> : <LiveDot probe={live[p.endpoint]} />}
                 </div>
