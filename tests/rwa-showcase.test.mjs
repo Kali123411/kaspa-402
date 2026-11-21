@@ -57,10 +57,11 @@ test('the headline settlement time is the fastest recorded trade, against T+1', 
 
 test('the page: ledger sections, live register, the rules with proofs, the trades, and the disclaimer up front', () => {
   const page = read('pages/rwa.js');
-  for (const s of ["from '../components/Ledger'", "fetch('/api/rwa/status')", 'snap.rules.map', 'snap.settlements', 'Fictional instrument', 'not a securities offering', 'T+1']) {
+  for (const s of ["from '../components/Ledger'", "fetch('/api/rwa/status')", 'snap.settlements', 'Fictional instrument', 'not a securities offering', 'T+1']) {
     assert.ok(page.includes(s), `page has ${s}`);
   }
   assert.match(page, /<title>[^<]*k402<\/title>/);
+  assert.ok(page.includes('rules={snap.rules}'), 'the August rules still render (as history)');
   assert.match(read('pages/api/rwa/status.js'), /checkRegister\(/);
 });
 
