@@ -9,11 +9,14 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" key="icon" />
+        <link rel="icon" href="/k402/logo/k402-favicon.svg" type="image/svg+xml" key="icon" />
+        <link rel="alternate icon" href="/k402/logo/favicon-32.png" type="image/png" key="icon-png" />
+        <link rel="apple-touch-icon" href="/k402/logo/k402-icon-1024.png" key="apple-touch-icon" />
       </Head>
       <div className="min-h-screen font-sans bg-gray-950 text-white transition-colors">
         <header className="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 h-14 border-b border-gray-100 bg-gray-950 lg:px-14">
-          <a href="/" className="font-orbitron text-[26px] font-bold tracking-[-0.03em] text-gray-100">
+          <a href="/" className="flex items-center gap-2.5 font-orbitron text-[26px] font-bold tracking-[-0.03em] text-gray-100">
+            <img src="/k402/logo/k402-symbol-white.svg" width={26} height={26} alt="" aria-hidden="true" className="shrink-0" />
             {BRAND}
           </a>
           <nav className="flex items-center gap-5 font-mono text-[13px] text-gray-400">

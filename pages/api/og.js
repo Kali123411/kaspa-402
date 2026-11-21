@@ -10,6 +10,12 @@ function fraunces() {
   if (!fontData) fontData = readFileSync(path.join(process.cwd(), 'lib/fonts/Fraunces-Light.woff'));
   return fontData;
 }
+// the owner's k402 symbol (public/k402/logo), embedded as a data URI: next/og cannot fetch relative paths
+let symbolData = null;
+function symbol() {
+  if (!symbolData) symbolData = `data:image/svg+xml;base64,${readFileSync(path.join(process.cwd(), 'public/k402/logo/k402-symbol-white.svg')).toString('base64')}`;
+  return symbolData;
+}
 
 export default async function handler(req, res) {
   const font = fraunces();
@@ -21,7 +27,7 @@ export default async function handler(req, res) {
           <div style={{ fontSize: 44, letterSpacing: -1.5, lineHeight: 1.1, maxWidth: 820 }}>Payment Required is not an error. It is the price list.</div>
           <div style={{ fontSize: 22, color: MUTED }}>k402 — agents pay services per call on Kaspa L1 · kaspa-402.org</div>
         </div>
-        <div style={{ position: 'absolute', right: 64, top: 48, fontSize: 40, letterSpacing: -1.5 }}>k402</div>
+        <div style={{ position: 'absolute', right: 64, top: 44, display: 'flex', alignItems: 'center', gap: 12, fontSize: 40, letterSpacing: -1.5 }}><img src={symbol()} width={46} height={46} />k402</div>
       </div>
     ),
     { width: 1200, height: 630, fonts: [{ name: 'Fraunces', data: font, weight: 300, style: 'normal' }] },

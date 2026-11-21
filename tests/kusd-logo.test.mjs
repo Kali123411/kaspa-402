@@ -24,8 +24,9 @@ test('one component picks the right drawing for the size, with alt text', () => 
   assert.match(c, /size < 32/);
 });
 
-test('the kUSD pages carry the kUSD favicon and touch icon; the site default stays the 402', () => {
-  assert.match(read('pages/_app.js'), /<link rel="icon" href="\/favicon\.svg" type="image\/svg\+xml" key="icon" \/>/);
+test('the kUSD pages carry the kUSD favicon and touch icon over the site default', () => {
+  // the site default is the k402 favicon (tests/k402-logo.test.mjs); what matters here is the shared key
+  assert.match(read('pages/_app.js'), /<link rel="icon" href="[^"]+" type="image\/svg\+xml" key="icon" \/>/);
   for (const p of ['pages/kusd.js', 'pages/kusd/app.js', 'pages/kusd/history.js', 'pages/market.js']) {
     const s = read(p);
     assert.match(s, /<KusdIcons \/>/, `${p} sets the kUSD icons`);
