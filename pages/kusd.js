@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import snapshot from '../public/kusd/snapshot.json';
 import LiveBadge, { Dot } from '../components/kusd/LiveBadge';
 import ProductMap from '../components/kusd/ProductMap';
+import CrashReplay from '../components/kusd/CrashReplay';
 import KusdMark, { KusdIcons } from '../components/kusd/KusdMark';
 import { DISCLAIMERS } from '../lib/kusd/story.mjs';
 import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
@@ -125,6 +126,16 @@ export default function Kusd() {
             <div><div className={NUM}>+10% / −25%</div><div className="mt-2 text-[14px] text-gray-300">price moves per hour</div><div className="text-[13px] text-gray-500">mint price up, liquidation price down, at most</div></div>
             <div><div className={NUM}>±5%</div><div className="mt-2 text-[14px] text-gray-300">Stage 2 miner bound</div><div className="text-[13px] text-gray-500">around the miners&apos; median when it is under 45 min old and ≥ ½ of blocks voted; else Stage 1</div></div>
           </div>
+        </Section>
+
+        {/* ── § 1b Crash replay: the 10 Oct 2025 crash through the oracle and vault rules (kusd-framework #56) ── */}
+        <Section id="crash-replay" mark="1b" note="Stress test. The worst day KAS has had, replayed through the rules these covenants enforce." className="mt-12">
+          <h2 className={H2}>Replay the 10 October 2025 crash</h2>
+          <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-gray-300">
+            On 10 October 2025 a market-wide liquidation cascade took KAS from $0.071 to $0.009 in an hour. Drag through
+            the night and watch what happens to two vaults under today&apos;s lines and under any other pair you choose.
+          </p>
+          <CrashReplay />
         </Section>
 
         <Section mark="2" note="Three layers, one product. This page is the money." className="mt-12">
