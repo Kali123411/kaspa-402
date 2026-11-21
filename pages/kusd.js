@@ -69,6 +69,7 @@ export default function Kusd() {
   const desc = 'kUSD: the covenant-native USD stablecoin built for AI agents, on Kaspa L1 (testnet-10). The money layer of the agent-native marketplace: live state, every transaction, and how to verify it yourself.';
   const covenantRows = [
     ['Issuance budget', dot('budget'), [['daily limit', dollars(c.budget.state.limit)], ['available now', dollars(c.budget.state.available)]]],
+    ['Vault-debt ceiling', dot('budget'), [['issued by vaults', c.budget.state.vault_debt == null ? '—' : dollars(c.budget.state.vault_debt)], ['ceiling', c.budget.state.vault_ceiling == null ? '—' : dollars(c.budget.state.vault_ceiling)]]],
     ['Peg stability module', dot('psm'), [['ceiling', dollars(c.psm.state.ceiling)], ['minted via PSM', dollars(c.psm.state.minted)]]],
     ['Vault', dot('vault'), [['collateral', kas(c.vault.state.collateral)], ['debt owed now', dollars(vault.debtCents)], ['ratio at liq. price', vault.ratioPct == null ? 'no debt' : `${Math.round(vault.ratioPct).toLocaleString('en-US')}%`]]],
     ['kUSD in circulation', dot('authority'), [['all holders', dollars(circulatingCents(c.authority.state.amount))]]],
@@ -118,11 +119,12 @@ export default function Kusd() {
         </Section>
 
         {/* ── § 1 Risk parameters (UI/UX brief, Phase 3): the lines that were buried in transaction captions ── */}
-        <Section mark="1" note="Risk parameters. The numbers the TN10 covenants enforce today. Mainnet: 200% / 170% (kusd-framework #56); TN10 moves to them at its next re-genesis." className="mt-12">
+        <Section mark="1" note="Risk parameters. The numbers the covenants enforce." className="mt-12">
           <h2 className={H2}>Risk parameters</h2>
-          <div className="mt-4 grid gap-x-10 gap-y-6 border-y border-gray-100 py-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div><div className={NUM}>175%</div><div className="mt-2 text-[14px] text-gray-300">borrowing line</div><div className="text-[13px] text-gray-500">collateral ÷ debt at the mint price to borrow</div></div>
-            <div><div className={NUM}>150%</div><div className="mt-2 text-[14px] text-gray-300">liquidation line</div><div className="text-[13px] text-gray-500">below it anyone may liquidate: keeper 110%, surplus 3%</div></div>
+          <div className="mt-4 grid gap-x-10 gap-y-6 border-y border-gray-100 py-5 sm:grid-cols-2 lg:grid-cols-5">
+            <div><div className={NUM}>200%</div><div className="mt-2 text-[14px] text-gray-300">borrowing line</div><div className="text-[13px] text-gray-500">collateral ÷ debt at the mint price to borrow</div></div>
+            <div><div className={NUM}>170%</div><div className="mt-2 text-[14px] text-gray-300">liquidation line</div><div className="text-[13px] text-gray-500">below it anyone may liquidate: keeper 110%, surplus 3%</div></div>
+            <div><div className={NUM}>{c.budget.state.vault_ceiling == null ? '—' : dollars(c.budget.state.vault_ceiling)}</div><div className="mt-2 text-[14px] text-gray-300">vault-debt ceiling</div><div className="text-[13px] text-gray-500">the most kUSD all vaults together may issue, sized from KAS order-book depth so liquidations can&apos;t swamp the market</div></div>
             <div><div className={NUM}>+10% / −25%</div><div className="mt-2 text-[14px] text-gray-300">price moves per hour</div><div className="text-[13px] text-gray-500">mint price up, liquidation price down, at most</div></div>
             <div><div className={NUM}>±5%</div><div className="mt-2 text-[14px] text-gray-300">Stage 2 miner bound</div><div className="text-[13px] text-gray-500">around the miners&apos; median when it is under 45 min old and ≥ ½ of blocks voted; else Stage 1</div></div>
           </div>

@@ -260,3 +260,11 @@ test('oracle_state_without_the_stage2c_fields_rejected', () => {
   assert.ok(miner_id && bounded !== undefined, 'the golden oracle state carries the Stage 2c fields');
   assert.throws(() => parseEntry({ ...entry(oracleBox), state: stale }, { boxAddress }), RelayInputError);
 });
+
+test('a budget entry carries the vault-debt count and ceiling (budget.ag vault_debt / vault_ceiling)', () => {
+  const state = { limit: 5_000_000, available: 4_999_920, last: 1, kusd_id: '42'.repeat(32), gov: ['11'.repeat(32), '22'.repeat(32), '33'.repeat(32)], vault_debt: 380, vault_ceiling: 33_000_000 };
+  const entry = { kind: 'budget', covid: '88'.repeat(32), outpoint: { transactionId: 'ab'.repeat(32), index: 0 }, value: 100_000_000, state };
+  const seen = [];
+  parseEntry(entry, { boxAddress: (kind, s) => { seen.push([kind, s]); return 'kaspatest:x'; } });
+  assert.deepEqual(seen[0][1], state, 'both fields reach the address check unchanged');
+});

@@ -9,7 +9,7 @@ export const STEP_LABEL = {
   'ORACLE-GENESIS': 'Oracle genesis', 'PSM-GENESIS': 'PSM genesis', 'SURPLUS-GENESIS': 'Surplus genesis',
   'BUDGET-GENESIS': 'Budget genesis', 'AUTHORITY-GENESIS': 'Token authority genesis', WIRE: 'Wire PSM',
   'BUDGET-WIRE': 'Wire budget', 'VAULT-GENESIS': 'Vault genesis', REFRESH: 'Price refresh',
-  REFUSED_PRINTS: 'Bad prints refused', SET_MEMBER: 'Operator rotation', 'BUDGET-SET-LIMIT': 'Budget limit change',
+  REFUSED_PRINTS: 'Bad prints refused', SET_MEMBER: 'Operator rotation', 'BUDGET-SET-LIMIT': 'Budget limit change', 'BUDGET-SET-VAULT-CEILING': 'Vault-debt ceiling change', CEILING_REFUSED: 'Mint refused at the vault-debt ceiling',
   MINT: 'Mint', FREEZE: 'Oracle frozen', SWAP_OUT_FEE: 'PSM redeem with fee', LIQUIDATE: 'Liquidation',
   SET_MINER: 'Oracle bound to the miner median', 'MINER-POST': 'Miner median posted',
   SURPLUS_SPEND: 'Surplus spend', CLOSE: 'Vault close', HEARTBEAT: 'Routine refreshes', REPAY: 'Repay', ADJUST: 'Collateral top-up',

@@ -1,5 +1,6 @@
-// Vaults: lock KAS, borrow kUSD against it (175% minimum at the mint price), repay, adjust, close.
-// A vault is liquidatable when its collateral at the liquidation price falls under 150% of its debt.
+// Vaults: lock KAS, borrow kUSD against it (200% minimum at the mint price), repay, adjust, close.
+// A vault is liquidatable when its collateral at the liquidation price falls under 170% of its debt.
+// All vaults together may not issue more than the vault-debt ceiling (budget.ag vault_ceiling).
 import { useState } from 'react';
 import { parseKas, parseUsd } from '../../../lib/kusd/app/amounts.mjs';
 import { vaultView, fundingNeed, checkFunds, safeBorrowCents, borrowRisk, repayPlan, SAFE_RATIO, LIQ_RATIO, MIN_COLLATERAL, MIN_DEBT, REPAY_SLACK } from '../../../lib/kusd/app/quotes.mjs';
@@ -10,7 +11,8 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
   const [err, setErr] = useState(null);
   const [releaseAll, setReleaseAll] = useState(true);
   const s = v.state;
-  const view = vaultView(s, oracle);
+  const budget = protocol?.budget?.state;
+  const view = vaultView(s, oracle, budget);
   const owed = view.owedCents;
   const go = (fn) => (text) => {
     setErr(null);
@@ -28,8 +30,8 @@ function VaultCard({ v, oracle, holders, canAct, review, coins, protocol }) {
       <Row k="Ratio at the liquidation price" v={view.ratioAtLiq === null ? '—' : `${view.ratioAtLiq}%`} />
       <Row k={`Liquidatable below (${LIQ_RATIO}% at the liquidation price)`} v={view.liquidatesBelow === null ? 'no debt' : `${usdPerKas(view.liquidatesBelow)} per KAS`} />
       {owed > 0 && <Row k="KAS can fall before liquidation" v={`${borrowRisk(s, oracle, 0).dropPct}%`} />}
-      <Row k={`Safe to borrow (${SAFE_RATIO}% target)`} v={usdText(safeBorrowCents(s, oracle))} />
-      <Row k="Most it can borrow (175%)" v={usdText(view.maxMintCents)} />
+      <Row k={`Safe to borrow (${SAFE_RATIO}% target)`} v={usdText(safeBorrowCents(s, oracle, budget))} />
+      <Row k="Most it can borrow (200%, within the vault-debt ceiling)" v={usdText(view.maxMintCents)} />
 
       <div className="space-y-2 border-t border-gray-800 pt-3">
         <div className="text-xs text-gray-500">Borrow kUSD</div>
