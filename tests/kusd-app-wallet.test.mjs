@@ -73,7 +73,7 @@ test('swap quotes mirror the builder', () => {
   const out = JSON.parse(kc.build(JSON.stringify(c.request)));
   const psmAfter = out.created.find((b) => b.kind === 'psm').value;
   assert.deepEqual(swapInQuote(400, oracle), { sompi: psmAfter - psmBefore, fee: 0, total: psmAfter - psmBefore, price: oracle.mint });
-  assert.deepEqual(swapOutQuote(400, { ...oracle, liq: 262 }), { sompi: 15267170000, fee: 0, net: 15267170000, price: 262 });
+  assert.deepEqual(swapOutQuote(400, { ...oracle, liq: 262 }), { sompi: 15267170000, fee: 0, net: 15267170000, price: 262, paidCents: 400, coveragePct: 100 });
 });
 
 test('vault view figures', () => {

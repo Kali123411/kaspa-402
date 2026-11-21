@@ -60,7 +60,7 @@ export default function SwapTab({ k, wallet, review }) {
           <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2  bg-panel p-3">
             <div className="min-w-0">
               <div className="font-mono text-sm text-white">{usdText(h.state.amount)}</div>
-              <div className="text-xs text-gray-500">pays {kasText(swapOutQuote(h.state.amount, oracle, spread).net)}{spread ? ` after the ${feeText} fee` : ''}</div>
+              <div className="text-xs text-gray-500">pays {kasText(swapOutQuote(h.state.amount, oracle, spread, protocol.psm).net)}{spread ? ` after the ${feeText} fee` : ''}</div>
             </div>
             <button type="button" className={secondary} disabled={!k.canAct.ok}
               onClick={() => review.start('swap_out', { holder: h }, `Redeem ${usdText(h.state.amount)} through the PSM`)}>
