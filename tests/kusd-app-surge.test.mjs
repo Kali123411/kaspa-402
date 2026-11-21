@@ -52,7 +52,7 @@ test('a vault with debt needs 5 KAS; a debt-free one is still shown to close', a
   const proto = golden.cases.mint.request.protocol;
   const real = golden.cases.mint.request.params.vault;
   const owner = hex(real.state.owner);
-  const pins = Object.fromEntries(['oracle', 'psm', 'budget', 'authority', 'surplus'].map((k) => [k, hex(proto[k].covid)]));
+  const pins = Object.fromEntries(['oracle', 'psm', 'budget', 'authority', 'surplus', 'factory'].map((k) => [k, hex(proto[k].covid)]));
   const entry = (kind, l) => ({ kind, covid: hex(l.covid), outpoint: l.outpoint, value: l.value, state: l.state });
   const mk = (state, tx) => entry('vault', { ...real, state: { ...real.state, ...state }, value: 100_000_000 + state.collateral, outpoint: { transactionId: tx.repeat(32), index: 0 } });
   const small = mk({ collateral: 499_999_999, debt_mc: 100_000 }, 'a1');

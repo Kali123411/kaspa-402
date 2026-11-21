@@ -56,15 +56,16 @@ test('the showcase links to the kUSD app', () => {
   assert.match(page, /Open the kUSD app/);
 });
 
-test('snapshot pins are the hardened-PSM family', () => {
-  // the second 2026-11-21 re-genesis: new PSM (share cap, pro-rata, top-up), budget, authority and vault; the Stage 2c
-  // oracle, the surplus and the MinerMedian box carry over
+test('snapshot pins are the vault-factory family', () => {
+  // the third 2026-11-21 re-genesis: new PSM, budget, authority, the vault factory (whose covenant id every vault
+  // carries) and the deploy vault; the Stage 2c oracle, the surplus and the MinerMedian box carry over
   const c = bundled.covenants;
   assert.equal(c.oracle.covid, '0dac704fe95fa389a429eec46e70a04be2a2685cc4c301c8af8569abb221d242');
-  assert.equal(c.psm.covid, '2af0badc857320433d13a204909296af7fec4b6e68c3002c3c3574467a135e0f');
-  assert.equal(c.budget.covid, 'ed6618f08b97d2adfb560727de27035ca66495f095021b6a05849f082a59de11');
-  assert.equal(c.authority.covid, 'c009a536314da2b3b61d0fb97a9f17559d6cca4a933a62f02d054d8b16a0e250');
-  assert.equal(c.vault.covid, 'f9e4224ff0814c82440fca2edb845ab3c2213102838bf36a2c0ba40f1d73dec9');
+  assert.equal(c.psm.covid, '1b5fd632a30ead1ac3557bb02173f868c55b8a54030fc836ecfb1a9be51dd4d1');
+  assert.equal(c.budget.covid, '75d35d6a82044a65de480b3bd45ca2f1c5713fc478706572c677337104a8a297');
+  assert.equal(c.authority.covid, 'd95716cbab35f7cfb44c329f5123bf3cb362475c1e40f4d8df3b31b0e1427662');
+  assert.equal(c.vault.covid, 'a3dde3b11588d91c20e49511c27677a64ad9c082901c18f626da5c374451c7fd');
+  assert.equal(c.factory.covid, c.vault.covid, 'the deploy vault is in the factory group');
   assert.equal(c.surplus.covid, 'c76efdcbe2edfe162af0730ece57f739f57888b9e55993a021aaf34271297913');
   assert.equal(c.miner.covid, 'deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35');
   assert.equal(c.oracle.state.miner_id, c.miner.covid);
