@@ -89,7 +89,9 @@ test('the /kusd page shows the replay with sliders, the live lines and the propo
   assert.match(c, /aria-label="Time, UTC"/);
   assert.match(c, /aria-label="Borrowing line"/);
   assert.match(c, /aria-label="Liquidation line"/);
-  assert.match(c, /proposed/i);
+  assert.match(c, /Mainnet lines \(kusd-framework #56, merged\)/);
+  assert.doesNotMatch(c, /not merged yet|proposed/i);
+  assert.match(page, /Mainnet: 200% \/ 170% \(kusd-framework #56\)/);
   assert.match(c, /\/kusd\/oct10\.json|oct10\.json/);
 });
 

@@ -1,13 +1,13 @@
 // The 10 Oct 2025 crash, replayed through kUSD's oracle and vault rules (lib/kusd/stress.mjs, a port of
 // kusd-framework tools/stress/oct10_replay.py). Drag the time slider through the night; compare the lines TN10
-// enforces today with any other pair, by default the 200 / 170 proposed for mainnet in kusd-framework #56.
+// enforces today with any other pair, by default the 200 / 170 adopted for mainnet in kusd-framework #56.
 import { useEffect, useMemo, useState } from 'react';
 import data from '../../public/kusd/oct10.json';
 import { series, scenario, oraclePath, vaults, replay } from '../../lib/kusd/stress.mjs';
 import { MARK, H3 } from '../Ledger';
 
 const LIVE = { minRatio: 175, liqRatio: 150 };
-const PROPOSED = { minRatio: 200, liqRatio: 170 };
+const MAINNET = { minRatio: 200, liqRatio: 170 };
 const SCENARIOS = [
   { id: 'real', label: 'As it happened', kind: 'real', depth: 0, note: 'KAS fell 87% in an hour, then came most of the way back.' },
   { id: 'hold43', label: 'Stuck 43% down', kind: 'hold', depth: 0.43, note: 'The real night until the close first hit 43% down, then no bounce. On the night it held there for 22 minutes.' },
@@ -97,7 +97,7 @@ export default function CrashReplay() {
   const sc = SCENARIOS.find((s) => s.id === sid);
   const path = useMemo(() => oraclePath(scenario(rows, sc), { refreshMin: 5 }), [rows, sc]);
   const [t, setT] = useState(72); // 21:21, the low
-  const [mine, setMine] = useState(PROPOSED);
+  const [mine, setMine] = useState(MAINNET);
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (!playing) return undefined;
@@ -108,7 +108,7 @@ export default function CrashReplay() {
     const n = Number(e.target.value);
     setMine((m) => (k === 'minRatio' ? { minRatio: n, liqRatio: Math.min(m.liqRatio, n - 5) } : { liqRatio: n, minRatio: Math.max(m.minRatio, n + 5) }));
   };
-  const isProposed = mine.minRatio === PROPOSED.minRatio && mine.liqRatio === PROPOSED.liqRatio;
+  const isMainnet = mine.minRatio === MAINNET.minRatio && mine.liqRatio === MAINNET.liqRatio;
   return (
     <div>
       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Scenario">
@@ -128,14 +128,14 @@ export default function CrashReplay() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel title="175% / 150%" sub="Live on TN10 today" lines={LIVE} path={path} t={t} />
-        <Panel title={`${mine.minRatio}% / ${mine.liqRatio}%`} sub={isProposed ? 'Proposed for mainnet (kusd-framework #56, not merged yet)' : 'Your lines'} lines={mine} path={path} t={t}>
+        <Panel title={`${mine.minRatio}% / ${mine.liqRatio}%`} sub={isMainnet ? 'Mainnet lines (kusd-framework #56, merged); TN10 moves at its next re-genesis' : 'Your lines'} lines={mine} path={path} t={t}>
           <label className="mt-4 block font-mono text-[12px] text-gray-500">Borrowing line <span className="text-gray-200">{mine.minRatio}%</span>
             <input type="range" min="125" max="300" step="5" value={mine.minRatio} onChange={setLine('minRatio')} aria-label="Borrowing line" className="mt-1 block w-full accent-[#D1FF4A]" />
           </label>
           <label className="mt-2 block font-mono text-[12px] text-gray-500">Liquidation line <span className="text-gray-200">{mine.liqRatio}%</span>
             <input type="range" min="110" max="295" step="5" value={mine.liqRatio} onChange={setLine('liqRatio')} aria-label="Liquidation line" className="mt-1 block w-full accent-[#D1FF4A]" />
           </label>
-          {!isProposed && <button type="button" onClick={() => setMine(PROPOSED)} className="mt-2 font-mono text-[12px] text-gray-500 underline underline-offset-4 hover:text-accent">back to the proposed 200 / 170</button>}
+          {!isMainnet && <button type="button" onClick={() => setMine(MAINNET)} className="mt-2 font-mono text-[12px] text-gray-500 underline underline-offset-4 hover:text-accent">back to the mainnet 200 / 170</button>}
         </Panel>
       </div>
 

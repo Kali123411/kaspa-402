@@ -118,7 +118,7 @@ export default function Kusd() {
         </Section>
 
         {/* ── § 1 Risk parameters (UI/UX brief, Phase 3): the lines that were buried in transaction captions ── */}
-        <Section mark="1" note="Risk parameters. The numbers the covenants enforce." className="mt-12">
+        <Section mark="1" note="Risk parameters. The numbers the TN10 covenants enforce today. Mainnet: 200% / 170% (kusd-framework #56); TN10 moves to them at its next re-genesis." className="mt-12">
           <h2 className={H2}>Risk parameters</h2>
           <div className="mt-4 grid gap-x-10 gap-y-6 border-y border-gray-100 py-5 sm:grid-cols-2 lg:grid-cols-4">
             <div><div className={NUM}>175%</div><div className="mt-2 text-[14px] text-gray-300">borrowing line</div><div className="text-[13px] text-gray-500">collateral ÷ debt at the mint price to borrow</div></div>
