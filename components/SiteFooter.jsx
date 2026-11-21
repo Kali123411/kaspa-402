@@ -13,6 +13,7 @@ export default function SiteFooter() {
         <a href="/kusd" className={ext}>money · kUSD</a>
         <a href="/market" className={ext}>market</a>
         <a href="/validate" className={ext}>validate</a>
+        <a href="/rwa" className={ext}>tokenized assets</a>
         <a href="/private" className={ext}>pay privately</a>
         <a href="/glossary" className={ext}>glossary</a>
         <ExternalLink href={EXTERNAL.standard} className={ext}>standard</ExternalLink>
