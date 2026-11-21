@@ -1,6 +1,6 @@
 // The 10 Oct 2025 crash, replayed through kUSD's oracle and vault rules (lib/kusd/stress.mjs, a port of
 // kusd-framework tools/stress/oct10_replay.py). Drag the time slider through the night; compare the lines TN10
-// enforces today with any other pair, by default the 200 / 170 adopted for mainnet in kusd-framework #56.
+// enforced before 21 November 2026 with any other pair, by default the live 200 / 170 (kusd-framework #56).
 import { useEffect, useMemo, useState } from 'react';
 import data from '../../public/kusd/oct10.json';
 import { series, scenario, oraclePath, vaults, replay } from '../../lib/kusd/stress.mjs';
@@ -127,15 +127,15 @@ export default function CrashReplay() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Panel title="175% / 150%" sub="Live on TN10 today" lines={LIVE} path={path} t={t} />
-        <Panel title={`${mine.minRatio}% / ${mine.liqRatio}%`} sub={isMainnet ? 'Mainnet lines (kusd-framework #56, merged); TN10 moves at its next re-genesis' : 'Your lines'} lines={mine} path={path} t={t}>
+        <Panel title="175% / 150%" sub="TN10 until 21 November 2026" lines={LIVE} path={path} t={t} />
+        <Panel title={`${mine.minRatio}% / ${mine.liqRatio}%`} sub={isMainnet ? 'Live on TN10 since 21 November 2026 (kusd-framework #56)' : 'Your lines'} lines={mine} path={path} t={t}>
           <label className="mt-4 block font-mono text-[12px] text-gray-500">Borrowing line <span className="text-gray-200">{mine.minRatio}%</span>
             <input type="range" min="125" max="300" step="5" value={mine.minRatio} onChange={setLine('minRatio')} aria-label="Borrowing line" className="mt-1 block w-full accent-[#D1FF4A]" />
           </label>
           <label className="mt-2 block font-mono text-[12px] text-gray-500">Liquidation line <span className="text-gray-200">{mine.liqRatio}%</span>
             <input type="range" min="110" max="295" step="5" value={mine.liqRatio} onChange={setLine('liqRatio')} aria-label="Liquidation line" className="mt-1 block w-full accent-[#D1FF4A]" />
           </label>
-          {!isMainnet && <button type="button" onClick={() => setMine(MAINNET)} className="mt-2 font-mono text-[12px] text-gray-500 underline underline-offset-4 hover:text-accent">back to the mainnet 200 / 170</button>}
+          {!isMainnet && <button type="button" onClick={() => setMine(MAINNET)} className="mt-2 font-mono text-[12px] text-gray-500 underline underline-offset-4 hover:text-accent">back to the live 200 / 170</button>}
         </Panel>
       </div>
 

@@ -1,5 +1,6 @@
-// Borrow guard: borrowing stops at 175% and liquidation waits for 150%; the app still steers people to a
-// safe target and says how far KAS can fall before a vault becomes liquidatable.
+// Borrow guard: borrowing stops at 200% and liquidation waits for 170% (kusd-framework #56); the app still steers
+// people to a safe target, says how far KAS can fall before a vault becomes liquidatable, and never offers more
+// than the vault-debt ceiling has room for (budget.ag vault_ceiling).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { safeBorrowCents, borrowRisk, vaultView, SAFE_RATIO, CONFIRM_BELOW, LIQ_RATIO } from '../lib/kusd/app/quotes.mjs';
@@ -17,24 +18,33 @@ test('the safe borrow targets 250% at the mint price', () => {
 test('borrow risk: the ratio after and how far KAS can fall before liquidation', () => {
   const r = borrowRisk(vault, oracle, 314);
   assert.equal(r.ratioAfter, 250);
-  // liquidatable below 150% of $3.14 → collateral must be worth $4.71 → 157 (1e-4 USD/KAS, rounded up)
-  assert.equal(r.liquidatesBelow, 157);
-  assert.equal(r.dropPct, 40.0); // (262 - 157) / 262, one decimal, rounded down
+  // liquidatable below 170% of $3.14 → collateral must be worth $5.34 → 178 (1e-4 USD/KAS, rounded up)
+  assert.equal(r.liquidatesBelow, 178);
+  assert.equal(r.dropPct, 32.0); // (262 - 178) / 262, one decimal, rounded down
 });
 
-test('liquidation line is 150 while borrowing stops at 175', () => {
-  assert.equal(LIQ_RATIO, 150);
-  assert.equal(vaultView(vault, oracle).maxMintCents, 449); // floor(786 * 100 / 175): unchanged
-  const max = borrowRisk(vault, oracle, 449);
-  assert.equal(max.ratioAfter, 175);
-  assert.equal(max.liquidatesBelow, 225); // 150% of $4.49 = $6.735 → 674 cents over 300 KAS
-  assert.equal(max.dropPct, 14.1); // a maximum borrow now has room before liquidation
+test('liquidation line is 170 while borrowing stops at 200', () => {
+  assert.equal(LIQ_RATIO, 170);
+  assert.equal(vaultView(vault, oracle).maxMintCents, 393); // floor(786 * 100 / 200)
+  const max = borrowRisk(vault, oracle, 393);
+  assert.equal(max.ratioAfter, 200);
+  assert.equal(max.liquidatesBelow, 223); // 170% of $3.93 = $6.681 → 669 cents over 300 KAS
+  assert.equal(max.dropPct, 14.8); // a maximum borrow has about 15% of room before liquidation
 });
 
-test('borrowing below 200% asks for confirmation', () => {
-  assert.equal(CONFIRM_BELOW, 200);
-  assert.equal(borrowRisk(vault, oracle, 392).needsConfirm, false); // 200%
-  assert.equal(borrowRisk(vault, oracle, 394).needsConfirm, true); // 199%
+test('borrowing below 225% asks for confirmation', () => {
+  assert.equal(CONFIRM_BELOW, 225);
+  assert.equal(borrowRisk(vault, oracle, 349).needsConfirm, false); // 225%
+  assert.equal(borrowRisk(vault, oracle, 350).needsConfirm, true); // 224%
+});
+
+test('the vault-debt ceiling caps what any vault can borrow', () => {
+  const budget = { vault_debt: 900, vault_ceiling: 1_000 };
+  assert.equal(vaultView(vault, oracle, budget).maxMintCents, 100);
+  assert.equal(safeBorrowCents(vault, oracle, budget), 100);
+  assert.equal(vaultView(vault, oracle, { vault_debt: 1_200, vault_ceiling: 1_000 }).maxMintCents, 0, 'over the ceiling after a cut: no room');
+  assert.equal(vaultView(vault, oracle, { vault_debt: 0, vault_ceiling: 1_000_000 }).maxMintCents, 393, 'a roomy ceiling changes nothing');
+  assert.equal(vaultView(vault, oracle).maxMintCents, 393, 'no budget given: the ratio alone');
 });
 
 test('a liquidation price already above the oracle reads as no room', () => {

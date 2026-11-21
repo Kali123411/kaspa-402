@@ -29,7 +29,7 @@ test('vault view ratios use owed, not the minted principal', () => {
   const up = vaultView(v, oracle(S + S / 20));
   assert.equal(up.owedCents, 210);
   assert.equal(up.ratioAtMint, 374);
-  assert.equal(up.maxMintCents, 449 - 210);
+  assert.equal(up.maxMintCents, 393 - 210); // floor(786 * 100 / 200) less what is owed
   assert.equal(borrowRisk(v, oracle(S + S / 20), 0).ratioAfter, 374);
 });
 

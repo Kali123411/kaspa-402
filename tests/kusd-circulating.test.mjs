@@ -25,3 +25,10 @@ test('the page shows circulation from the authority and labels the deployer box 
   assert.match(page, /\['Deployer&apos;s test box', dot\('minted'\)|\["Deployer's test box", dot\('minted'\)/);
   assert.doesNotMatch(page, /'minted holder'/);
 });
+
+test('system state shows the vault-debt ceiling beside the issuance budget', () => {
+  const page = read('pages/kusd.js');
+  assert.match(page, /\['Vault-debt ceiling', dot\('budget'\)/);
+  assert.match(page, /c\.budget\.state\.vault_debt/);
+  assert.match(page, /c\.budget\.state\.vault_ceiling/);
+});

@@ -9,11 +9,12 @@ test('intro says what kUSD is, how to use it and where test funds come from', ()
   assert.ok(s.includes('In plain terms') && s.includes('href="/get-started"'), 'plain-English intro with the setup guide');
 });
 
-test('risk parameters sit at the top: 175% borrowing line, 150% liquidation line, the Stage 2 bound', () => {
+test('risk parameters sit at the top: 200% borrowing line, 170% liquidation line, the vault-debt ceiling, the Stage 2 bound', () => {
   const i = s.indexOf('Risk parameters'); const j = s.indexOf('<ProductMap');
   assert.ok(i > 0 && i < j, 'risk card before the product map');
-  const card = s.slice(i, i + 3000);
-  for (const t of ['175%', '150%', '±5%', '45 min', '3%']) assert.ok(card.includes(t), t);
+  const card = s.slice(i, i + 3500);
+  for (const t of ['200%', '170%', 'vault-debt ceiling', '±5%', '45 min', '3%']) assert.ok(card.includes(t), t);
+  assert.ok(!card.includes('175%') && !card.includes('>150%<'), 'the old lines are gone');
 });
 
 test('ambiguous figures are labelled and the identical mint/liq prices are explained', () => {
