@@ -7,7 +7,7 @@ import LiveBadge, { Dot } from '../components/kusd/LiveBadge';
 import ProductMap from '../components/kusd/ProductMap';
 import { DISCLAIMERS } from '../lib/kusd/story.mjs';
 import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
-import { vaultView } from '../lib/kusd/status.mjs';
+import { vaultView, circulatingCents } from '../lib/kusd/status.mjs';
 import { STEP_LABEL, Tx, TimelineEntry, txUrl, short } from '../components/kusd/Timeline';
 import { groupTimeline, filterTimeline } from '../lib/kusd/timeline.mjs';
 import { BUTTON, FIELD, Facts, H1, H2, H3, LINK, MARK, NUM, PAGE, Section } from '../components/Ledger';
@@ -69,7 +69,8 @@ export default function Kusd() {
     ['Issuance budget', dot('budget'), [['daily limit', dollars(c.budget.state.limit)], ['available now', dollars(c.budget.state.available)]]],
     ['Peg stability module', dot('psm'), [['ceiling', dollars(c.psm.state.ceiling)], ['minted via PSM', dollars(c.psm.state.minted)]]],
     ['Vault', dot('vault'), [['collateral', kas(c.vault.state.collateral)], ['debt owed now', dollars(vault.debtCents)], ['ratio at liq. price', vault.ratioPct == null ? 'no debt' : `${Math.round(vault.ratioPct).toLocaleString('en-US')}%`]]],
-    ['kUSD in circulation', dot('minted'), [['minted holder', dollars(c.minted.state.amount)]]],
+    ['kUSD in circulation', dot('authority'), [['all holders', dollars(circulatingCents(c.authority.state.amount))]]],
+    ["Deployer's test box", dot('minted'), [['one holder box', dollars(c.minted.state.amount)]]],
     ['Token authority', dot('authority'), [['unissued supply', dollars(c.authority.state.amount)]]],
     ['Surplus pot', dot('surplus'), [['balance', kas(c.surplus.amount)]]],
   ];
@@ -211,7 +212,7 @@ export default function Kusd() {
           <details className="mt-4 border-t border-gray-800 pt-3 text-[14.5px] text-gray-400">
             <summary className="cursor-pointer font-mono text-[12px] text-gray-400">What these figures mean</summary>
             <ul className="mt-2 space-y-2 leading-relaxed">
-              <li><span className="text-gray-200">minted holder</span>: the kUSD issued to users (here, the deployer&apos;s test box). <span className="text-gray-200">unissued supply</span>: what the <Term id="token-authority">token authority</Term> still holds and has never issued; the two always sum to the fixed 1,000,000 kUSD.</li>
+              <li><span className="text-gray-200">kUSD in circulation</span>: every kUSD held by anyone — the $1,000,000 genesis supply minus what the token authority still holds. <span className="text-gray-200">deployer&apos;s test box</span>: one holder box among them, from the deployment. <span className="text-gray-200">unissued supply</span>: what the <Term id="token-authority">token authority</Term> still holds and has never issued; the two always sum to the fixed 1,000,000 kUSD.</li>
               <li><span className="text-gray-200">surplus pot</span>: the protocol&apos;s revenue — PSM fees, interest, the 3% liquidation share — in KAS, under governance.</li>
               <li>The <span className="text-gray-200">mint</span> and <span className="text-gray-200">liquidation</span> prices are identical whenever the price has been steady for an hour: the rate limits only pull them apart during a move (mint lags a rise, liquidation lags a fall), which is what stops one manipulated hour from minting cheap kUSD or triggering liquidations.</li>
             </ul>
