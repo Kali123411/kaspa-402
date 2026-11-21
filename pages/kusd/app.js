@@ -10,6 +10,7 @@ import VaultTab from '../../components/kusd/app/VaultTab';
 import ActivityTab from '../../components/kusd/app/ActivityTab';
 import ReviewSheet, { useReview } from '../../components/kusd/app/ReviewSheet';
 import { H1, LINK, PAGE, Section } from '../../components/Ledger';
+import KusdMark, { KusdIcons } from '../../components/kusd/KusdMark';
 
 const TABS = ['Wallet', 'Swap', 'Vault', 'Activity'];
 
@@ -28,9 +29,10 @@ export default function KusdApp() {
         <title>kUSD app · TN10 | k402</title>
         <meta name="description" content="Swap KAS for kUSD and run vaults on Kaspa TN10, signed and broadcast from your browser." />
       </Head>
+      <KusdIcons />
       <main className={`${PAGE} py-12 lg:py-16`}>
           <Section mark="0" top={false} note={<><Link href="/kusd" className={LINK}>← kUSD overview</Link><div className="mt-2">Every transaction is built and signed in this browser and broadcast straight to Kaspa. No server holds a key.</div></>}>
-            <h1 className={H1}>kUSD app</h1>
+            <h1 className={`${H1} flex items-center gap-4`}><KusdMark size={56} />kUSD app</h1>
             <p className="mt-5 max-w-[62ch] text-[16px] leading-relaxed text-gray-300">
               Swap KAS for kUSD through the PSM, borrow against KAS in a vault, and send kUSD. Holding kUSD here also makes this wallet an
               agent on the <Link href="/market" className={LINK}>Kaspa Agent Market</Link>.

@@ -2,6 +2,7 @@
 // whether it is answering right now.
 import { useEffect, useMemo, useState } from 'react';
 import { input, usdText, Panel } from '../app/ui';
+import KusdMark from '../KusdMark';
 
 const short = (k) => `${k.slice(0, 8)}…${k.slice(-4)}`;
 // relative times are computed from a clock set after mount: the server-rendered HTML must not carry a"now"
@@ -65,7 +66,7 @@ export default function MarketBoard({ providers, live, fromSnapshot, loading, se
                 className={`flex h-full w-full flex-col  border p-4 text-left transition ${isSel ? 'border-accent bg-panel' : 'border-gray-800 bg-panel hover:border-gray-600'}`}>
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-mono text-base text-white">{p.capability}</span>
-                  <span className="font-mono text-sm text-accent" title={`${p.price_cents}¢`}>{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
+                  <span className="inline-flex items-center gap-1.5 font-mono text-sm text-accent" title={`${p.price_cents}¢`}><KusdMark size={14} alt="kUSD" />{usdText(p.price_cents)}<span className="text-gray-500">/call</span></span>
                 </div>
                 <div className="mt-1 text-xs text-gray-400">
                   {p.meta?.provider || `provider ${short(p.payee_pubkey)}`}{p.meta?.model ? ` · ${p.meta.model}` : ''}
