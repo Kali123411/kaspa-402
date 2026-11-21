@@ -1,0 +1,236 @@
+{
+ "generatedAt": "2026-11-21T05:50:01Z",
+ "network": "testnet-10",
+ "caveat": "Fictional instrument on Kaspa testnet-10. Reference infrastructure, not a securities offering.",
+ "instrument": {
+  "symbol": "TESS3",
+  "name": "Tessera Holdings, Class A (fictional), v3",
+  "covid": "d33cf4ab02807abcf73c7042da0fa5222aaa7b9d030cfe7d1f8b77cbb6eb1057",
+  "authorized": 1000000,
+  "standard": "KCC-20 (argent-lang/kcc20-reference @ 27f8403, unmodified KCC20 actor)",
+  "terms": "ddb4de40c88f74eedb738515a8cef294c2a4e0277eb4b0feb316a371b25fa21e",
+  "genesis": "90445b344daa347a80653dd5e6710a56414acbe587a156e48fe97d0bf3c578c6"
+ },
+ "node": "2.1.0",
+ "governance": {
+  "issuers": [
+   "67468305e4806e69b50e2e375487e4880a1927ac264e267e4b5ef509c399c857",
+   "ba76aaf355ef7b954b3c32499da3bacaaa661e7fa174956f88df55ed4394e9a2",
+   "40e801d0887d1c00036251aa630e092b7dc76e3dbffed2eb176bfdcea38ecd71"
+  ],
+  "registrar": "ec564e62a17aec2fae718c6dd79bb86681af1fd00effda2d65eb38ccdcc72fb3"
+ },
+ "audit": {
+  "total": 1000000,
+  "treasury": 993000
+ },
+ "holders": [
+  {
+   "address": "kaspatest:pqm4c6jwyj8ss9psxjlxr2mh0l3hmpjzadsmyhtwaktdfat9j0tmjrn7q9huq",
+   "amount": 990000,
+   "compliance_key": "kaspatest:pq629dg8evm4uf77620n2dmqwrf9k307z8nfqglu0z0xnpkphz25wdm7pjlp6",
+   "index": 1,
+   "owner_commitment": "34a2b507cb375e27ded29f35376070d25b45fe11e69023fc789e6986c1b89547",
+   "role": "treasury",
+   "txid": "3fd0a0532111c6296d5df87e66a728851da49a2bc74769604fa04351a89ba612",
+   "value": 100000000,
+   "firm": "Issuer Treasury"
+  },
+  {
+   "address": "kaspatest:pr7s0vka96kkqz396n9kuzgss5xwaq2pakhjt3has75rlq74nk0qyrzs0gh0y",
+   "amount": 3000,
+   "compliance_key": "kaspatest:pq629dg8evm4uf77620n2dmqwrf9k307z8nfqglu0z0xnpkphz25wdm7pjlp6",
+   "index": 0,
+   "owner_commitment": "34a2b507cb375e27ded29f35376070d25b45fe11e69023fc789e6986c1b89547",
+   "role": "treasury",
+   "txid": "fd589abed3b1b302b93f5b762d9dce17174bcccb3ea929b6fade7b6770571bbb",
+   "value": 100000000,
+   "firm": "Issuer Treasury"
+  },
+  {
+   "address": "kaspatest:pp4ynfwsvty0nduj6s3y9h4pdlnskvtqkx9zre5arwvrxrmy77efcny0pl96l",
+   "amount": 4000,
+   "compliance_key": "kaspatest:pzu389qxqey9a3yalvmsnv6rt52dy5849rxjlvmngzkd0zfqf0r2xwntxshyg",
+   "index": 1,
+   "owner_commitment": "b913940606485ec49dfb3709b3435d14d250f528cd2fb37340acd789204bc6a3",
+   "role": "alice",
+   "txid": "b46274f83b84388645519e757ac1ee0dbc38ae1801f98893e913edd2e45cb39b",
+   "value": 100000000,
+   "firm": "Meridian Capital Partners"
+  },
+  {
+   "address": "kaspatest:prz4dln7a48lyc3xkjye34sm42vrqprs8p2xcq7p097gerkwthfny0e026xwl",
+   "amount": 2000,
+   "compliance_key": "kaspatest:prtdxtg7uy3wqlzej4vwp3vedcr9awj2z4xf884gm86f9mjeq6f77908rzvfl",
+   "index": 0,
+   "owner_commitment": "d6d32d1ee122e07c599558e0c5996e065eba4a154c939ea8d9f492ee590693ef",
+   "role": "carol",
+   "txid": "3fd0a0532111c6296d5df87e66a728851da49a2bc74769604fa04351a89ba612",
+   "value": 100000000,
+   "firm": "Atlas Asset Management"
+  },
+  {
+   "address": "kaspatest:pqjga50sfa3jdamvuesq6dt52a30lxnez506hphdyffxd8u5wjjwwwtu3gxye",
+   "amount": 900,
+   "compliance_key": "kaspatest:pz9l4pa3ytkduqscanj4zuxvme9d0ve4wf0q4a8e5y6u4xk7w3hw773nd9zku",
+   "index": 1,
+   "owner_commitment": "8bfa87b122ecde0218ece55170ccde4ad7b335725e0af4f9a135ca9ade746eef",
+   "role": "dave",
+   "txid": "f805cb95ba39d2f7e415e9dfc19694ae42230503e08b547e9bfcb5f5d0055681",
+   "value": 100000000,
+   "firm": "Halcyon Trading Co."
+  },
+  {
+   "address": "kaspatest:ppldf54pa9ce3x6qqf6hszq70d0wv6t7eq4aa8t58u7fyr3z09svsk9sq3axw",
+   "amount": 100,
+   "compliance_key": "kaspatest:pz4jh45vt8ndnkk2h6j6hthx8ezlcx8xsy0tg9qdzmswxswjvrlsg35ftfh5f",
+   "index": 0,
+   "owner_commitment": "ab2bd68c59e6d9dacabea5abaee63e45fc18e6811eb4140d16e0e341d260ff04",
+   "role": "eve",
+   "txid": "f805cb95ba39d2f7e415e9dfc19694ae42230503e08b547e9bfcb5f5d0055681",
+   "value": 100000000,
+   "firm": "Sable Rock Holdings"
+  }
+ ],
+ "settlements": [
+  {
+   "buyer": "eve",
+   "currency": "kUSD",
+   "price_cents": 200,
+   "qty": 100,
+   "seller": "dave",
+   "submit_to_accepted_s": 0,
+   "txid": "f805cb95ba39d2f7e415e9dfc19694ae42230503e08b547e9bfcb5f5d0055681",
+   "seller_firm": "Halcyon Trading Co.",
+   "buyer_firm": "Sable Rock Holdings",
+   "onExplorer": true
+  }
+ ],
+ "kascov": {
+  "status": "verified",
+  "template": "KCC-20 token",
+  "name": "vivid-olive-otter",
+  "kcc": 20,
+  "conformant": true,
+  "nonconformities": [],
+  "supply": 1000000,
+  "holders": 5,
+  "held_by_script": 1000000,
+  "checked_at": "2026-11-21T05:50:03Z"
+ },
+ "rules": [
+  {
+   "id": "standard",
+   "title": "A standard token: compliance lives in the owner, not the token",
+   "plain": "Every TESS3 holding is an unmodified KCC-20 box, so wallets and indexers recognise it. The box's owner is not a key but the hash of a small compliance script (the KCC-2 p2sh owner scheme). The token only checks that the transaction includes an input locked to that script; the script decides who may spend.",
+   "proofs": [
+    {
+     "label": "Genesis: 1,000,000 TESS3 in one KCC-20 box owned by the treasury's compliance script",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "90445b344daa347a80653dd5e6710a56414acbe587a156e48fe97d0bf3c578c6",
+     "onExplorer": true
+    },
+    {
+     "label": "Independent indexer (kascov) lists TESS3 as a verified, conformant KCC-20 token with no nonconformities",
+     "outcome": "verified",
+     "date": "2026-11-21",
+     "txid": null,
+     "note": "kascov.io testnet-10 token list"
+    }
+   ]
+  },
+  {
+   "id": "transfer-agent",
+   "title": "Every transfer needs the holder and the transfer agent",
+   "plain": "A holder's compliance script requires two signatures over the whole transaction: the holder's and the registrar's. The registrar signs only after its policy passes: every recipient allowlisted, the sender not frozen. Because it signs the whole transaction, it approves the exact recipients and amounts.",
+   "proofs": [
+    {
+     "label": "Investor transfer, holder and registrar signatures",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "b46274f83b84388645519e757ac1ee0dbc38ae1801f98893e913edd2e45cb39b",
+     "onExplorer": true
+    },
+    {
+     "label": "Transfer to a buyer who is not allowlisted",
+     "outcome": "refused",
+     "date": "2026-11-21",
+     "txid": null,
+     "note": "registrar refused to sign: not an eligible holder"
+    },
+    {
+     "label": "Transfer with an impostor's signature in the registrar's place, broadcast raw",
+     "outcome": "network-rejected",
+     "date": "2026-11-21",
+     "txid": "663b764b35092f8c79d2279ced4c430d0eefd0bb05ce23cf53ff3552db11cf63",
+     "note": "the compliance script's registrar check failed",
+     "onExplorer": false
+    }
+   ]
+  },
+  {
+   "id": "freeze-clawback",
+   "title": "Frozen holders cannot transfer; two of three issuers can recover",
+   "plain": "The registrar freezes a holder by refusing to co-sign, the way a transfer agent does. The compliance script also has a second path: any two of the three issuers can move the holding, for court-ordered recovery.",
+   "proofs": [
+    {
+     "label": "Frozen holder tries to transfer",
+     "outcome": "refused",
+     "date": "2026-11-21",
+     "txid": null,
+     "note": "registrar refused: sender frozen"
+    },
+    {
+     "label": "Clawback of the frozen holding to the treasury, issuers 0 and 1",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "fd589abed3b1b302b93f5b762d9dce17174bcccb3ea929b6fade7b6770571bbb",
+     "onExplorer": true
+    }
+   ]
+  },
+  {
+   "id": "supply",
+   "title": "The supply is fixed at genesis",
+   "plain": "All 1,000,000 shares were created in the genesis box and nothing can mint more: the KCC-20 program makes every transfer preserve the total. Issuing to investors is a transfer out of the treasury, co-signed like any other.",
+   "proofs": [
+    {
+     "label": "Issue to two investors from the treasury",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "3a06dc24c613995c98134e06ba6fc2591efbd64cfed2998b90573e3296b72e8f",
+     "onExplorer": true
+    },
+    {
+     "label": "Issue to a third investor",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "3fd0a0532111c6296d5df87e66a728851da49a2bc74769604fa04351a89ba612",
+     "onExplorer": true
+    }
+   ]
+  },
+  {
+   "id": "kusd",
+   "title": "Trades settle in kUSD, in one transaction",
+   "plain": "A trade spends the seller's TESS3 box and the buyer's kUSD box together. The shares go to the buyer and the dollars to the seller in the same transaction, both tokens' programs run, and the registrar's signature covers the price as well as the shares.",
+   "proofs": [
+    {
+     "label": "Buyer mints $5.00 of kUSD through the peg module with testnet KAS",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "4c07eb78f1eebca0f1d77996a5446abbb42eeff5f9d29eb1dd1eee1aca9447a5",
+     "onExplorer": true
+    },
+    {
+     "label": "100 TESS3 for $2.00 of kUSD, one transaction",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "f805cb95ba39d2f7e415e9dfc19694ae42230503e08b547e9bfcb5f5d0055681",
+     "onExplorer": true
+    }
+   ]
+  }
+ ]
+}
