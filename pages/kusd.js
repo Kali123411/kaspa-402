@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import snapshot from '../public/kusd/snapshot.json';
 import LiveBadge, { Dot } from '../components/kusd/LiveBadge';
 import ProductMap from '../components/kusd/ProductMap';
+import KusdMark, { KusdIcons } from '../components/kusd/KusdMark';
 import { DISCLAIMERS } from '../lib/kusd/story.mjs';
 import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
 import { vaultView, circulatingCents } from '../lib/kusd/status.mjs';
@@ -82,11 +83,16 @@ export default function Kusd() {
         <meta name="description" content={desc} />
         <meta property="og:title" content="kUSD — the stablecoin built for agents, on Kaspa L1" />
         <meta property="og:description" content={desc} />
+        <meta property="og:image" content="https://www.kaspa-402.org/api/og-kusd" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.kaspa-402.org/api/og-kusd" />
       </Head>
+      <KusdIcons />
 
       <main className={`${PAGE} py-12 lg:py-16`}>
         {/* ── § 0 the claim ── */}
         <Section mark="0" top={false} note={<><div>{s.stage} · testnet-10</div><div className="mt-2">{DISCLAIMERS.research} {DISCLAIMERS.advice}</div><div className="mt-2"><LiveBadge status={status} loading={loading} generatedAt={s.generatedAt} /></div></>}>
+          <KusdMark size={72} className="mb-5" />
           <h1 className={H1}>kUSD: a dollar that lives inside Kaspa covenants, built for agents.</h1>
           <p className="mt-6 max-w-[62ch] text-[clamp(17px,1.25vw,20px)] leading-relaxed text-gray-300">
             The money layer of an agent-native marketplace on Kaspa L1: a USD stablecoin living entirely in Kaspa L1 covenants — vaults, a peg stability module, an issuance budget and a five-operator price

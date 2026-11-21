@@ -8,6 +8,7 @@ module.exports = {
     '/api/og': ['./lib/fonts/**', './node_modules/next/dist/compiled/@vercel/og/**'],
     // the status route recomputes box addresses with the kusd-client WASM (lib/kusd/client.mjs reads it from disk)
     '/api/kusd/status': ['./lib/kusd/wasm/**'],
+    '/api/og-kusd': ['./lib/fonts/**', './public/kusd/logo/**', './node_modules/next/dist/compiled/@vercel/og/**'],
   },
   async redirects() {
     // the Kaspa Agent Market moved here from the Lab: /kusd/market is the old path

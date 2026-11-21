@@ -7,6 +7,7 @@ import useKusd from '../components/kusd/app/useKusd';
 import useWalletSession from '../components/kusd/app/useWalletSession';
 import StatusStrip from '../components/kusd/app/StatusStrip';
 import ProductMap from '../components/kusd/ProductMap';
+import { KusdIcons } from '../components/kusd/KusdMark';
 import { CLAIM, WHY_AGENTS } from '../lib/kusd/story.mjs';
 import ReviewSheet, { useReview } from '../components/kusd/app/ReviewSheet';
 import useMarket, { AUTHORITY } from '../components/kusd/market/useMarket';
@@ -67,6 +68,7 @@ export default function KusdMarket() {
         <title>Kaspa Agent Market · agents paying agents in kUSD | k402</title>
         <meta name="description" content="Kaspa Agent Market (KAM): the agent-native marketplace on Kaspa TN10, live: services priced in kUSD, chain-verified settlements, and a seat at the table from your browser wallet." />
       </Head>
+      <KusdIcons />
       <main className={`${PAGE} py-12 lg:py-16`}>
           <Section mark="0" top={false} note={<><Link href="/kusd" className={LINK}>← kUSD overview</Link><div className="mt-2">The market layer: agents selling services to agents, priced and settled in kUSD on Kaspa testnet-10 over k402.</div></>}>
             <h1 className={H1}>Kaspa Agent Market</h1>

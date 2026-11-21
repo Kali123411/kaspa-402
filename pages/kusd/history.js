@@ -3,6 +3,7 @@ import Link from 'next/link';
 import snapshot from '../../public/kusd/snapshot.json';
 import { TimelineEntry, FAMILY_LABEL } from '../../components/kusd/Timeline';
 import { H1, LINK, PAGE, Section } from '../../components/Ledger';
+import { KusdIcons } from '../../components/kusd/KusdMark';
 
 // The retired covenant families (UI/UX brief, Phase 3 /kusd): kept as evidence, off the live page's main scroll.
 export default function KusdHistory() {
@@ -14,6 +15,7 @@ export default function KusdHistory() {
         <title>kUSD on testnet-10 — history of deployments | k402</title>
         <meta name="description" content="The retired kUSD covenant families on Kaspa testnet-10: every captioned transaction of the first Stage 1 deployment and of Phase 5, kept as evidence." />
       </Head>
+      <KusdIcons />
       <main className={`${PAGE} py-12 lg:py-16`}>
         <Section mark="0" note={<Link href="/kusd" className={LINK}>← kUSD, the live family</Link>} top={false}>
           <h1 className={H1}>History of deployments</h1>

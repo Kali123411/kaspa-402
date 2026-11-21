@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { input, primary, secondary, usdText, kasText, Panel, Row, txUrl } from '../app/ui';
 import { UnlockForm, storedWallet, WALLET_KEY } from '../app/WalletTab';
+import KusdMark from '../KusdMark';
 import { writeStored } from '../app/useKusd';
 import { quote, checkPolicy, present, QuoteError, PaymentSent } from '../../../lib/kusd/market/payer.mjs';
 import { followSheet } from '../../../lib/kusd/market/flow.mjs';
@@ -180,7 +181,7 @@ export default function AgentConsole({ k, session, review, listing, live, author
               <div className="border border-gray-800 bg-panel p-3 text-sm">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="font-mono text-white">{listing.capability}</span>
-                  <span className="font-mono text-accent" title={`${listing.price_cents}¢`}>{usdText(listing.price_cents)}/call</span>
+                  <span className="inline-flex items-center gap-1 font-mono text-accent" title={`${listing.price_cents}¢`}><KusdMark size={14} alt="kUSD" />{usdText(listing.price_cents)}/call</span>
                 </div>
                 <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
                   <span className="break-all font-mono">{listing.endpoint}</span>
