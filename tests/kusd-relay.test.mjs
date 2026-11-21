@@ -11,7 +11,7 @@ const { boxAddress } = loadClient();
 const hex = (b) => Buffer.from(b).toString('hex');
 const API = 'https://tn10.test';
 
-const pins = { oracle: '07'.repeat(32), psm: '66'.repeat(32), budget: '88'.repeat(32), authority: '42'.repeat(32), surplus: '77'.repeat(32), miner: '4d'.repeat(32) };
+const pins = { oracle: '07'.repeat(32), psm: '66'.repeat(32), budget: '88'.repeat(32), authority: '42'.repeat(32), surplus: '77'.repeat(32), miner: '4d'.repeat(32), factory: '99'.repeat(32) };
 const oracleState = golden.box_address.request.state;
 const holderState = golden.cases.swap_in.created.find((c) => c.kind === 'holder').state;
 const vaultLive = golden.cases.mint.request.params.vault;
@@ -200,15 +200,15 @@ test('unknown_state_fields_refused', () => {
   assert.throws(() => parseEntry({ ...entry(oracleBox), state: { ...oracleState, display_price: 'x'.repeat(1000) } }, { boxAddress }), /unknown field/);
 });
 
-test('vault_genesis_must_be_debt_free_and_backed', async () => {
+test('a vault not created from the factory group is refused, debt-free or not', async () => {
+  // since the vault factory a vault has no genesis of its own: its creating tx spends the factory (an open) or the
+  // vault's previous box, both in the vault group. A tx with no input of that group can't have made a real vault
   const store = memStore();
   const base = { kind: 'vault', covid: hex(vaultLive.covid), txid: 'f1'.repeat(32), index: 0 };
-  const withDebt = { ...base, state: { ...vaultLive.state, debt_mc: 500_000 }, value: 100_000_000 + vaultLive.state.collateral };
-  assert.match((await accept([entry(withDebt)], { ...deps([withDebt]), store }))[0].reason, /debt/);
-  const unbacked = { ...base, txid: 'f2'.repeat(32), state: { ...vaultLive.state, debt_mc: 0 }, value: 100_000_000 };
-  assert.match((await accept([entry(unbacked)], { ...deps([unbacked]), store }))[0].reason, /collateral/);
-  const fine = { ...base, txid: 'f3'.repeat(32), state: { ...vaultLive.state, debt_mc: 0 }, value: 100_000_000 + vaultLive.state.collateral };
-  assert.equal((await accept([entry(fine)], { ...deps([fine]), store }))[0].ok, true);
+  const fresh = { ...base, state: { ...vaultLive.state, debt_mc: 0 }, value: 100_000_000 + vaultLive.state.collateral };
+  assert.match((await accept([entry(fresh)], { ...deps([fresh]), store }))[0].reason, /factory/);
+  const withDebt = { ...base, txid: 'f2'.repeat(32), state: { ...vaultLive.state, debt_mc: 500_000 }, value: 100_000_000 + vaultLive.state.collateral };
+  assert.match((await accept([entry(withDebt)], { ...deps([withDebt]), store }))[0].reason, /factory/);
 });
 
 test('vault_with_debt_accepted_as_a_continuation', async () => {

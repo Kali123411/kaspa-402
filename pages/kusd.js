@@ -69,6 +69,7 @@ export default function Kusd() {
   const desc = 'kUSD: the covenant-native USD stablecoin built for AI agents, on Kaspa L1 (testnet-10). The money layer of the agent-native marketplace: live state, every transaction, and how to verify it yourself.';
   const covenantRows = [
     ['Issuance budget', dot('budget'), [['daily limit', dollars(c.budget.state.limit)], ['available now', dollars(c.budget.state.available)]]],
+    ['Vault factory', dot('factory'), [['vaults opened', c.factory ? String(c.factory.state.opened) : '—'], ['vault group', c.factory ? `${c.factory.covid.slice(0, 8)}…` : '—']]],
     ['Vault-debt ceiling', dot('budget'), [['issued by vaults', c.budget.state.vault_debt == null ? '—' : dollars(c.budget.state.vault_debt)], ['ceiling', c.budget.state.vault_ceiling == null ? '—' : dollars(c.budget.state.vault_ceiling)]]],
     ['Peg stability module', dot('psm'), [['ceiling', dollars(c.psm.state.ceiling)], ['minted via PSM', dollars(c.psm.state.minted)], ['share cap', c.psm.state.share_bps == null ? '—' : `${dollars(c.psm.state.floor)} + ${c.psm.state.share_bps / 100}% of vault debt`]]],
     ['Vault', dot('vault'), [['collateral', kas(c.vault.state.collateral)], ['debt owed now', dollars(vault.debtCents)], ['ratio at liq. price', vault.ratioPct == null ? 'no debt' : `${Math.round(vault.ratioPct).toLocaleString('en-US')}%`]]],

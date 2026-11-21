@@ -15,7 +15,7 @@ export const NODE_KEY = 'kusd.node';
 const KINDS = ['oracle', 'psm', 'budget', 'authority', 'surplus'];
 // Pinned in reviewed code: a relay can't move the app onto other covenants.
 export const PINS = Object.fromEntries(KINDS.map((k) => [k, snapshot.covenants[k].covid]));
-const GATE = [PINS.oracle, PINS.psm, PINS.surplus, PINS.budget];
+const GATE = [PINS.oracle, PINS.psm, PINS.surplus, PINS.budget, PINS.factory];
 
 export const readStored = (key) => {
   try { return window.localStorage.getItem(key); } catch { return null; }

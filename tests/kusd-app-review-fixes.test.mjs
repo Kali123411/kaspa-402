@@ -57,7 +57,7 @@ test('a vault with attacker-chosen genesis state is not shown as yours', async (
   const proto = golden.cases.mint.request.protocol;
   const real = golden.cases.mint.request.params.vault;
   const owner = hex(real.state.owner);
-  const pins = Object.fromEntries(['oracle', 'psm', 'budget', 'authority', 'surplus'].map((k) => [k, hex(proto[k].covid)]));
+  const pins = Object.fromEntries(['oracle', 'psm', 'budget', 'authority', 'surplus', 'factory'].map((k) => [k, hex(proto[k].covid)]));
   const entry = (kind, l) => ({ kind, covid: hex(l.covid), outpoint: l.outpoint, value: l.value, state: l.state });
   const fake = (state, value = real.value, tx = 'f1') => entry('vault', { ...real, state: { ...real.state, ...state }, value, outpoint: { transactionId: tx.repeat(32), index: 0 } });
   const vaults = [

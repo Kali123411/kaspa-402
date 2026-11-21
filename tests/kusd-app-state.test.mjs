@@ -9,7 +9,7 @@ import { coinsFromUtxos } from '../lib/kusd/app/coins.mjs';
 const { boxAddress } = loadClient();
 const golden = JSON.parse(readFileSync(new URL('./fixtures/kusd-golden.json', import.meta.url), 'utf8'));
 const hex = (a) => Buffer.from(a).toString('hex');
-const KINDS = ['oracle', 'psm', 'budget', 'authority', 'surplus'];
+const KINDS = ['oracle', 'psm', 'budget', 'authority', 'surplus', 'factory'];
 const proto = golden.cases.swap_in.request.protocol;
 const holderLive = golden.cases.swap_out.request.params.holder;
 const vaultLive = golden.cases.mint.request.params.vault;
