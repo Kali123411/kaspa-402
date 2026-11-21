@@ -1,0 +1,452 @@
+{
+ "generatedAt": "2026-11-21T05:18:13Z",
+ "network": "testnet-10",
+ "node": "2.1.0",
+ "caveat": "Fictional instrument on Kaspa testnet-10. Reference infrastructure, not a securities offering.",
+ "instrument": {
+  "symbol": "TESS",
+  "name": "Tessera Holdings, Class A (fictional)",
+  "covid": "98d131f5f22dae5e3243812b542ebc9267ae15495b7d66df99fa3f20b10b1324",
+  "authorized": 1000000
+ },
+ "audit": {
+  "minter": 980000,
+  "circulating": 20000,
+  "total": 1000000
+ },
+ "holders": [
+  {
+   "firm": "Issuer Treasury",
+   "role": "treasury",
+   "label": "Issuer Treasury (minter note)",
+   "amount": 980000,
+   "minter": true,
+   "frozen": false,
+   "address": "kaspatest:pqetsqvmcmdxuated3k027dtjrkw0ezfw9epze9k774pqd87t3z2qcfyhpmns",
+   "txid": "e78f6f8e4e81839fdb65442442878fe4331a3212faafb2675b4c559d252c3933",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Issuer Treasury",
+   "role": "treasury",
+   "label": "Issuer Treasury (clawed back)",
+   "amount": 3000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pr4s5lcteptgsfcfpkgvaarl6r3q86nq4qvmpu6zrfvvpzmjytaqgpem3dj09",
+   "txid": "21e301838f4400c0e1a7ce4c5921b8f6370e32faa37575ee4a77a7c8eb7ad6f5",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Issuer Treasury",
+   "role": "treasury",
+   "label": "Issuer Treasury (clawed back)",
+   "amount": 3000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pr4s5lcteptgsfcfpkgvaarl6r3q86nq4qvmpu6zrfvvpzmjytaqgpem3dj09",
+   "txid": "e78f6f8e4e81839fdb65442442878fe4331a3212faafb2675b4c559d252c3933",
+   "index": 2,
+   "value": 100000000
+  },
+  {
+   "firm": "Meridian Capital Partners",
+   "role": "alice",
+   "label": "Meridian Capital Partners (split)",
+   "amount": 2700,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pplrx7u0lruk8gr8rpqlk8rqm3wkur3jml67y6pqkmagyfum3h7y7lk54j6kx",
+   "txid": "bd81aaddac7148dc7a2affa9d60ccb4a17a0a6c79656a7052b8736d49747e145",
+   "index": 1,
+   "value": 100000000
+  },
+  {
+   "firm": "Meridian Capital Partners",
+   "role": "alice",
+   "label": "Meridian Capital Partners",
+   "amount": 2600,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pr4wxqflqz0x2n7gj74kktuwasrdv35qpkuzfqyyyg3p0trkecmd2hdqlluza",
+   "txid": "562e88858a3cb77e58d221856a29624f6d7a1c653844371eba6222702b66de19",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Halcyon Trading Co.",
+   "role": "dave",
+   "label": "Halcyon Trading Co.",
+   "amount": 2000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:prsnq3ka377zg0gg4h4xhekpt5mn49342n23hy4gvyq8lyaaetrluj3thgpk6",
+   "txid": "8cb0a0cf3e713ad299707ce7b4d02156e29890dbcf5516d39d228b0dd78dd735",
+   "index": 2,
+   "value": 100000000
+  },
+  {
+   "firm": "Halcyon Trading Co.",
+   "role": "dave",
+   "label": "Halcyon Trading Co.",
+   "amount": 2000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:prsnq3ka377zg0gg4h4xhekpt5mn49342n23hy4gvyq8lyaaetrluj3thgpk6",
+   "txid": "ca76492cba6f63bfb80c99a02727a3ed09f9e55bccd9da17355e4c0d13f6c948",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Atlas Asset Management",
+   "role": "carol",
+   "label": "Atlas Asset Management (split)",
+   "amount": 1000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pqn0g69yvq4urnu8ky0nh9s223q2d9t8f6kepur2n7t6l7qkt3wxw8rpwv536",
+   "txid": "8cb0a0cf3e713ad299707ce7b4d02156e29890dbcf5516d39d228b0dd78dd735",
+   "index": 1,
+   "value": 100000000
+  },
+  {
+   "firm": "Sable Rock Holdings",
+   "role": "eve",
+   "label": "Sable Rock Holdings",
+   "amount": 1000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pzhsw6q7zf9cjhqa7g3ve0rpgepc7luz603dcta0lxculufz0e3mw7wlwke9g",
+   "txid": "e78f6f8e4e81839fdb65442442878fe4331a3212faafb2675b4c559d252c3933",
+   "index": 1,
+   "value": 100000000
+  },
+  {
+   "firm": "Sable Rock Holdings",
+   "role": "eve",
+   "label": "Sable Rock Holdings",
+   "amount": 1000,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pzhsw6q7zf9cjhqa7g3ve0rpgepc7luz603dcta0lxculufz0e3mw7wlwke9g",
+   "txid": "bb33c0a992976a25f79165da7e587d61740c3ddef320e5568a34b807303aa91b",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Atlas Asset Management",
+   "role": "carol",
+   "label": "Atlas Asset Management",
+   "amount": 600,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pz6d22u2jkqyttyldgnl6tnh8npfyz6mj76nyl8njen8vrwhkxplgrg4tldel",
+   "txid": "afed435fb745dfebbf0ed644e6d5438f1ff4b5d81cc6fea43957c41ce3fa469b",
+   "index": 1,
+   "value": 100000000
+  },
+  {
+   "firm": "Northgate Securities",
+   "role": "bob",
+   "label": "Northgate Securities",
+   "amount": 300,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:ppkjhy6ukwukgqtsu5g3lauj2a3uas2tvtfdljvwkda8qvqy82jv6g3twq2ef",
+   "txid": "bd81aaddac7148dc7a2affa9d60ccb4a17a0a6c79656a7052b8736d49747e145",
+   "index": 2,
+   "value": 100000000
+  },
+  {
+   "firm": "Northgate Securities",
+   "role": "bob",
+   "label": "Northgate Securities",
+   "amount": 300,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:ppkjhy6ukwukgqtsu5g3lauj2a3uas2tvtfdljvwkda8qvqy82jv6g3twq2ef",
+   "txid": "14423611855bb180e60d576a74515d96b17574c9af8ccc2dd2ea4dbc9602fc37",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Halcyon Trading Co.",
+   "role": "dave",
+   "label": "Halcyon Trading Co. (kept)",
+   "amount": 250,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pqq326jusyeuanfmzwey609j60yhaqmgy0qtmc2mrdjreqmr4ysgwpa50yknl",
+   "txid": "d841a97573f9f3280a347df6b9c766e38d5f7297746240385663bc777971a9be",
+   "index": 1,
+   "value": 100000000
+  },
+  {
+   "firm": "Sable Rock Holdings",
+   "role": "eve",
+   "label": "Sable Rock Holdings (bought)",
+   "amount": 150,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pp33mp43gf3xl2vlwwq5c8nd2p4w62fpjygwhady6adwacnwxqf0qk9q0wc5c",
+   "txid": "c21716c040b9f376b93055c71167a8f9a193ce578b83fb99cc257e759af8a155",
+   "index": 0,
+   "value": 100000000
+  },
+  {
+   "firm": "Meridian Capital Partners",
+   "role": "alice",
+   "label": "Meridian Capital Partners (bought)",
+   "amount": 100,
+   "minter": false,
+   "frozen": false,
+   "address": "kaspatest:pzttvkkrsltrwlwzv9m7v30zflh2qg434qcvyy7hm0lxc8wclflxjfemdlnpm",
+   "txid": "041c8eae20b1271a54d7c1ba260b7d14e96f8f45698dff34d00bfe07e6ceb350",
+   "index": 0,
+   "value": 100000000
+  }
+ ],
+ "settlements": [
+  {
+   "txid": "8989c1ee9dabca708edcdb08d3297f18495efe6ccbd81893639d124c99c264a2",
+   "seller": "alice",
+   "buyer": "bob",
+   "qty": 400,
+   "price_sompi": 2000000000,
+   "matched_to_accepted_s": 0.38,
+   "submit_to_chain_accepted_s": 1.4,
+   "settled_at": "Saturday 2026-08-15 05:10:16 UTC",
+   "note": "first Tessera DvP settlement — token leg and cash leg in one atomic transaction",
+   "seller_firm": "Meridian Capital Partners",
+   "buyer_firm": "Northgate Securities",
+   "onExplorer": false
+  },
+  {
+   "txid": "7fea65a087580d0df91d36f36746219186ada165a8f126df2699fb1c4d03cb17",
+   "seller": "bob",
+   "buyer": "alice",
+   "qty": 100,
+   "price_sompi": 500000000,
+   "matched_to_accepted_s": 0.15,
+   "submit_to_chain_accepted_s": 0.15,
+   "settled_at": "Saturday 2026-08-15 05:18:59 UTC",
+   "note": "orderbook match: sell #1 x buy #2",
+   "seller_firm": "Northgate Securities",
+   "buyer_firm": "Meridian Capital Partners",
+   "onExplorer": false
+  },
+  {
+   "txid": "afed435fb745dfebbf0ed644e6d5438f1ff4b5d81cc6fea43957c41ce3fa469b",
+   "seller": "carol",
+   "buyer": "dave",
+   "qty": 400,
+   "price_sompi": 200000000,
+   "matched_to_accepted_s": 0.28,
+   "submit_to_chain_accepted_s": 0.28,
+   "settled_at": "Saturday 2026-08-15 20:18:23 UTC",
+   "note": "orderbook match: sell #3 x buy #4",
+   "seller_firm": "Atlas Asset Management",
+   "buyer_firm": "Halcyon Trading Co.",
+   "onExplorer": false
+  },
+  {
+   "txid": "c21716c040b9f376b93055c71167a8f9a193ce578b83fb99cc257e759af8a155",
+   "seller": "carol",
+   "buyer": "eve",
+   "qty": 150,
+   "price_sompi": 300000000,
+   "matched_to_accepted_s": 0.09,
+   "submit_to_chain_accepted_s": 0.09,
+   "settled_at": "Saturday 2026-11-21 05:13:23 UTC",
+   "note": "first trade on node 2.1.0, three months after deployment; registrar daemon co-sign",
+   "seller_firm": "Atlas Asset Management",
+   "buyer_firm": "Sable Rock Holdings",
+   "onExplorer": true
+  }
+ ],
+ "attestation": {
+  "covid": "8792c75cce5b101f5fbb9d3b5904bfa8d515800167b100299005b7993deba41d",
+  "supply": 20000,
+  "epoch": 1,
+  "txid": "8afa8c944e90c37801347aad05bddbd36811732a64da2a4b47acb4b6378908a3"
+ },
+ "rules": [
+  {
+   "id": "transfer-agent",
+   "title": "Only the transfer agent can approve a transfer",
+   "plain": "Every TESS transfer needs the holder's signature and the registrar's. The registrar is the simulated transfer agent: it co-signs only for allowlisted recipients and re-checks the whole transaction before it signs. Without its signature the network rejects the transfer.",
+   "proofs": [
+    {
+     "label": "Transfer with holder and registrar signatures",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "67bf0e10ab0f56f854df72ad96d53ff3a5a48cd7167138ca903d1bd39e6234df",
+     "onExplorer": false
+    },
+    {
+     "label": "Same transfer without the registrar, broadcast raw",
+     "outcome": "network-rejected",
+     "date": "2026-08-15",
+     "txid": "a205a39a73a908f23722b40cd2737760fd7a79ba262a1fc95d8843d6ab22ab0c",
+     "onExplorer": false
+    },
+    {
+     "label": "Transfer to a holder who is not allowlisted",
+     "outcome": "refused",
+     "date": "2026-08-15",
+     "txid": null,
+     "note": "registrar refused to sign: not an eligible holder"
+    },
+    {
+     "label": "Request whose claimed recipient does not match the transaction",
+     "outcome": "refused",
+     "date": "2026-08-15",
+     "txid": null,
+     "note": "registrar refused: output does not match its claimed state"
+    },
+    {
+     "label": "Registrar-approved transfer, three months later on node 2.1.0",
+     "outcome": "accepted",
+     "date": "2026-11-21",
+     "txid": "d841a97573f9f3280a347df6b9c766e38d5f7297746240385663bc777971a9be",
+     "onExplorer": true
+    }
+   ]
+  },
+  {
+   "id": "freeze",
+   "title": "Frozen shares cannot move",
+   "plain": "The registrar can freeze a holding. A frozen box cannot be transferred even with both signatures; only unfreezing or an issuer clawback moves it.",
+   "proofs": [
+    {
+     "label": "Registrar freezes a holding",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "88839b90f09388d3cb5513f556d3c42377d6b6bd96f5aa1012b0787bb32b0b59",
+     "onExplorer": false
+    },
+    {
+     "label": "Transfer of the frozen holding with both signatures, broadcast raw",
+     "outcome": "network-rejected",
+     "date": "2026-08-15",
+     "txid": "b00de75b757f138a2219d835fb925c6556071e4433205764626f263853e6a4cb",
+     "onExplorer": false
+    },
+    {
+     "label": "Freeze and unfreeze through the registrar service, admin-gated",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "fa975a232f0519c1a8556209f83e2a87865b84ac80c204a7441498d29a5d5edd",
+     "onExplorer": false
+    }
+   ]
+  },
+  {
+   "id": "clawback",
+   "title": "Issuers can recover shares under a court order",
+   "plain": "Two of the three issuer keys can move a frozen holding back to the treasury: the covenant's court-order path.",
+   "proofs": [
+    {
+     "label": "Clawback of the frozen holding to the treasury, issuers 0 and 1",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "040e45c649a6d3d54a56699343c68a1a65f4736b9b9f90adee1779f451a9a79b",
+     "onExplorer": false
+    }
+   ]
+  },
+  {
+   "id": "issuance",
+   "title": "New shares need two of three issuers and stay within the authorized supply",
+   "plain": "The minter note carries the remaining authorized supply in its own state. A mint needs two issuer signatures and reduces that figure by exactly what it issues, so total supply can never exceed 1,000,000.",
+   "proofs": [
+    {
+     "label": "Mint 10,000 to the first holder; minter note 1,000,000 → 990,000",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "2303f537fcf644ec4cb0453f97470cda1b03026eae0fd94c71f6215de93c4409",
+     "onExplorer": false
+    },
+    {
+     "label": "2-for-1 split as a 100% stock dividend, three mints",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "bd81aaddac7148dc7a2affa9d60ccb4a17a0a6c79656a7052b8736d49747e145",
+     "onExplorer": false
+    }
+   ]
+  },
+  {
+   "id": "dvp",
+   "title": "A trade is one transaction: shares and payment move together or not at all",
+   "plain": "Delivery versus payment in a single Kaspa transaction. The seller's signature commits to receiving the price, the buyer's to receiving the shares, and the registrar's co-signature carries the eligibility check through settlement. There is no settlement window and no counterparty risk.",
+   "proofs": [
+    {
+     "label": "Buyer who is not KYC'd tries to buy",
+     "outcome": "refused",
+     "date": "2026-08-15",
+     "txid": null,
+     "note": "registrar refused: the trade cannot settle"
+    }
+   ]
+  },
+  {
+   "id": "dividend",
+   "title": "Dividends are paid by snapshot and cannot be claimed twice",
+   "plain": "A dividend pool pays holders whose boxes existed before the snapshot. Claiming re-creates the holding as a new box born after the snapshot, so a second claim is structurally impossible: no list of who has claimed is needed.",
+   "proofs": [
+    {
+     "label": "Seven claims, payouts exact to the sompi",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "562e88858a3cb77e58d221856a29624f6d7a1c653844371eba6222702b66de19",
+     "onExplorer": false
+    },
+    {
+     "label": "Second claim with the re-created box, broadcast raw",
+     "outcome": "network-rejected",
+     "date": "2026-08-15",
+     "txid": null,
+     "note": "transaction b90ce622…"
+    }
+   ]
+  },
+  {
+   "id": "allowlist",
+   "title": "Eligibility proven inside the transaction, with no transfer agent online",
+   "plain": "The second instrument, TESS2, checks eligibility by a Merkle proof against an allowlist root kept on chain. Transfers need no registrar signature and no service call; a recipient outside the list is rejected by the network itself.",
+   "proofs": [
+    {
+     "label": "TESS2 transfer with an inclusion proof, no registrar",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "7b7744e8a2c4ffeee4fa4dfe06dc8567f7ea6faf272b45f4662061bb24af004f",
+     "onExplorer": false
+    },
+    {
+     "label": "TESS2 transfer to a non-member, broadcast raw",
+     "outcome": "network-rejected",
+     "date": "2026-08-15",
+     "txid": null,
+     "note": "transaction faaf5acc…"
+    }
+   ]
+  },
+  {
+   "id": "reserves",
+   "title": "Proof of reserves on chain",
+   "plain": "A custody attestation covenant records how many shares the custodian says are backed, signed by the custodian's key. The register is checked against it: circulating supply equals the attested figure.",
+   "proofs": [
+    {
+     "label": "Custody attestation, epoch 1: 20,000 backed",
+     "outcome": "accepted",
+     "date": "2026-08-15",
+     "txid": "8afa8c944e90c37801347aad05bddbd36811732a64da2a4b47acb4b6378908a3",
+     "onExplorer": false
+    }
+   ]
+  }
+ ]
+}

@@ -23,6 +23,7 @@ export default function App({ Component, pageProps }) {
             <a href="/kusd" className="hover:text-accent">kUSD</a>
             <a href="/market" className="hover:text-accent">market</a>
             <a href="/validate" className="hover:text-accent">validate</a>
+            <a href="/rwa" className="hover:text-accent">RWA</a>
             <a href="/private" className="hidden hover:text-accent sm:inline">private</a>
             <ExternalLink href={EXTERNAL.standard} className="hidden hover:text-accent md:inline" domainClassName="text-gray-600">standard</ExternalLink>
             <ExternalLink href={EXTERNAL.sdk} className="hidden hover:text-accent md:inline" domainClassName="text-gray-600">SDK</ExternalLink>
