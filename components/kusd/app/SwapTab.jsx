@@ -16,6 +16,8 @@ export default function SwapTab({ k, wallet, review }) {
   const feeText = `${(spread / 100).toFixed(2)}%`;
   const clock = k.daa ? k.daa - 10 : protocol.budget.state.last;
   const limits = swapInLimits(protocol, clock);
+  // a short PSM reserve pays every redeemer the same share (psm.ag): say so before anyone buys or redeems
+  const coverage = swapOutQuote(100, oracle, 0, protocol.psm).coveragePct;
   const buyRate = swapInRate(protocol, clock);
   const buyBudget = { limit: protocol.budget.state.limit, avail: limits.budgetCents };
   const holders = k.chain.holders;
@@ -35,6 +37,7 @@ export default function SwapTab({ k, wallet, review }) {
   return (
     <div className="space-y-4">
       <Panel title="KAS → kUSD">
+        {coverage < 100 && <p className="mb-3 border border-dashed border-gray-500 p-2 text-xs text-gray-200">The PSM reserve covers {coverage}% of the kUSD it issued: a redemption now pays {coverage}% of $1 in KAS, the same for everyone. Buying adds KAS at the full price.</p>}
         <p className="text-xs text-gray-500">The PSM mints kUSD for KAS at the oracle&apos;s mint price ({usdPerKas(oracle.mint)} per KAS).</p>
         <AmountForm placeholder="kUSD to buy, e.g. 5.00" onReview={buy} disabled={!k.canAct.ok} />
         <Row k="1.00 kUSD costs" v={kasText(swapInQuote(100, oracle, spread, buyBudget).total)} />
@@ -60,7 +63,7 @@ export default function SwapTab({ k, wallet, review }) {
           <div key={`${h.outpoint.transactionId}:${h.outpoint.index}`} className="flex flex-wrap items-center justify-between gap-2  bg-panel p-3">
             <div className="min-w-0">
               <div className="font-mono text-sm text-white">{usdText(h.state.amount)}</div>
-              <div className="text-xs text-gray-500">pays {kasText(swapOutQuote(h.state.amount, oracle, spread).net)}{spread ? ` after the ${feeText} fee` : ''}</div>
+              <div className="text-xs text-gray-500">pays {kasText(swapOutQuote(h.state.amount, oracle, spread, protocol.psm).net)}{spread ? ` after the ${feeText} fee` : ''}</div>
             </div>
             <button type="button" className={secondary} disabled={!k.canAct.ok}
               onClick={() => review.start('swap_out', { holder: h }, `Redeem ${usdText(h.state.amount)} through the PSM`)}>

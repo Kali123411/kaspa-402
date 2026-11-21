@@ -18,7 +18,7 @@ test('fee quotes mirror the covenant', () => {
   assert.deepEqual(swapInQuote(400, oracle, 50), { sompi: 15_267_180_000, fee: 76_335_900, total: 15_343_515_900, price: 262 });
   const gross = 15_267_170_000; // sompi_of(400, 262)
   const fee = Math.floor(gross * 50 / 10000);
-  assert.deepEqual(swapOutQuote(400, oracle, 50), { sompi: gross, fee, net: gross - fee, price: 262 });
+  assert.deepEqual(swapOutQuote(400, oracle, 50), { sompi: gross, fee, net: gross - fee, price: 262, paidCents: 400, coveragePct: 100 });
 });
 
 test('fee quote follows the protocol spread', () => {
