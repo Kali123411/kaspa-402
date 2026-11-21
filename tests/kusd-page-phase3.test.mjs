@@ -17,7 +17,7 @@ test('risk parameters sit at the top: 175% borrowing line, 150% liquidation line
 });
 
 test('ambiguous figures are labelled and the identical mint/liq prices are explained', () => {
-  assert.ok(s.includes('minted holder') && s.includes('unissued supply') && s.includes('What these figures mean'));
+  assert.ok(s.includes('kUSD in circulation</span>: every kUSD held by anyone') && s.includes('deployer&apos;s test box</span>') && s.includes('unissued supply') && s.includes('What these figures mean'));
   assert.ok(s.includes('identical') && s.includes('rate limits'), 'why mint and liquidation prices can be identical');
 });
 
