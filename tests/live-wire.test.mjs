@@ -82,11 +82,11 @@ test('share card and favicon: the 402 numeral', () => {
   assert.ok(og.includes('lib/fonts/Fraunces-Light.woff') && existsSync(new URL('../lib/fonts/OFL.txt', import.meta.url)), 'the bundled font and its licence');
   const idx = read('pages/index.js');
   assert.ok(idx.includes('property="og:image"') && idx.includes('/api/og') && idx.includes('summary_large_image'));
-  assert.ok(read('pages/_app.js').includes('href="/favicon.svg"'));
+  // the site favicon became the owner's k402 logo (tests/k402-logo.test.mjs); the 402 numeral stays the share card's mark
 });
 
 test('the share card font ships with the function: next.config traces lib/fonts into /api/og (Vercel returned 500 without it)', () => {
   const cfg = read('next.config.js');
   assert.match(cfg, /outputFileTracingIncludes/);
-  assert.match(cfg, /'\/api\/og':\s*\['\.\/lib\/fonts\/\*\*', '\.\/node_modules\/next\/dist\/compiled\/@vercel\/og\/\*\*'\]/, 'the font and the renderer wasm');
+  assert.match(cfg, /'\/api\/og':\s*\['\.\/lib\/fonts\/\*\*', '\.\/public\/k402\/logo\/\*\*', '\.\/node_modules\/next\/dist\/compiled\/@vercel\/og\/\*\*'\]/, 'the font and the renderer wasm');
 });

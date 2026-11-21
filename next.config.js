@@ -5,7 +5,7 @@ module.exports = {
   // /api/og reads the bundled Fraunces WOFF with fs at request time, and next/og's Node build loads resvg.wasm + yoga.wasm
   // from its own directory; the serverless bundle on Vercel traced neither (500 in production, fine under `next start`).
   outputFileTracingIncludes: {
-    '/api/og': ['./lib/fonts/**', './node_modules/next/dist/compiled/@vercel/og/**'],
+    '/api/og': ['./lib/fonts/**', './public/k402/logo/**', './node_modules/next/dist/compiled/@vercel/og/**'],
     // the status route recomputes box addresses with the kusd-client WASM (lib/kusd/client.mjs reads it from disk)
     '/api/kusd/status': ['./lib/kusd/wasm/**'],
     '/api/og-kusd': ['./lib/fonts/**', './public/kusd/logo/**', './node_modules/next/dist/compiled/@vercel/og/**'],
