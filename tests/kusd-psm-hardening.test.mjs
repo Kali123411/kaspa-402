@@ -43,3 +43,9 @@ test('the swap tab quotes redemptions with the PSM box and the page shows the sh
   assert.match(read('components/kusd/app/SwapTab.jsx'), /swapOutQuote\([^)]*protocol\.psm\)/);
   assert.match(read('pages/kusd.js'), /share cap/);
 });
+
+test('the swap tab warns when the reserve is short', () => {
+  const c = read('components/kusd/app/SwapTab.jsx');
+  assert.match(c, /coverage < 100 &&/);
+  assert.match(c, /the same for everyone/);
+});
