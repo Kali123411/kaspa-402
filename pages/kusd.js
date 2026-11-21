@@ -45,9 +45,11 @@ export default function Kusd() {
     return () => { live = false; };
   }, []);
 
-  const DOT_TEXT = { current: 'matches chain', moved: 'chain moved', unknown: 'not checked', loading: 'checking' };
+  const DOT_TEXT = { live: 'read live', current: 'matches chain', moved: 'chain moved', unknown: 'not checked', loading: 'checking' };
+  const liveKinds = new Set(status?.live?.kinds || []);
   const dot = (name) => {
     const st = loading ? 'loading' : status?.covenants?.[name] || 'unknown';
+    if (st === 'current' && liveKinds.has(name)) return <span className="inline-flex items-center gap-1.5"><Dot state="current" /><span className="font-mono text-[11px] text-gray-500">{DOT_TEXT.live}</span></span>;
     return <span className="inline-flex items-center gap-1.5"><Dot state={st} /><span className="font-mono text-[11px] text-gray-500">{DOT_TEXT[st]}</span></span>;
   };
   const silence = status?.daaScore != null ? status.daaScore - o.last : null;
@@ -189,7 +191,7 @@ export default function Kusd() {
         </Section>
 
         {/* ── § 4 System state ── */}
-        <Section mark="4" note={<>System state. Values as exported {s.generatedAt}. &quot;matches chain&quot; beside a row: that covenant output is still unspent on TN10, so the value is current.</>} className="mt-12">
+        <Section mark="4" note={<>System state. {liveKinds.size > 0 ? <>Rows marked &quot;read live&quot; come from the kUSD relay and were re-checked against TN10 {status.checkedAt.slice(11, 19)} UTC: the box&apos;s address commits to the figures shown, it sits under the pinned covenant and it is unspent. Other rows as exported {s.generatedAt}.</> : <>Values as exported {s.generatedAt}.</>} &quot;matches chain&quot; beside a row: that covenant output is still unspent on TN10, so the value is current.</>} className="mt-12">
           <h2 className={H2}>System state</h2>
           <table className="mt-4 w-full border-collapse text-[14px]">
             <thead>
