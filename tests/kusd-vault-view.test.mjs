@@ -12,10 +12,10 @@ test('the bundled snapshot has the new vault shape and renders without NaN', () 
   const v = snapshot.covenants.vault.state;
   assert.ok('debt_mc' in v && 'index_at' in v && !('debt' in v), 'the exporter writes debt_mc/index_at, not debt');
   const view = vaultView(v, snapshot.covenants.oracle.state);
-  // the receipts deployment's vault: 300 KAS, 375c settled at index 1.0 → owes 376c at the oracle's index (interest);
-  // at 253 ($7.59) that is 202% at the liquidation price
-  assert.equal(view.debtCents, 376);
-  assert.equal(Math.round(view.ratioPct), 202);
+  // the overflow-fix deployment's vault: 300 KAS, 375c settled at the oracle's current index → owes 375c; at 250
+  // ($7.50) that is exactly 200% at the liquidation price
+  assert.equal(view.debtCents, 375);
+  assert.equal(Math.round(view.ratioPct), 200);
   assert.ok(Number.isFinite(view.ratioPct));
   assert.ok(Number.isFinite(view.collateralKas) && view.collateralKas === v.collateral / 1e8);
 });
