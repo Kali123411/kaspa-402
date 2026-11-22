@@ -66,10 +66,13 @@ test('a vault with attacker-chosen genesis state is not shown as yours', async (
     fake({ oracle_id: Array(32).fill(9) }, real.value, 'f2'),          // wired to another oracle
     fake({ debt_mc: -5 }, real.value, 'f3'),
   ];
-  const onChain = [...Object.entries(proto).map(([k, l]) => entry(k, l)), ...vaults];
+  // the protocol's boxes plus its price receipts (the golden protocol carries them as a list)
+  const boxes = Object.entries(proto).filter(([k, l]) => k !== 'receipts' && l);
+  const receipts = (proto.receipts || []).map((l) => entry('receipt', l));
+  const onChain = [...boxes.map(([k, l]) => entry(k, l)), ...receipts, ...vaults];
   const s = await loadState({
     relayUrl: 'https://relay.test/state', owner, pins, boxAddress,
-    fetchJson: async () => ({ protocol: Object.fromEntries(Object.entries(proto).map(([k, l]) => [k, entry(k, l)])), holders: [], vaults }),
+    fetchJson: async () => ({ protocol: { ...Object.fromEntries(boxes.map(([k, l]) => [k, entry(k, l)])), receipts }, holders: [], vaults }),
     getUtxos: async (address) => onChain.filter((e) => boxAddress(e.kind, e.state) === address).map((e) => ({ outpoint: e.outpoint, amount: e.value, covenantId: e.covid })),
   });
   assert.deepEqual(s.vaults, [real]);

@@ -27,8 +27,9 @@ test('the quote follows the budget curve', () => {
 test('the surge quote is what the WASM builder charges', () => {
   const req = golden.cases.swap_in_surge.request;
   const built = build(req);
-  const surplus = built.created.find((c) => c.kind === 'surplus');
-  const fee = surplus.value - req.protocol.surplus.value;
+  // the fee stays in the PSM box: its fees counter rises by exactly the fee
+  const psm = built.created.find((c) => c.kind === 'psm');
+  const fee = psm.state.fees - req.protocol.psm.state.fees;
   const q = swapInQuote(400, req.protocol.oracle.state, 50, { limit: 1_000, avail: 700 });
   assert.equal(q.fee, fee);
   assert.equal(fundingNeed('swap_in', { cents: 400 }, req.protocol, req.clock), q.total + HOLDER_VALUE + FEE);
@@ -59,10 +60,13 @@ test('a vault with debt needs 5 KAS; a debt-free one is still shown to close', a
   const five = mk({ collateral: 500_000_000, debt_mc: 100_000 }, 'a2');
   const debtFree = mk({ collateral: 300_000_000, debt_mc: 0 }, 'a3');
   const vaults = [small, five, debtFree];
-  const onChain = [...Object.entries(proto).map(([k, l]) => entry(k, l)), ...vaults];
+  // the protocol's boxes plus its price receipts (the golden protocol carries them as a list)
+  const boxes = Object.entries(proto).filter(([k, l]) => k !== 'receipts' && l);
+  const receipts = (proto.receipts || []).map((l) => entry('receipt', l));
+  const onChain = [...boxes.map(([k, l]) => entry(k, l)), ...receipts, ...vaults];
   const s = await loadState({
     relayUrl: 'https://relay.test/state', owner, pins, boxAddress,
-    fetchJson: async () => ({ protocol: Object.fromEntries(Object.entries(proto).map(([k, l]) => [k, entry(k, l)])), holders: [], vaults }),
+    fetchJson: async () => ({ protocol: { ...Object.fromEntries(boxes.map(([k, l]) => [k, entry(k, l)])), receipts }, holders: [], vaults }),
     getUtxos: async (address) => onChain.filter((e) => boxAddress(e.kind, e.state) === address).map((e) => ({ outpoint: e.outpoint, amount: e.value, covenantId: e.covid })),
   });
   assert.deepEqual(s.vaults.map((v) => v.state.collateral).sort(), [300_000_000, 500_000_000]);

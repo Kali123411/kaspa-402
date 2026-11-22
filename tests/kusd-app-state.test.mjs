@@ -29,14 +29,16 @@ function world({ relay, onChain }) {
     .map((e) => ({ outpoint: e.outpoint, amount: e.value, covenantId: e.covid }));
   return { relayUrl: 'https://relay.test/state', owner: OWNER, pins, boxAddress, getUtxos, fetchJson };
 }
-const protocolEntries = Object.fromEntries(KINDS.map((k) => [k, entryOf(k, proto[k])]));
+const receiptEntries = proto.receipts.map((l) => entryOf('receipt', l));
+const protocolEntries = { ...Object.fromEntries(KINDS.map((k) => [k, entryOf(k, proto[k])])), receipts: receiptEntries };
 const userEntries = { holders: [entryOf('holder', holderLive)], vaults: [entryOf('vault', vaultLive)] };
-const everything = [...Object.values(protocolEntries), ...userEntries.holders, ...userEntries.vaults];
+const everything = [...KINDS.map((k) => protocolEntries[k]), ...receiptEntries, ...userEntries.holders, ...userEntries.vaults];
 
 test('all_verified_protocol_assembles', async () => {
   const s = await loadState(world({ relay: { protocol: protocolEntries, ...userEntries }, onChain: everything }));
   assert.deepEqual(s.problems, []);
   for (const k of KINDS) assert.deepEqual(s.protocol[k], proto[k]);
+  assert.deepEqual(s.protocol.receipts, proto.receipts);
   assert.deepEqual(s.holders, [holderLive]);
   assert.deepEqual(s.vaults, [vaultLive]);
   assert.deepEqual(canAct(s), { ok: true });
@@ -168,4 +170,15 @@ test('a spent box from this page\'s own record is dropped quietly', async () => 
   const s = await loadState({ ...w, local: { protocol: {}, holders: userEntries.holders, vaults: [] } });
   assert.deepEqual(s.holders, []);
   assert.deepEqual(s.problems, []);
+});
+
+test('no verified receipt disables actions, and a stale one is not used', async () => {
+  // consumers read a receipt: without one carrying the oracle's current price the app does not build
+  const none = await loadState(world({ relay: { protocol: { ...protocolEntries, receipts: [] }, holders: [], vaults: [] }, onChain: everything }));
+  assert.equal(none.protocol, null);
+  assert.match(canAct(none).reason, /receipt/);
+  const staleState = { ...receiptEntries[0].state, mint: receiptEntries[0].state.mint + 1 };
+  const stale = { ...receiptEntries[0], state: staleState };
+  const s = await loadState(world({ relay: { protocol: { ...protocolEntries, receipts: [stale] }, holders: [], vaults: [] }, onChain: [...everything, stale] }));
+  assert.equal(s.protocol, null, 'a receipt with another price is never read');
 });

@@ -268,3 +268,43 @@ test('a budget entry carries the vault-debt count and ceiling (budget.ag vault_d
   parseEntry(entry, { boxAddress: (kind, s) => { seen.push([kind, s]); return 'kaspatest:x'; } });
   assert.deepEqual(seen[0][1], state, 'both fields reach the address check unchanged');
 });
+
+// --- price receipts (oracle.ag Receipt): many boxes under the oracle's covenant --------------------------
+const receiptState = { price: oracleState.price, mint: oracleState.mint, liq: oracleState.liq, status: oracleState.status, last: oracleState.last, index: oracleState.index };
+const receiptBox = (txid, index, state = receiptState) => ({ kind: 'receipt', state, covid: pins.oracle, txid, index, value: 1_000_000_000 });
+
+test('receipts are stored under the oracle pin and served beside the oracle', async () => {
+  const store = memStore();
+  const r1 = receiptBox('d1'.repeat(32), 1);
+  const r2 = receiptBox('d1'.repeat(32), 2);
+  const res = await accept([entry(oracleBox), entry(r1), entry(r2)], { ...deps([oracleBox, r1, r2]), store });
+  assert.deepEqual(res.map((r) => r.ok), [true, true, true], JSON.stringify(res));
+  const got = await read(store, {});
+  assert.equal(got.protocol.receipts.length, 2);
+});
+
+test('a receipt under another covenant is refused', async () => {
+  const store = memStore();
+  const bad = { ...receiptBox('d2'.repeat(32), 1), covid: pins.psm };
+  const [r] = await accept([entry(bad)], { ...deps([bad]), store });
+  assert.equal(r.ok, false);
+  assert.match(r.reason, /oracle covenant/);
+});
+
+test('receipts a verified transaction spent are dropped (a refresh spends them all)', async () => {
+  const store = memStore();
+  const old = receiptBox('d3'.repeat(32), 1);
+  await accept([entry(oracleBox), entry(old)], { ...deps([oracleBox, old]), store });
+  const fresh = receiptBox('d4'.repeat(32), 1);
+  const [r] = await accept([entry(fresh)], { ...deps([fresh], { [fresh.txid]: [[old.txid, old.index]] }), store });
+  assert.equal(r.ok, true, r.reason);
+  const got = await read(store, {});
+  assert.deepEqual(got.protocol.receipts.map((x) => x.outpoint.transactionId), [fresh.txid]);
+});
+
+test("only receipts carrying the oracle's current price are served", async () => {
+  const store = memStore();
+  const stale = receiptBox('d5'.repeat(32), 1, { ...receiptState, mint: receiptState.mint + 1 });
+  await accept([entry(oracleBox), entry(stale)], { ...deps([oracleBox, stale]), store });
+  assert.equal((await read(store, {})).protocol.receipts.length, 0);
+});

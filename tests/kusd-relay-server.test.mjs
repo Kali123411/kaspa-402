@@ -44,10 +44,10 @@ const post = (base, body, headers = {}) => fetch(`${base}/state`, { method: 'POS
 test('malformed_requests_refused', async () => {
   const s = await start({ fetchJson: fetchJsonFor([]) });
   try {
-    const many = Array.from({ length: 17 }, () => oracleEntry());
+    const many = Array.from({ length: 33 }, () => oracleEntry());
     let r = await post(s.base, { entries: many });
     assert.equal(r.status, 400);
-    assert.match((await r.json()).error, /at most 16/);
+    assert.match((await r.json()).error, /at most 32/);
     r = await post(s.base, 'x'.repeat(70 * 1024));
     assert.equal(r.status, 413);
     r = await fetch(`${s.base}/state?owner=xyz`);
