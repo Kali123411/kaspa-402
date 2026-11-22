@@ -32,7 +32,7 @@ test('the surge quote is what the WASM builder charges', () => {
   const fee = psm.state.fees - req.protocol.psm.state.fees;
   const q = swapInQuote(400, req.protocol.oracle.state, 50, { limit: 1_000, avail: 700 });
   assert.equal(q.fee, fee);
-  assert.equal(fundingNeed('swap_in', { cents: 400 }, req.protocol, req.clock), q.total + HOLDER_VALUE + FEE);
+  assert.equal(fundingNeed('swap_in', { cents: 400 }, req.protocol, req.clock), q.total + HOLDER_VALUE + FEE + 150_000);
 });
 
 test('the current rate is shown from the refilled budget', () => {

@@ -56,19 +56,20 @@ test('the showcase links to the kUSD app', () => {
   assert.match(page, /Open the kUSD app/);
 });
 
-test('snapshot pins are the vault-factory family', () => {
-  // the third 2026-11-21 re-genesis: new PSM, budget, authority, the vault factory (whose covenant id every vault
-  // carries) and the deploy vault; the Stage 2c oracle, the surplus and the MinerMedian box carry over
+test('snapshot pins are the price-receipts family', () => {
+  // the 2026-11-22 re-genesis: an oracle with price receipts and operator pay, and everything that pins it (PSM,
+  // budget, surplus, factory, authority, the deploy vault); only the MinerMedian box carries over
   const c = bundled.covenants;
-  assert.equal(c.oracle.covid, '0dac704fe95fa389a429eec46e70a04be2a2685cc4c301c8af8569abb221d242');
-  assert.equal(c.psm.covid, '1b5fd632a30ead1ac3557bb02173f868c55b8a54030fc836ecfb1a9be51dd4d1');
-  assert.equal(c.budget.covid, '75d35d6a82044a65de480b3bd45ca2f1c5713fc478706572c677337104a8a297');
-  assert.equal(c.authority.covid, 'd95716cbab35f7cfb44c329f5123bf3cb362475c1e40f4d8df3b31b0e1427662');
-  assert.equal(c.vault.covid, 'a3dde3b11588d91c20e49511c27677a64ad9c082901c18f626da5c374451c7fd');
+  assert.equal(c.oracle.covid, 'bd0115871904591ba3eb662a2c3e22142a7e76092676e7609b6dc396684bf44a');
+  assert.equal(c.psm.covid, 'b19fdcc1466cf9204b7fe3c3b6e21f7a4c3ea5996d2410b0f1e67e5a59ab12f6');
+  assert.equal(c.budget.covid, '6fc11fbe613ce8a1c0ed6b9492afbcecd9d9ea4c330a3e42f788ea0b665bc66a');
+  assert.equal(c.authority.covid, '5aca3c95104b788330399f71068129c1a8d9439395665d09e53719fa5a2e2ce5');
+  assert.equal(c.vault.covid, '87e388356d31e0eeb8134f14029509856cf6672791753aafc58c827039cfd5ca');
   assert.equal(c.factory.covid, c.vault.covid, 'the deploy vault is in the factory group');
-  assert.equal(c.surplus.covid, 'c76efdcbe2edfe162af0730ece57f739f57888b9e55993a021aaf34271297913');
+  assert.equal(c.surplus.covid, 'e8c829452010639c57970f3b4bf161f42f6792ddc03c2fc7009e744d41d0bb0c');
   assert.equal(c.miner.covid, 'deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35');
   assert.equal(c.oracle.state.miner_id, c.miner.covid);
+  assert.equal(c.oracle.state.receipts, 8, 'eight price receipts');
   assert.equal(c.minted.covid, c.authority.covid);
   assert.equal(bundled.stage, 'Stage 2');
 });

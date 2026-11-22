@@ -43,7 +43,7 @@ test('the review states what the user pays and receives, from the built transact
   const owner = JSON.parse(kc.wallet(req.secret, true)).xonly;
   const d = describeTx(buildWasm(req), { request: req, owner });
   // 400 cents at 262 = 152.6718 KAS to the PSM + 1.5 KAS in the new kUSD box + 0.1 KAS fee
-  assert.equal(d.net.kasSompi, -(15267180000 + 150000000 + 10000000));
+  assert.equal(d.net.kasSompi, -(15267180000 + 150000000 + 10000000 + 150000));
   assert.equal(d.net.kusdCents, 400);
   const redeem = golden.cases.swap_out.request;
   const r = describeTx(buildWasm(redeem), { request: redeem, owner: JSON.parse(kc.wallet(redeem.secret, true)).xonly });

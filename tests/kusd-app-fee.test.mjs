@@ -29,14 +29,14 @@ test('fee quote follows the protocol spread', () => {
 
 test('funding need includes the fee', () => {
   const p = structuredClone(golden.cases.swap_in_fee.request.protocol);
-  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15_343_515_900 + HOLDER_VALUE + FEE);
+  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15_343_515_900 + HOLDER_VALUE + FEE + 150_000);
 });
 
 test('describe_fee_swap_in', () => {
   const req = golden.cases.swap_in_fee.request;
   const owner = JSON.parse(kc.wallet(req.secret, true)).xonly;
   const d = describeTx(build(req), { request: req, owner });
-  assert.equal(d.net.kasSompi, -(15_267_180_000 + 76_335_900 + HOLDER_VALUE + FEE));
+  assert.equal(d.net.kasSompi, -(15_267_180_000 + 76_335_900 + HOLDER_VALUE + FEE + 150_000)); // one coin: + PER_INPUT_FEE
   // the fee stays in the PSM box (fees_sompi) until swept; the surplus is not touched
   assert.ok(!d.inputs.some((i) => i.what === 'surplus (PSM fee)'));
   const psmIn = d.inputs.find((i) => i.what === 'PSM reserve');
