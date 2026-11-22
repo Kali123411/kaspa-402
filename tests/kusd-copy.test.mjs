@@ -56,15 +56,15 @@ test('the showcase links to the kUSD app', () => {
   assert.match(page, /Open the kUSD app/);
 });
 
-test('snapshot pins are the price-receipts family', () => {
-  // the 2026-11-22 re-genesis: an oracle with price receipts and operator pay, and everything that pins it (PSM,
-  // budget, surplus, factory, authority, the deploy vault); only the MinerMedian box carries over
+test('snapshot pins are the overflow-fix family', () => {
+  // the second 2026-11-22 re-genesis (overflow fixes, formal/SPEC.md §8.4/§8.9): new PSM, budget, vault factory (the
+  // vault group), authority and deploy vault; the price-receipts oracle, the surplus and the MinerMedian box carry over
   const c = bundled.covenants;
   assert.equal(c.oracle.covid, 'bd0115871904591ba3eb662a2c3e22142a7e76092676e7609b6dc396684bf44a');
-  assert.equal(c.psm.covid, 'b19fdcc1466cf9204b7fe3c3b6e21f7a4c3ea5996d2410b0f1e67e5a59ab12f6');
-  assert.equal(c.budget.covid, '6fc11fbe613ce8a1c0ed6b9492afbcecd9d9ea4c330a3e42f788ea0b665bc66a');
-  assert.equal(c.authority.covid, '5aca3c95104b788330399f71068129c1a8d9439395665d09e53719fa5a2e2ce5');
-  assert.equal(c.vault.covid, '87e388356d31e0eeb8134f14029509856cf6672791753aafc58c827039cfd5ca');
+  assert.equal(c.psm.covid, '8207c72f5a75b6922a9656dfaf96b28acd58a0d4bbbc34c978bc5b904080d83b');
+  assert.equal(c.budget.covid, 'aa61888dd8d2ee8e152b50d6710b888fe03054c9543223a0ef190ba615fa46cc');
+  assert.equal(c.authority.covid, 'a6a0cb3d6fa59889956f37d6b043899b57ad1d744a3303cebdfc96b93d917add');
+  assert.equal(c.vault.covid, 'b8dc562d1940299491a47694dd8cf5f4a078b472a63f8586fc8bb399107a498e');
   assert.equal(c.factory.covid, c.vault.covid, 'the deploy vault is in the factory group');
   assert.equal(c.surplus.covid, 'e8c829452010639c57970f3b4bf161f42f6792ddc03c2fc7009e744d41d0bb0c');
   assert.equal(c.miner.covid, 'deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35');
