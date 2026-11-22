@@ -15,12 +15,12 @@ test('circulation is genesis supply minus what the authority still holds', () =>
 });
 
 test('the bundled genesis snapshot is consistent with it: unissued + every kUSD issued = $1,000,000', () => {
-  // hardened-PSM deployment (2026-11-21): the deploy vault minted $3.80 into the deployer box; nothing through the
-  // PSM yet. The vault owes all of it.
+  // receipts deployment (2026-11-22): the deploy vault minted $3.75 into the deployer box; nothing through the PSM
+  // yet. The vault owes all of it.
   const c = JSON.parse(read('public/kusd/snapshot.json')).covenants;
-  assert.equal(circulatingCents(c.authority.state.amount), 380);
-  assert.equal(c.minted.state.amount + c.psm.state.minted, 380);
-  assert.equal(c.budget.state.vault_debt, 380, 'the budget counts the vault debt behind it');
+  assert.equal(circulatingCents(c.authority.state.amount), 375);
+  assert.equal(c.minted.state.amount + c.psm.state.minted, 375);
+  assert.equal(c.budget.state.vault_debt, 375, 'the budget counts the vault debt behind it');
 });
 
 test('the page shows circulation from the authority and labels the deployer box as one holder', () => {

@@ -29,22 +29,25 @@ test('fee quote follows the protocol spread', () => {
 
 test('funding need includes the fee', () => {
   const p = structuredClone(golden.cases.swap_in_fee.request.protocol);
-  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15_343_515_900 + HOLDER_VALUE + FEE);
+  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15_343_515_900 + HOLDER_VALUE + FEE + 150_000);
 });
 
 test('describe_fee_swap_in', () => {
   const req = golden.cases.swap_in_fee.request;
   const owner = JSON.parse(kc.wallet(req.secret, true)).xonly;
   const d = describeTx(build(req), { request: req, owner });
-  assert.equal(d.net.kasSompi, -(15_267_180_000 + 76_335_900 + HOLDER_VALUE + FEE));
-  assert.ok(d.inputs.some((i) => i.what === 'surplus (PSM fee)'));
-  const s = d.outputs.find((o) => o.what === 'surplus (PSM fee)');
-  assert.equal(s.sompi, req.protocol.surplus.value + 76_335_900);
+  assert.equal(d.net.kasSompi, -(15_267_180_000 + 76_335_900 + HOLDER_VALUE + FEE + 150_000)); // one coin: + PER_INPUT_FEE
+  // the fee stays in the PSM box (fees_sompi) until swept; the surplus is not touched
+  assert.ok(!d.inputs.some((i) => i.what === 'surplus (PSM fee)'));
+  const psmIn = d.inputs.find((i) => i.what === 'PSM reserve');
+  const psmOut = d.outputs.find((o) => o.what === 'PSM reserve');
+  assert.equal(psmOut.sompi - psmIn.sompi, 15_267_180_000 + 76_335_900);
 });
 
-test('fee swap publishes the surplus box', () => {
-  const built = build(golden.cases.swap_out_fee.request);
-  assert.ok(relayEntries(built).some((e) => e.kind === 'surplus'));
+test('a fee swap publishes the PSM box carrying its held fee', () => {
+  const req = golden.cases.swap_out_fee.request;
+  const psm = relayEntries(build(req)).find((e) => e.kind === 'psm');
+  assert.ok(psm.state.fees > req.protocol.psm.state.fees);
 });
 
 test('the golden fee cases rebuild identically in this WASM', () => {

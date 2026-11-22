@@ -47,9 +47,9 @@ test('a box at or above owed repays all; one below is partial or refused', () =>
   assert.equal(repayPlan(v, o, 401 + REPAY_SLACK + 1).tooBig, true, 'far above the debt: split it first (the builder refuses it too)');
 });
 
-test('the golden repay case rebuilds in this WASM with the oracle on board', () => {
+test('the golden repay case rebuilds in this WASM with a price receipt on board', () => {
   const req = golden.cases.repay.request;
   const built = build(req);
   assert.equal(built.txid, golden.cases.repay.txid);
-  assert.ok(built.created.some((c) => c.kind === 'oracle'), 'repay republishes the oracle it rode on');
+  assert.ok(built.created.some((c) => c.kind === 'receipt'), 'repay republishes the price receipt it read');
 });

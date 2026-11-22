@@ -1,124 +1,138 @@
 {
-  "generatedAt": "2026-11-21T21:51:56Z",
+  "generatedAt": "2026-11-22T02:06:40Z",
   "network": "testnet-10",
   "stage": "Stage 2",
   "repo": "https://github.com/Kali123411/kUSD",
   "caveat": "kUSD is TN10 research software: not audited, not a product, not for real value.",
   "covenants": {
     "oracle": {
-      "covid": "0dac704fe95fa389a429eec46e70a04be2a2685cc4c301c8af8569abb221d242",
-      "txid": "e6c7ab2c3de838a4cca7ef8301025747493da433bbe91643a46523217a45e808",
-      "index": 3,
-      "amount": 100000000,
+      "covid": "bd0115871904591ba3eb662a2c3e22142a7e76092676e7609b6dc396684bf44a",
+      "txid": "c14ef312fe238e339320071fb59c09f763299a3fe644e8c4f9308249266b93e9",
+      "index": 0,
+      "amount": 1000000000,
       "state": {
-        "price": 255,
-        "mint": 255,
-        "liq": 255,
-        "epoch": 883,
-        "last": 629621367,
+        "price": 253,
+        "mint": 253,
+        "liq": 253,
+        "epoch": 2,
+        "last": 629777648,
         "status": 0,
         "rate": 200,
         "next_rate": 200,
-        "index": 1000177690,
-        "rem": 150178194,
+        "index": 1000001416,
+        "rem": 290240000,
         "miner_id": "deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35",
-        "bounded": 0
+        "bounded": 0,
+        "receipts": 8,
+        "earned": [
+          21000000,
+          5000000,
+          5000000,
+          5000000,
+          5000000
+        ],
+        "last_paid": 629777648,
+        "paid_total": 0,
+        "pay_per_print": 5000000,
+        "relayer_bonus": 12000000,
+        "relayer_per_print": 2000000
       },
-      "address": "kaspatest:pqts6hk0vpwln6htjqdp9e3less8gpyd4j3pz57mzk4863s8yfuegz37fquru"
+      "address": "kaspatest:prjxt8fdcdcv7wzzxjgv04ca84jlfxnp9ujp3rkw87tljun75ul2ku6vlguwd"
     },
     "miner": {
       "covid": "deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35",
-      "txid": "9c6a869eab62f3758f96d61842a1b066cb9bfe340e4de79b5c3a01fa3a8f5669",
+      "txid": "c14ef312fe238e339320071fb59c09f763299a3fe644e8c4f9308249266b93e9",
       "index": 1,
       "amount": 100000000,
       "state": {
-        "median": 257,
-        "votes": 2307,
+        "median": 254,
+        "votes": 2236,
         "blocks": 6000,
-        "anchor_daa": 629606890,
-        "anchor_bs": 617956065,
-        "epoch": 141,
+        "anchor_daa": 629735148,
+        "anchor_bs": 618084213,
+        "epoch": 147,
         "image_id": "3780996e66a9b6eaa109929514b3fe37ec9819fc103c44dd84dfdee84bfc8988",
-        "tally_root": "02b645b8b3fae262262386120fccf47a649168f517c94b6caaafa5bc6fec49d7"
+        "tally_root": "b15e1fdd3f3caafc3f27da7f97cbcbfe44a59c76522b6b85101210045076f060"
       },
-      "address": "kaspatest:pz6u64v5s2f42h37tdlgrfcnqnrg5f7tgngazaq69rs356lfz62vw5gftzgjr"
+      "address": "kaspatest:pzqvafjrt9rmhrd9ygahkggzqct80uep9aslzdlcyg8w72mu4llscrw3sc0s6"
     },
     "budget": {
-      "covid": "75d35d6a82044a65de480b3bd45ca2f1c5713fc478706572c677337104a8a297",
-      "txid": "e6c7ab2c3de838a4cca7ef8301025747493da433bbe91643a46523217a45e808",
+      "covid": "6fc11fbe613ce8a1c0ed6b9492afbcecd9d9ea4c330a3e42f788ea0b665bc66a",
+      "txid": "1d4551c6e43aa84118f4978f0dd497449b932b7e62101728873184d3865da7a4",
       "index": 4,
-      "amount": 100000000,
+      "amount": 1000000000,
       "state": {
         "limit": 5000000,
-        "available": 4999620,
-        "last": 629625719,
-        "vault_debt": 380,
+        "available": 4999625,
+        "last": 629777471,
+        "vault_debt": 375,
         "vault_ceiling": 33000000
       },
-      "address": "kaspatest:pz4d4e7l9ewwl4e329vhh2ef6554gurgu7vkkvl7c6h3fsuxveqh5ps9ue393"
+      "address": "kaspatest:ppy0wjwfv0e9fgpwg9c0jqrre8qv4t0yaz5u6ukqnnqfdu8qmrjzz7zn8lujx"
     },
     "psm": {
-      "covid": "1b5fd632a30ead1ac3557bb02173f868c55b8a54030fc836ecfb1a9be51dd4d1",
-      "txid": "10ed3193cebf37786565ffa6c516e1018593971c4f98befc40b15e1c6906c4af",
+      "covid": "b19fdcc1466cf9204b7fe3c3b6e21f7a4c3ea5996d2410b0f1e67e5a59ab12f6",
+      "txid": "71fb6c576344ec77bf7a8100ea3815bb44c09bf6a985a8d45b1db6c5d989ec9d",
       "index": 0,
-      "amount": 100000000,
+      "amount": 1000000000,
       "state": {
         "ceiling": 5000000,
         "minted": 0,
         "share_bps": 2500,
-        "floor": 100000
+        "floor": 100000,
+        "fees": 0
       },
-      "address": "kaspatest:pzzvyh7wmhv2z6tnuu8cuhw42h73w9cgtq28he3lawdvy09mnl5lxt042z9n8"
+      "address": "kaspatest:pzqdprwq507a2z7ynq4cmtnyypk6xs95l9vje4gaathlkguknyejx4aulw2qf"
     },
     "vault": {
-      "covid": "a3dde3b11588d91c20e49511c27677a64ad9c082901c18f626da5c374451c7fd",
-      "txid": "e6c7ab2c3de838a4cca7ef8301025747493da433bbe91643a46523217a45e808",
+      "covid": "87e388356d31e0eeb8134f14029509856cf6672791753aafc58c827039cfd5ca",
+      "txid": "1d4551c6e43aa84118f4978f0dd497449b932b7e62101728873184d3865da7a4",
       "index": 0,
       "amount": 30100000000,
       "state": {
         "collateral": 30000000000,
-        "debt_mc": 380000,
-        "index_at": 1000177690
+        "debt_mc": 375000,
+        "index_at": 1000000000
       },
-      "address": "kaspatest:pr33lz7jtxp5hxdjh6r6v3qu85ttd6v950mc944m7rvhpexth88k7j9sl67pv"
+      "address": "kaspatest:przjzelqgwq9gzvlnnemspvaw2mw6gqteq5jftfcwexw938qafgev73lul7r2"
     },
     "authority": {
-      "covid": "d95716cbab35f7cfb44c329f5123bf3cb362475c1e40f4d8df3b31b0e1427662",
-      "txid": "10ed3193cebf37786565ffa6c516e1018593971c4f98befc40b15e1c6906c4af",
+      "covid": "5aca3c95104b788330399f71068129c1a8d9439395665d09e53719fa5a2e2ce5",
+      "txid": "1d4551c6e43aa84118f4978f0dd497449b932b7e62101728873184d3865da7a4",
       "index": 1,
-      "amount": 100000000,
+      "amount": 1000000000,
       "state": {
-        "amount": 99999620
+        "amount": 99999625
       },
-      "address": "kaspatest:pzjlhdcuexmnqlycsyelrruwt0aslkdm3vxau4na0d6whpxh4whs6cf9mr656"
+      "address": "kaspatest:ppjrksrafh9247q3h22gl47teyguymqwe85cgzyzc9pgd4trs6suy673ae0jt"
     },
     "minted": {
-      "covid": "d95716cbab35f7cfb44c329f5123bf3cb362475c1e40f4d8df3b31b0e1427662",
-      "txid": "e6c7ab2c3de838a4cca7ef8301025747493da433bbe91643a46523217a45e808",
+      "covid": "5aca3c95104b788330399f71068129c1a8d9439395665d09e53719fa5a2e2ce5",
+      "txid": "1d4551c6e43aa84118f4978f0dd497449b932b7e62101728873184d3865da7a4",
       "index": 2,
       "amount": 150000000,
       "state": {
-        "amount": 380
+        "amount": 375
       },
-      "address": "kaspatest:pz2fy5uuf8spr0x4rvf7ru59g5snx8ar0xsalpjjrrvsamraajnazcpgr42zy"
+      "address": "kaspatest:pracncdy74puz67y5ych62adl9kcyrsms3jgxfe087q9f7puuyma7wh2g5nf8"
     },
     "surplus": {
-      "covid": "c76efdcbe2edfe162af0730ece57f739f57888b9e55993a021aaf34271297913",
-      "txid": "e6a7541712f364e0772c30449173a146d60ab9d6f81fdb4faf4cd77d5266dba8",
-      "index": 3,
-      "amount": 389661914343,
+      "covid": "e8c829452010639c57970f3b4bf161f42f6792ddc03c2fc7009e744d41d0bb0c",
+      "txid": "8b6bae21c4917402540b72b40dc92fb25136e2ca1a493e541dda4813b90aa7d3",
+      "index": 0,
+      "amount": 1061000000000,
       "state": {},
-      "address": "kaspatest:pp8h4v37qr6wca57e2cq6muxkkcrg6ac28wp8vvudkkhk59d7l7lw2rnw8fy3"
+      "address": "kaspatest:pz6eskmdny9q09ar9yq0svev9cun3utk7prpalghmq2qv40ne48jce9v50vwn"
     },
     "factory": {
-      "covid": "a3dde3b11588d91c20e49511c27677a64ad9c082901c18f626da5c374451c7fd",
-      "txid": "19c03163008cd997c3aec60ced18a99b45b4d3b65b20e3b6548ef4d51d510d1d",
+      "covid": "87e388356d31e0eeb8134f14029509856cf6672791753aafc58c827039cfd5ca",
+      "txid": "13865d4d48fd4c467d4faca9d7ef13c9c5af39e5b869426ef52281b143db03ad",
       "index": 0,
-      "amount": 100000000,
+      "amount": 1000000000,
       "state": {
         "opened": 1
       },
-      "address": "kaspatest:pztx8zz6fp2zar95g3pju5g08y4s4797czpncw9zqm4npjfm3h862ww2cydlk"
+      "address": "kaspatest:pr3u3zzw0g5j8jyp3r5kgvwykfpzrz9kqrvh7tw3aav3en72tlzu6kgy9726f"
     }
   },
   "operators": {
@@ -126,7 +140,9 @@
     "lastRefreshSigners": [
       0,
       1,
-      2
+      2,
+      3,
+      4
     ],
     "rotated": [
       {
@@ -1009,21 +1025,21 @@
       "step": "SWAP_IN",
       "txid": "d6de40f87286ffabe29929295a116580dc6d61c227301f38b9ed0d6a3702785d",
       "time": 1795289955,
-      "note": "Retiring the hardened-PSM deploy vault: bought $3.83 of kUSD through its PSM to repay the $3.81 owed."
+      "note": "Retiring the vault-factory deployment's vault: bought $3.84 of kUSD through its PSM to repay the $3.81 owed."
     },
     {
       "family": "stage1",
       "step": "REPAY",
       "txid": "a9c59de111f600d6ac2fe7a2b23154f582e40a0e4805d301c7457f7a5363da33",
       "time": 1795289984,
-      "note": "Repaid that deploy vault in full and released its 300 KAS."
+      "note": "Repaid that vault in full and released its 300 KAS."
     },
     {
       "family": "stage1",
       "step": "CLOSE",
       "txid": "48f35f56b9a14d650c3065889d91686b09cf28d75f8f414d7f97e1c3304d6562",
       "time": 1795290012,
-      "note": "Closed the empty deploy vault."
+      "note": "Closed the empty vault."
     },
     {
       "family": "stage1",
@@ -1065,21 +1081,21 @@
       "step": "VAULT-GENESIS",
       "txid": "705b9937cb7951cdb59fccc2a13fd574388385b2bd0e17bfb9969fa16e5d0dff",
       "time": 1795290304,
-      "note": "The first vault opened through the factory: 300 KAS, zero debt, the factory's wiring, and the vault joins the factory's covenant group (it carries the group id for life)."
+      "note": "The deploy vault opened through the factory: 300 KAS."
     },
     {
       "family": "stage1",
       "step": "MINT",
       "txid": "abd18e60f4aba95f61b32604a2b3ab3c06e4c2fe8bb95310089c06f80369ea38",
       "time": 1795290328,
-      "note": "Minted $3.80 against the factory-opened vault: the token authority checked the vault belongs to the factory's group before issuing."
+      "note": "Minted $3.75 against it, reading a price receipt (at $0.0253, $3.80 would have been 199%, under the 200% line)."
     },
     {
       "family": "stage1",
       "step": "SET_CEILING",
       "txid": "e4b94d1fa30182f2c722d3aec3f38d2cc24547bc8b24feef695ffbfd57ec94d7",
       "time": 1795290356,
-      "note": "Governance (2 of 3) set the new PSM's ceiling to $50,000 and its fee to 0.50%; share cap $1,000 plus 25% of vault debt."
+      "note": "Governance set the new PSM's ceiling to $50,000 and its fee to 0.50%."
     },
     {
       "family": "stage1",
@@ -1100,7 +1116,7 @@
       "step": "SWAP_IN",
       "txid": "e6a7541712f364e0772c30449173a146d60ab9d6f81fdb4faf4cd77d5266dba8",
       "time": 1795297496,
-      "note": "Retiring the vault-debt-ceiling deploy vault: bought $3.83 of kUSD through its PSM to repay the $3.81 owed."
+      "note": "Retiring the hardened-PSM deploy vault: bought $3.83 of kUSD through its PSM to repay the $3.81 owed."
     },
     {
       "family": "stage1",
@@ -1135,7 +1151,7 @@
       "step": "FACTORY-GENESIS",
       "txid": "094564012db54f2bdb71d3b34a79298704ec074085e379f7d5e92ef04d7df471",
       "time": 1795297664,
-      "note": "Vault factory created. Its covenant id is the vault group: the only place genuine vaults come from. It copies the oracle, surplus pot and budget into every vault it opens."
+      "note": "A vault factory abandoned unused: created against the previous treasury before the new one existed."
     },
     {
       "family": "stage1",
@@ -1163,28 +1179,245 @@
       "step": "FACTORY-WIRE",
       "txid": "37c79b7afdd2e26febb982fda5ea5906bacbeadff7f524106beb77a5283e35c6",
       "time": 1795297761,
-      "note": "Vault factory wired to the new token authority (governance 2 of 3, once)."
+      "note": "Vault factory wired to the new token authority."
     },
     {
       "family": "stage1",
       "step": "VAULT-GENESIS",
       "txid": "19c03163008cd997c3aec60ced18a99b45b4d3b65b20e3b6548ef4d51d510d1d",
       "time": 1795297793,
-      "note": "New deploy vault opened with 300 KAS."
+      "note": "The first vault opened through the factory: 300 KAS, zero debt, the factory's wiring, and the vault joins the factory's covenant group (it carries the group id for life)."
     },
     {
       "family": "stage1",
       "step": "MINT",
       "txid": "e6c7ab2c3de838a4cca7ef8301025747493da433bbe91643a46523217a45e808",
       "time": 1795297818,
-      "note": "Minted $3.80 against the new vault (300 KAS at $0.0257 is 202%)."
+      "note": "Minted $3.80 against the factory-opened vault: the token authority checked the vault belongs to the factory's group before issuing."
     },
     {
       "family": "stage1",
       "step": "SET_CEILING",
       "txid": "10ed3193cebf37786565ffa6c516e1018593971c4f98befc40b15e1c6906c4af",
       "time": 1795297849,
+      "note": "Governance (2 of 3) set the new PSM's ceiling to $50,000 and its fee to 0.50%; share cap $1,000 plus 25% of vault debt."
+    },
+    {
+      "family": "stage1",
+      "step": "KUSDT-TEST-GENESIS",
+      "txid": "c60d3fb4a0c0d16c6dfb96f8f3a26fd43dd817e0c91a15ecd6b9d279b9943253",
+      "time": 1795301340,
+      "note": "Cross-KCC-20 test: a token box created from kUSDT's own unmodified KCC-20 code (0.80 test units on TN10; a test instance, not kUSDT)."
+    },
+    {
+      "family": "stage1",
+      "step": "KUSD-KUSDT-SWAP",
+      "txid": "2263a0e134742ca50ed32292feba723d84236adda16ab27568034711fd93cf7f",
+      "time": 1795301410,
+      "note": "kUSD swapped for that kUSDT-code token in one transaction: each token's covenant checked only its own side, and neither side could land without the other."
+    },
+    {
+      "family": "stage1",
+      "step": "SWAP_IN",
+      "txid": "33f6b0abd8fa117f0f66baee3009aa8ea164a0b18e256dbf58b10f9b0a834549",
+      "time": 1795310656,
+      "note": "Retiring the vault-debt-ceiling deploy vault: bought $3.83 of kUSD through its PSM to repay the $3.81 owed."
+    },
+    {
+      "family": "stage1",
+      "step": "REPAY",
+      "txid": "19ee337802296d1d6ec5d3ce6142128176e44e985e390bdca06537762bb85833",
+      "time": 1795310685,
+      "note": "Repaid that deploy vault in full and released its 300 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "CLOSE",
+      "txid": "9a6dd128c45df7f5fb8db7fecea5d0b2d9c22a24b6134c8f6a4d9efd88889a4e",
+      "time": 1795310714,
+      "note": "Closed the empty deploy vault."
+    },
+    {
+      "family": "stage1",
+      "step": "ORACLE-GENESIS",
+      "txid": "0231d3912d3e5643468e799619b97d563bb3b32658c0ae49952d8156024d92c6",
+      "time": 1795310762,
+      "note": "An oracle with price receipts and operator pay, abandoned unused: its script held 24 signature checks and nodes relay only scripts with 15 or fewer, so it could never be spent. Replaced by the next one."
+    },
+    {
+      "family": "stage1",
+      "step": "ORACLE-GENESIS",
+      "txid": "39a7323879ced7799b3d42ab6892a9db655c8822d989a98d3047bc9e57aa2c70",
+      "time": 1795311334,
+      "note": "Oracle re-created with price receipts and operator pay: consumers read one of 8 receipt boxes instead of the oracle, so up to 8 users can act at once, and every price change replaces all of them (no stale price can be reused). Refreshes take 3 to 5 operator prints and use their median; each included print earns its operator 0.05 KAS, paid from the treasury on claim. One refresh entry, always bound to the miner median, keeps it under the 15-signature limit."
+    },
+    {
+      "family": "stage1",
+      "step": "SET-RECEIPTS",
+      "txid": "ef162fbdc549a25d68c399fd0a82cb54eb716eff23c5ea1721ed9b8c1f0c8393",
+      "time": 1795311575,
+      "note": "Governance (2 of 3) created the 8 price receipts, 10 KAS each."
+    },
+    {
+      "family": "stage1",
+      "step": "PSM-GENESIS",
+      "txid": "944ce4303e31481262aec67a7106746968950e6efc861817d10f1a0eb2d8bf93",
+      "time": 1795311645,
+      "note": "New PSM that reads a price receipt and keeps its swap fees in its own box until swept to the treasury."
+    },
+    {
+      "family": "stage1",
+      "step": "BUDGET-GENESIS",
+      "txid": "a1ba77349fa7c4460112c77b85c6581db88007d7a011938e350c6e0af381ff79",
+      "time": 1795311676,
+      "note": "New issuance budget for the receipts deployment, vault-debt ceiling $330,000."
+    },
+    {
+      "family": "stage1",
+      "step": "FACTORY-GENESIS",
+      "txid": "7af69855095d3c8f42660463d5487f2d7386be42e6f8262d20135e9b852e83fb",
+      "time": 1795311707,
+      "note": "Vault factory for the receipts deployment."
+    },
+    {
+      "family": "stage1",
+      "step": "AUTHORITY-GENESIS",
+      "txid": "341df87f9197970397de5ef0ef7b3abae3165ff8686ac97447ae6cc937c19864",
+      "time": 1795311737,
+      "note": "A token authority abandoned unused: its config named the previous treasury."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-GENESIS",
+      "txid": "6a64578179ff2e552610a10b8405e885e3e177836956b685a29382435d15bec9",
+      "time": 1795311820,
+      "note": "New treasury that pays operators exactly what the oracle's claims authorise."
+    },
+    {
+      "family": "stage1",
+      "step": "FACTORY-GENESIS",
+      "txid": "540c76d534b2bde9ee2bad7571d797b00a10893cd8a037d095b33e91dae39577",
+      "time": 1795311850,
+      "note": "Vault factory created. Its covenant id is the vault group: the only place genuine vaults come from. It copies the oracle, surplus pot and budget into every vault it opens."
+    },
+    {
+      "family": "stage1",
+      "step": "AUTHORITY-GENESIS",
+      "txid": "2ee0634b3715440b57ea19b7a222b370352c142b339b013d5d4a8ac81662a2f3",
+      "time": 1795311880,
+      "note": "New kUSD token authority whose vaults and PSM read price receipts."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "4dd15ec31818181de4ef1eede031ea1113fee7991dce05a64d9227932b95c361",
+      "time": 1795311947,
+      "note": "Treasury funded with 4,000 KAS toward 90 days of operator pay."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "5438e912efd2beb05bdcc3dd8ef876b4fb96a3e8428ce7d015ec30156c972002",
+      "time": 1795312066,
+      "note": "Treasury topped up by 500 KAS (from many small coins)."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "b316dee03256471bef9992197c318ad9c66ea3c78339634073375456497fc05e",
+      "time": 1795312166,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "7ebd6e9d3ea8f09af2eb3daec40023f244d7bc52254b0cd0f3ffe7c06575a891",
+      "time": 1795312202,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "2f846ea26daf6fedacc44e2adab805b0dfb581de0f9b6cff9eed449e3c37ee7e",
+      "time": 1795312238,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "7c4df4d6d23aebaed538a7394d9da851bc6ccb9149d6d123d67fdb57826bfa56",
+      "time": 1795312303,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "7c831d5ea854b7ef9751b47bbce072ea76a1e20d37fa0d2e9af6e51837c7908a",
+      "time": 1795312339,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "569e05e1c9b809d64a6758ba9d890432b8c81f6d25050e9ddb653217fc0cb378",
+      "time": 1795312375,
+      "note": "Treasury topped up by 1,000 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "SURPLUS-TOP-UP",
+      "txid": "8b6bae21c4917402540b72b40dc92fb25136e2ca1a493e541dda4813b90aa7d3",
+      "time": 1795312410,
+      "note": "Treasury topped up to 10,610 KAS: about 90 days of operator pay at the default rates."
+    },
+    {
+      "family": "stage1",
+      "step": "WIRE",
+      "txid": "f7ee8960abc2d61452331fecbb2d97e6eab595d13d23b15e0f4374be4597dfdf",
+      "time": 1795312454,
+      "note": "New PSM wired to the new token authority."
+    },
+    {
+      "family": "stage1",
+      "step": "BUDGET-WIRE",
+      "txid": "fb045491109c998e48fdecd35ccc3969630e59f85a434ef9c29552f66bdcb5c3",
+      "time": 1795312483,
+      "note": "New issuance budget wired in."
+    },
+    {
+      "family": "stage1",
+      "step": "FACTORY-WIRE",
+      "txid": "e7b6b8108c782711e8f4c9cc303208a6cf8e1713e7667002582e61018649f816",
+      "time": 1795312514,
+      "note": "Vault factory wired to the new token authority (governance 2 of 3, once)."
+    },
+    {
+      "family": "stage1",
+      "step": "SET_CEILING",
+      "txid": "71fb6c576344ec77bf7a8100ea3815bb44c09bf6a985a8d45b1db6c5d989ec9d",
+      "time": 1795312594,
       "note": "Governance (2 of 3) set the hardened PSM's ceiling to $50,000 and its fee to 0.50%; the share cap stays $1,000 plus 25% of vault debt."
+    },
+    {
+      "family": "stage1",
+      "step": "VAULT-GENESIS",
+      "txid": "13865d4d48fd4c467d4faca9d7ef13c9c5af39e5b869426ef52281b143db03ad",
+      "time": 1795312949,
+      "note": "New deploy vault opened with 300 KAS."
+    },
+    {
+      "family": "stage1",
+      "step": "MINT",
+      "txid": "1d4551c6e43aa84118f4978f0dd497449b932b7e62101728873184d3865da7a4",
+      "time": 1795313016,
+      "note": "Minted $3.80 against the new vault (300 KAS at $0.0257 is 202%)."
+    },
+    {
+      "family": "stage1",
+      "step": "REFRESH",
+      "txid": "c14ef312fe238e339320071fb59c09f763299a3fe644e8c4f9308249266b93e9",
+      "time": 1795313034,
+      "note": "The first refresh with receipts: all five operators printed, the median ($0.0253) went to the oracle and all 8 receipts, the miner bound stood off (too few votes), and seat 0 relayed and signed, earning 0.21 KAS; the other four earned 0.05 KAS each."
     }
   ],
   "metering": [

@@ -21,11 +21,12 @@ test('with the relay down the last published price shows, marked unverified', ()
 
 test('funding needs mirror the builder', () => {
   const p = golden.cases.swap_in.request.protocol;
-  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15267180000 + 150_000_000 + 10_000_000);
-  assert.equal(fundingNeed('open_vault', { collateral: 30_000_000_000 }, p), 30_000_000_000 + 100_000_000 + 10_000_000);
-  assert.equal(fundingNeed('adjust', { delta: 5_000_000_000 }, p), 5_010_000_000);
-  assert.equal(fundingNeed('adjust', { delta: -5_000_000_000 }, p), 10_000_000);
-  assert.equal(fundingNeed('mint', { cents: 100 }, p), 160_000_000);
+  // FEE plus one coin's PER_INPUT_FEE (the builder charges each coin it spends)
+  assert.equal(fundingNeed('swap_in', { cents: 400 }, p), 15267180000 + 150_000_000 + 10_000_000 + 150_000);
+  assert.equal(fundingNeed('open_vault', { collateral: 30_000_000_000 }, p), 30_000_000_000 + 100_000_000 + 10_000_000 + 150_000);
+  assert.equal(fundingNeed('adjust', { delta: 5_000_000_000 }, p), 5_010_150_000);
+  assert.equal(fundingNeed('adjust', { delta: -5_000_000_000 }, p), 10_150_000);
+  assert.equal(fundingNeed('mint', { cents: 100 }, p), 160_150_000);
   assert.equal(fundingNeed('repay', {}, p), 0);
 });
 

@@ -29,9 +29,9 @@ test('each wallet has its own record, and bad storage reads as empty', () => {
   const s = memory();
   saveLocal(s, 'k1', mergeCreated(loadLocal(s, 'k1'), [box('holder', 'b1')]));
   assert.equal(loadLocal(s, 'k2').holders.length, 0);
-  assert.deepEqual(loadLocal(memory({ [LOCAL_KEY]: 'not json' }), 'k1'), { protocol: {}, holders: [], vaults: [] });
+  assert.deepEqual(loadLocal(memory({ [LOCAL_KEY]: 'not json' }), 'k1'), { protocol: {}, holders: [], vaults: [], receipts: [] });
   const broken = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
-  assert.deepEqual(loadLocal(broken, 'k1'), { protocol: {}, holders: [], vaults: [] });
+  assert.deepEqual(loadLocal(broken, 'k1'), { protocol: {}, holders: [], vaults: [], receipts: [] });
   assert.doesNotThrow(() => saveLocal(broken, 'k1', loadLocal(broken, 'k1')));
 });
 

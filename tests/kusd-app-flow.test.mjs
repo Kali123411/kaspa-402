@@ -26,9 +26,9 @@ test('describe_swap_in', () => {
   assert.equal(psmOut.sompi - psmIn.sompi, kasIn);
   assert.ok(d.outputs.some((o) => o.what === 'your kUSD box (4.00 kUSD)'));
   assert.ok(d.outputs.some((o) => o.what === 'your KAS change'));
-  assert.ok(d.inputs.some((i) => i.what === 'oracle (read)'));
+  assert.ok(d.inputs.some((i) => i.what === 'price receipt (read)'));
   assert.ok(d.inputs.some((i) => i.what === 'your KAS'));
-  assert.equal(d.feeSompi, 10_000_000);
+  assert.equal(d.feeSompi, 10_150_000); // FEE + PER_INPUT_FEE for the one coin spent
   assert.equal(d.clock, req.clock);
   const sum = (xs) => xs.reduce((s, x) => s + x.sompi, 0);
   assert.equal(sum(d.inputs) - sum(d.outputs), d.feeSompi);
