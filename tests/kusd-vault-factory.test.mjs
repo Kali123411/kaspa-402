@@ -8,7 +8,7 @@ const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
 const pins = { oracle: '07'.repeat(32), psm: '66'.repeat(32), budget: '88'.repeat(32), authority: '42'.repeat(32), surplus: '77'.repeat(32), miner: '4d'.repeat(32), factory: '99'.repeat(32) };
 const b = (h) => Array.from(Buffer.from(h, 'hex'));
-const vaultState = { owner: b('11'.repeat(32)), collateral: 500_000_000, debt_mc: 0, index_at: 1_000_000_000, kusd_id: b(pins.authority), oracle_id: b(pins.oracle), surplus_id: b(pins.surplus), budget_id: b(pins.budget) };
+const vaultState = { owner: b('11'.repeat(32)), collateral: 500_000_000, debt: 0, kusd_id: b(pins.authority), oracle_id: b(pins.oracle), surplus_id: b(pins.surplus), budget_id: b(pins.budget) };
 
 test('the factory is a pinned protocol kind the relay accepts', () => {
   assert.ok(PROTOCOL_KINDS.includes('factory'));

@@ -1,6 +1,6 @@
-// /kusd's vault panel after the stability-fee re-genesis: the exporter writes {collateral, debt_mc, index_at} and
-// the oracle carries the rate index, so the debt shown is what the vault owes NOW (vault.ag owed_cents), and the
-// ratio is undefined (not NaN, not Infinity) when nothing is owed.
+// /kusd's vault panel after the origination-fee re-genesis (option (e)): the exporter writes {collateral, debt} with
+// debt in whole cents (no interest), so the debt shown is exactly what the vault owes, and the ratio is undefined
+// (not NaN, not Infinity) when nothing is owed.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -10,24 +10,19 @@ const snapshot = JSON.parse(readFileSync(new URL('../public/kusd/snapshot.json',
 
 test('the bundled snapshot has the new vault shape and renders without NaN', () => {
   const v = snapshot.covenants.vault.state;
-  assert.ok('debt_mc' in v && 'index_at' in v && !('debt' in v), 'the exporter writes debt_mc/index_at, not debt');
+  assert.ok('debt' in v && !('debt_mc' in v) && !('index_at' in v), 'the exporter writes debt, not debt_mc/index_at');
   const view = vaultView(v, snapshot.covenants.oracle.state);
-  // the overflow-fix deployment's vault: 300 KAS, 375c settled at the oracle's current index → owes 375c; at 250
-  // ($7.50) that is exactly 200% at the liquidation price
-  assert.equal(view.debtCents, 375);
-  assert.equal(Math.round(view.ratioPct), 200);
-  assert.ok(Number.isFinite(view.ratioPct));
+  assert.equal(view.debtCents, v.debt);
+  assert.ok(view.debtCents === 0 ? view.ratioPct === null : Number.isFinite(view.ratioPct));
   assert.ok(Number.isFinite(view.collateralKas) && view.collateralKas === v.collateral / 1e8);
 });
 
-test('debt is the milli-cent principal rebased by the oracle index, rounded up to the cent', () => {
-  // 2.00 kUSD borrowed when the index was 1.000000000; the index has since grown 1% → owes 2.02 kUSD
-  const view = vaultView({ collateral: 300e8, debt_mc: 200_000, index_at: 1_000_000_000 }, { index: 1_010_000_000, liq: 2680 });
-  assert.equal(view.debtCents, 202);
-  // ratio at the liquidation price: 300 KAS × $0.2680 / $2.02 = 3980.2%
-  assert.equal(Math.round(view.ratioPct), 3980);
-  // an oracle without an index (older snapshot) means no accrual
-  assert.equal(vaultView({ collateral: 300e8, debt_mc: 200_000, index_at: 1_000_000_000 }, { liq: 2680 }).debtCents, 200);
+test('debt is exactly what was minted and not repaid: the oracle never moves it', () => {
+  const view = vaultView({ collateral: 300e8, debt: 200 }, { liq: 2680, fee: 50 });
+  assert.equal(view.debtCents, 200);
+  // ratio at the liquidation price: 300 KAS × $0.2680 / $2.00 = 4020%
+  assert.equal(Math.round(view.ratioPct), 4020);
+  assert.equal(vaultView({ collateral: 300e8, debt: 0 }, { liq: 2680 }).ratioPct, null);
 });
 
 test('the page reads the vault through vaultView, never a `debt` field', () => {

@@ -56,9 +56,9 @@ test('a vault with debt needs 5 KAS; a debt-free one is still shown to close', a
   const pins = Object.fromEntries(['oracle', 'psm', 'budget', 'authority', 'surplus', 'factory'].map((k) => [k, hex(proto[k].covid)]));
   const entry = (kind, l) => ({ kind, covid: hex(l.covid), outpoint: l.outpoint, value: l.value, state: l.state });
   const mk = (state, tx) => entry('vault', { ...real, state: { ...real.state, ...state }, value: 100_000_000 + state.collateral, outpoint: { transactionId: tx.repeat(32), index: 0 } });
-  const small = mk({ collateral: 499_999_999, debt_mc: 100_000 }, 'a1');
-  const five = mk({ collateral: 500_000_000, debt_mc: 100_000 }, 'a2');
-  const debtFree = mk({ collateral: 300_000_000, debt_mc: 0 }, 'a3');
+  const small = mk({ collateral: 499_999_999, debt: 100 }, 'a1');
+  const five = mk({ collateral: 500_000_000, debt: 100 }, 'a2');
+  const debtFree = mk({ collateral: 300_000_000, debt: 0 }, 'a3');
   const vaults = [small, five, debtFree];
   // the protocol's boxes plus its price receipts (the golden protocol carries them as a list)
   const boxes = Object.entries(proto).filter(([k, l]) => k !== 'receipts' && l);

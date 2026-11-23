@@ -78,13 +78,13 @@ test('swap quotes mirror the builder', () => {
 
 test('vault view figures', () => {
   const oracle = { price: 262, mint: 262, liq: 262 };
-  const v = vaultView({ collateral: 30_000_000_000, debt_mc: 200_000, index_at: 1_000_000_000 }, oracle);
+  const v = vaultView({ collateral: 30_000_000_000, debt: 200 }, oracle);
   assert.equal(v.ratioAtMint, 393);
   assert.equal(v.ratioAtLiq, 393);
   // 300 KAS stays healthy down to 170% of $2 = $3.40 → 0.011333 USD/KAS → 114 in 1e-4 USD (rounded up)
   assert.equal(v.liquidatesBelow, 114);
   assert.equal(v.maxMintCents, 393 - 200);
-  const empty = vaultView({ collateral: 30_000_000_000, debt_mc: 0, index_at: 1_000_000_000 }, oracle);
+  const empty = vaultView({ collateral: 30_000_000_000, debt: 0 }, oracle);
   assert.equal(empty.ratioAtMint, null);
   assert.equal(empty.liquidatesBelow, null);
   assert.equal(empty.maxMintCents, 393);

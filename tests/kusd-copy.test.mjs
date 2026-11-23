@@ -56,19 +56,20 @@ test('the showcase links to the kUSD app', () => {
   assert.match(page, /Open the kUSD app/);
 });
 
-test('snapshot pins are the overflow-fix family', () => {
-  // the second 2026-11-22 re-genesis (overflow fixes, formal/SPEC.md §8.4/§8.9): new PSM, budget, vault factory (the
-  // vault group), authority and deploy vault; the price-receipts oracle, the surplus and the MinerMedian box carry over
+test('snapshot pins are the option (e) family', () => {
+  // the 2026-11-22 option (e) re-genesis (origination fee at mint, SIGHASH_ALL): every covenant re-created, the
+  // MinerMedian box included; the oracle carries the origination fee and is bound to the new MinerMedian box
   const c = bundled.covenants;
-  assert.equal(c.oracle.covid, 'bd0115871904591ba3eb662a2c3e22142a7e76092676e7609b6dc396684bf44a');
-  assert.equal(c.psm.covid, '8207c72f5a75b6922a9656dfaf96b28acd58a0d4bbbc34c978bc5b904080d83b');
-  assert.equal(c.budget.covid, 'aa61888dd8d2ee8e152b50d6710b888fe03054c9543223a0ef190ba615fa46cc');
-  assert.equal(c.authority.covid, 'a6a0cb3d6fa59889956f37d6b043899b57ad1d744a3303cebdfc96b93d917add');
-  assert.equal(c.vault.covid, 'b8dc562d1940299491a47694dd8cf5f4a078b472a63f8586fc8bb399107a498e');
+  assert.equal(c.oracle.covid, 'a9595462a506950b2985b053fc3a8653575e86d986f9730b1b85c60bbc89d6cc');
+  assert.equal(c.psm.covid, '43eee4cc5a49a9a3dc28c2a37986d551e2788fc9d23668326e3834cb84758fdf');
+  assert.equal(c.budget.covid, '51ebe9cbb94b19129e45936359621231b3afd8a7e10c81f6ab89c0d0abda2eaf');
+  assert.equal(c.authority.covid, 'c869ea9f325660764f25835ad2305405720e27668a75807574d8bd05cd26f40f');
+  assert.equal(c.vault.covid, '84fd64ee18c2e789389af00227ad6b6d438ea7c543a146afb6f1719dbbd748af');
   assert.equal(c.factory.covid, c.vault.covid, 'the deploy vault is in the factory group');
-  assert.equal(c.surplus.covid, 'e8c829452010639c57970f3b4bf161f42f6792ddc03c2fc7009e744d41d0bb0c');
-  assert.equal(c.miner.covid, 'deb0b4b9268f76c74d9dbe45bc4d0a2c335799f566ea02d7f75d9a61b8957d35');
+  assert.equal(c.surplus.covid, '8d377f75581501314d49334c35dde4ce3c695535b54da03dbce4ca2dc650342b');
+  assert.equal(c.miner.covid, '27f8b2dd7c571cae5a122c5bd665e58fc109c8c4c0d656ba083700543dd01d7a');
   assert.equal(c.oracle.state.miner_id, c.miner.covid);
+  assert.equal(c.oracle.state.fee, 50, 'origination fee 50 bps');
   assert.equal(c.oracle.state.receipts, 8, 'eight price receipts');
   assert.equal(c.minted.covid, c.authority.covid);
   assert.equal(bundled.stage, 'Stage 2');

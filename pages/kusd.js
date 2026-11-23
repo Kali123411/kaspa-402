@@ -56,7 +56,7 @@ export default function Kusd() {
   };
   const silence = status?.daaScore != null ? status.daaScore - o.last : null;
   const hoursSilent = silence != null ? (silence / 10 / 3600).toFixed(1) : null;
-  const vault = vaultView(c.vault.state, o);   // debt owed now (stability fee applied), ratio null when nothing is owed
+  const vault = vaultView(c.vault.state, o);   // debt owed (no interest), ratio null when nothing is owed
   const stage1 = s.timeline.filter((e) => e.family === 'stage1').slice().reverse();
   const retired = s.timeline.filter((e) => e.family !== 'stage1').length;
   const [logQ, setLogQ] = useState('');
@@ -156,8 +156,7 @@ export default function Kusd() {
               <Facts className="mt-4" rows={[
                 ['mint price', usdPerKas(o.mint)],
                 ['liquidation price', usdPerKas(o.liq)],
-                ...(o.rate !== undefined ? [['stability fee', `${(o.rate / 100).toFixed(2)}% a year`]] : []),
-                ...(o.index !== undefined ? [['rate index', (o.index / 1e9).toFixed(9)]] : []),
+                ...(o.fee !== undefined ? [['origination fee', `${(o.fee / 100).toFixed(2)}% of each borrow`]] : []),
               ]} />
             </div>
             <div className="border-t border-gray-100 pt-4">
@@ -233,7 +232,7 @@ export default function Kusd() {
             <summary className="cursor-pointer font-mono text-[12px] text-gray-400">What these figures mean</summary>
             <ul className="mt-2 space-y-2 leading-relaxed">
               <li><span className="text-gray-200">kUSD in circulation</span>: every kUSD held by anyone — the $1,000,000 genesis supply minus what the token authority still holds. <span className="text-gray-200">deployer&apos;s test box</span>: one holder box among them, from the deployment. <span className="text-gray-200">unissued supply</span>: what the <Term id="token-authority">token authority</Term> still holds and has never issued; the two always sum to the fixed 1,000,000 kUSD.</li>
-              <li><span className="text-gray-200">surplus pot</span>: the protocol&apos;s revenue — PSM fees, interest, the 3% liquidation share — in KAS, under governance.</li>
+              <li><span className="text-gray-200">surplus pot</span>: the protocol&apos;s revenue — PSM fees, origination fees, the 3% liquidation share — in KAS, under governance.</li>
               <li>The <span className="text-gray-200">mint</span> and <span className="text-gray-200">liquidation</span> prices are identical whenever the price has been steady for an hour: the rate limits only pull them apart during a move (mint lags a rise, liquidation lags a fall), which is what stops one manipulated hour from minting cheap kUSD or triggering liquidations.</li>
             </ul>
           </details>
