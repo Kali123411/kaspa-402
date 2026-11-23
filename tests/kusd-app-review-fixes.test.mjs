@@ -64,7 +64,7 @@ test('a vault with attacker-chosen genesis state is not shown as yours', async (
     entry('vault', real),
     fake({ collateral: 3_999_900_000_000 }, real.value, 'f1'),        // claims far more than the box holds
     fake({ oracle_id: Array(32).fill(9) }, real.value, 'f2'),          // wired to another oracle
-    fake({ debt_mc: -5 }, real.value, 'f3'),
+    fake({ debt: -5 }, real.value, 'f3'),
   ];
   // the protocol's boxes plus its price receipts (the golden protocol carries them as a list)
   const boxes = Object.entries(proto).filter(([k, l]) => k !== 'receipts' && l);

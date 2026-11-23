@@ -16,7 +16,7 @@ test('every glossary entry has a unique id and a one-sentence short definition',
     assert.ok(g.short.length <= 200, `${g.id}: short is ${g.short.length} chars; one sentence please`);
     assert.ok(!/\s{2,}/.test(g.short));
   }
-  for (const must of ['covenant', 'psm', 'rate-index', 'lock-time', 'script-hash', 'token-authority', 'surplus-pot', 'compute-mass', 'box', 'spendpolicy', 'sliding-window', 'unserved', 'x402-v2', 'payment-required', 'payto', 'scheme', 'sompi', 'groth16', 'proof-of-innocence', 'anonymity-set', 'trusted-setup', 'shielded-pool', 'stage', 'miner-median']) {
+  for (const must of ['covenant', 'psm', 'origination-fee', 'lock-time', 'script-hash', 'token-authority', 'surplus-pot', 'compute-mass', 'box', 'spendpolicy', 'sliding-window', 'unserved', 'x402-v2', 'payment-required', 'payto', 'scheme', 'sompi', 'groth16', 'proof-of-innocence', 'anonymity-set', 'trusted-setup', 'shielded-pool', 'stage', 'miner-median']) {
     assert.ok(byId[must], `the brief's term "${must}" is missing`);
   }
 });

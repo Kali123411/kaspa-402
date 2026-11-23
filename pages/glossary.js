@@ -7,7 +7,7 @@ export default function Glossary() {
     <>
       <Head>
         <title>Glossary — k402</title>
-        <meta name="description" content="Every term the k402, kUSD and market pages use, defined in one sentence each: covenant, box, PSM, rate index, lock time, x402 v2, PAYMENT-REQUIRED, payTo, scheme, sompi and more." />
+        <meta name="description" content="Every term the k402, kUSD and market pages use, defined in one sentence each: covenant, box, PSM, origination fee, lock time, x402 v2, PAYMENT-REQUIRED, payTo, scheme, sompi and more." />
       </Head>
       <main className={`${PAGE} py-12 lg:py-16`}>
         <Section mark="0" note="One sentence each. On the other pages a dotted underline marks a term's first use; hover or focus it for the same line." top={false}>

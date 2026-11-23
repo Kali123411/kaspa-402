@@ -6,13 +6,16 @@ import assert from 'node:assert/strict';
 import { safeBorrowCents, borrowRisk, vaultView, SAFE_RATIO, CONFIRM_BELOW, LIQ_RATIO } from '../lib/kusd/app/quotes.mjs';
 
 const oracle = { price: 262, mint: 262, liq: 262 };
-const vault = { collateral: 30_000_000_000, debt_mc: 0, index_at: 1_000_000_000 }; // 300 KAS = $7.86 at 262
+const vault = { collateral: 30_000_000_000, debt: 0 }; // 300 KAS = $7.86 at 262
 
 test('the safe borrow targets 250% at the mint price', () => {
   assert.equal(SAFE_RATIO, 250);
   assert.equal(safeBorrowCents(vault, oracle), 314); // floor(786 * 100 / 250)
-  assert.equal(safeBorrowCents({ ...vault, debt_mc: 300_000 }, oracle), 14);
-  assert.equal(safeBorrowCents({ ...vault, debt_mc: 400_000 }, oracle), 0);
+  assert.equal(safeBorrowCents({ ...vault, debt: 300 }, oracle), 14);
+  assert.equal(safeBorrowCents({ ...vault, debt: 400 }, oracle), 0);
+  // a 0.5% origination fee leaves a little less collateral, so a cent less is safe (and a cent less possible)
+  assert.equal(safeBorrowCents(vault, { ...oracle, fee: 50 }), 313);
+  assert.equal(vaultView(vault, { ...oracle, fee: 50 }).maxMintCents, 392);
 });
 
 test('borrow risk: the ratio after and how far KAS can fall before liquidation', () => {

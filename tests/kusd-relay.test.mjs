@@ -205,9 +205,9 @@ test('a vault not created from the factory group is refused, debt-free or not', 
   // vault's previous box, both in the vault group. A tx with no input of that group can't have made a real vault
   const store = memStore();
   const base = { kind: 'vault', covid: hex(vaultLive.covid), txid: 'f1'.repeat(32), index: 0 };
-  const fresh = { ...base, state: { ...vaultLive.state, debt_mc: 0 }, value: 100_000_000 + vaultLive.state.collateral };
+  const fresh = { ...base, state: { ...vaultLive.state, debt: 0 }, value: 100_000_000 + vaultLive.state.collateral };
   assert.match((await accept([entry(fresh)], { ...deps([fresh]), store }))[0].reason, /factory/);
-  const withDebt = { ...base, txid: 'f2'.repeat(32), state: { ...vaultLive.state, debt_mc: 500_000 }, value: 100_000_000 + vaultLive.state.collateral };
+  const withDebt = { ...base, txid: 'f2'.repeat(32), state: { ...vaultLive.state, debt: 500 }, value: 100_000_000 + vaultLive.state.collateral };
   assert.match((await accept([entry(withDebt)], { ...deps([withDebt]), store }))[0].reason, /factory/);
 });
 
@@ -270,7 +270,7 @@ test('a budget entry carries the vault-debt count and ceiling (budget.ag vault_d
 });
 
 // --- price receipts (oracle.ag Receipt): many boxes under the oracle's covenant --------------------------
-const receiptState = { price: oracleState.price, mint: oracleState.mint, liq: oracleState.liq, status: oracleState.status, last: oracleState.last, index: oracleState.index };
+const receiptState = { price: oracleState.price, mint: oracleState.mint, liq: oracleState.liq, status: oracleState.status, last: oracleState.last, fee: oracleState.fee };
 const receiptBox = (txid, index, state = receiptState) => ({ kind: 'receipt', state, covid: pins.oracle, txid, index, value: 1_000_000_000 });
 
 test('receipts are stored under the oracle pin and served beside the oracle', async () => {
