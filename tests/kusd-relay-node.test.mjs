@@ -60,7 +60,7 @@ test('a box missing from the utxo set is retried, not stored', async () => {
   const [r] = await accept([entry(oracleBox)], { ...deps(node, store), queue, client: 'test' });
   assert.equal(r.ok, false);
   assert.equal(r.queued, true);
-  assert.match(r.reason, /not in the node's UTXO set/);
+  assert.match(r.reason, /^could not verify: not in the node's UTXO set/, 'the driver retries reasons starting "could not verify"');
   assert.equal((await read(store)).protocol.oracle, undefined);
 });
 
