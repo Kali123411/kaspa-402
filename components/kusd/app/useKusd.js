@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import snapshot from '../../../public/kusd/snapshot.json';
 import { loadState, canAct, utxosFromSdk, untilVerified } from '../../../lib/kusd/app/state.mjs';
+import { parseJson, stringifyJson } from '../../../lib/kusd/json64.mjs';
 import { coinsFromUtxos } from '../../../lib/kusd/app/coins.mjs';
 import { toSdkTransaction } from '../../../lib/kusd/app/sdk-tx.mjs';
 import { runFlow, relayEntries, publishWithRetry } from '../../../lib/kusd/app/flow.mjs';
@@ -39,14 +40,14 @@ async function fetchJson(url, init) {
   try {
     const r = await fetch(url, { ...init, signal: ctl.signal, cache: 'no-store' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return await r.json();
+    return parseJson(await r.text());   // i64 state fields can exceed 2^53
   } finally {
     clearTimeout(t);
   }
 }
 
 const call = (fn, req) => {
-  const out = JSON.parse(fn(JSON.stringify(req)));
+  const out = JSON.parse(fn(stringifyJson(req)));
   if (out.error) throw new Error(out.error);
   return out;
 };
