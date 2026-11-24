@@ -308,3 +308,22 @@ test("only receipts carrying the oracle's current price are served", async () =>
   await accept([entry(oracleBox), entry(stale)], { ...deps([oracleBox, stale]), store });
   assert.equal((await read(store, {})).protocol.receipts.length, 0);
 });
+
+// A governance rebind (2026-11-24: miner_id moved to the unpostable box) re-pins a protocol kind to a new covenant
+// while the old box stays unspent. The stored box under the old covid must give way to the new pin's box.
+test('a_box_under_a_superseded_pin_is_replaced', async () => {
+  const store = memStore();
+  const oldPins = { ...pins, miner: '4e'.repeat(32) };
+  const oldBox = { ...minerBox, covid: oldPins.miner, txid: 'c5'.repeat(32) };
+  const [first] = await accept([entry(oldBox)], { ...deps([oldBox]), pins: oldPins, store });
+  assert.equal(first.ok, true, JSON.stringify(first));
+  const newBox = { ...minerBox, state: { ...minerState, blocks: 0, votes: 0, median: 0 } };
+  const [r] = await accept([entry(newBox)], { ...deps([oldBox, newBox]), store });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  assert.equal((await read(store)).protocol.miner.covid, pins.miner);
+  // under the same pin, a newer unspent box still can't be displaced
+  const other = { ...newBox, txid: 'c6'.repeat(32), state: { ...newBox.state, epoch: 7 } };
+  const [kept] = await accept([entry(other)], { ...deps([oldBox, newBox, other]), store });
+  assert.equal(kept.ok, false);
+  assert.match(kept.reason, /newer and still unspent/);
+});

@@ -12,6 +12,7 @@ import { accept, read, makeRetryQueue, RelayInputError } from '../../lib/kusd/re
 import { loadClient } from '../../lib/kusd/client.mjs';
 import { openFileStore } from '../../lib/kusd/file-store.mjs';
 import { limitedFetchJson, httpGetText } from '../../lib/kusd/fetch-limit.mjs';
+import { parseJson, stringifyJson } from '../../lib/kusd/json64.mjs';
 
 const MAX_BODY = 64 * 1024;
 const DEFAULT_LIMITS = { postsPerMinute: 30, maxClients: 10_000, maxInFlight: 8 };
@@ -30,7 +31,7 @@ class HttpError extends Error {
 
 function send(res, status, body) {
   res.writeHead(status, { 'content-type': 'application/json', ...CORS });
-  res.end(JSON.stringify(body));
+  res.end(stringifyJson(body));
 }
 
 function readBody(req) {
@@ -93,7 +94,7 @@ export function makeServer({ store, fetchJson, boxAddress, pins, api, limits = {
         try {
           let body;
           try {
-            body = JSON.parse(await readBody(req));
+            body = parseJson(await readBody(req));
           } catch (e) {
             if (e instanceof HttpError) throw e;
             throw new HttpError(400, 'body must be JSON');

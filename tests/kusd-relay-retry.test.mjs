@@ -6,7 +6,7 @@ import { readFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadClient } from '../lib/kusd/client.mjs';
-import { accept, read, makeRetryQueue } from '../lib/kusd/relay.mjs';
+import { accept, read, makeRetryQueue, RETRY_WINDOW_MS } from '../lib/kusd/relay.mjs';
 import { openFileStore } from '../lib/kusd/file-store.mjs';
 import { makeServer } from '../services/kusd-relay/server.mjs';
 
@@ -191,4 +191,10 @@ test('forged_copy_does_not_hold_the_honest_slot', async () => {
   assert.equal(await queue.drain(deps), 1);
   assert.equal(queue.size, 0);
   assert.equal((await read(store)).protocol.oracle.value, oracleBox.value);
+});
+
+// 2026-11-24: the public TN10 API's transaction index lagged 5-8 minutes behind the node for an hour. With a 5-minute
+// window the relay dropped the new oracle box and the feed stalled. The default window outlasts that.
+test('the default window outlasts a several-minute index lag', () => {
+  assert.ok(RETRY_WINDOW_MS >= 20 * 60_000, `RETRY_WINDOW_MS is ${RETRY_WINDOW_MS}`);
 });

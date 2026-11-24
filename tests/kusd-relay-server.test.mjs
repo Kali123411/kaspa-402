@@ -189,3 +189,35 @@ test('slow clients time out quickly', async () => {
     await s.close();
   }
 });
+
+// An unpostable MinerMedian box (blocks 0, anchor_daa = i64::MAX) must be relayed digit for digit: the relay used
+// to read it as a JavaScript number and refuse the whole batch.
+test('i64_max_state_relayed_exactly', async () => {
+  const MAX = '9223372036854775807';
+  const minerPins = { ...pins, miner: '4d'.repeat(32) };
+  const stateText = `{"median":0,"votes":0,"blocks":0,"anchor_daa":${MAX},"anchor_bs":${MAX},"epoch":6,`
+    + `"image_id":${JSON.stringify(Array(32).fill(0x33))},"tally_root":${JSON.stringify(Array(32).fill(0))},"gov":${JSON.stringify(oracleState.gov)}}`;
+  // the address the exact state implies, computed without ever holding the state as JavaScript numbers
+  const wasm = await import('../lib/kusd/wasm/kusd_client_wasm.mjs');
+  const exact = JSON.parse(wasm.box_address(`{"kind":"miner","state":${stateText},"testnet":true}`));
+  assert.ok(exact.address, JSON.stringify(exact));
+  const txid = 'c4'.repeat(32);
+  const fetchJson = async (url) => {
+    if (url.endsWith(`/transactions/${txid}`)) return { is_accepted: true, inputs: [], outputs: [{ index: 0, amount: 100_000_000, covenant_id: minerPins.miner, script_public_key_address: exact.address }] };
+    if (url.includes(`/addresses/${exact.address}/utxos`)) return [{ outpoint: { transactionId: txid, index: 0 } }];
+    return [];
+  };
+  const s = await start({ fetchJson, pins: minerPins });
+  try {
+    const body = `{"entries":[{"kind":"miner","covid":"${minerPins.miner}","outpoint":{"transactionId":"${txid}","index":0},"value":100000000,"state":${stateText}}]}`;
+    const r = await post(s.base, body);
+    assert.equal(r.status, 200);
+    const res = await r.json();
+    assert.equal(res.results[0].ok, true, JSON.stringify(res));
+    const got = await (await fetch(`${s.base}/state`)).text();
+    assert.match(got, new RegExp(`"anchor_daa":${MAX}[,}]`));
+    assert.match(got, new RegExp(`"anchor_bs":${MAX}[,}]`));
+  } finally {
+    await s.close();
+  }
+});

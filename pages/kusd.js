@@ -12,6 +12,7 @@ import { oracleStatusLabel } from '../lib/kusd/labels.mjs';
 import { vaultView, circulatingCents } from '../lib/kusd/status.mjs';
 import { STEP_LABEL, Tx, TimelineEntry, txUrl, short } from '../components/kusd/Timeline';
 import { groupTimeline, filterTimeline } from '../lib/kusd/timeline.mjs';
+import { parseJson } from '../lib/kusd/json64.mjs';
 import { BUTTON, FIELD, Facts, H1, H2, H3, LINK, MARK, NUM, PAGE, Section } from '../components/Ledger';
 
 // Units (contracts/v2/README.md): oracle prices are 1e-4 USD per KAS, kUSD amounts are cents, KAS is sompi.
@@ -41,7 +42,7 @@ export default function Kusd() {
   useEffect(() => {
     let live = true;
     fetch('/api/kusd/status')
-      .then((r) => (r.ok ? r.json() : null))
+      .then(async (r) => (r.ok ? parseJson(await r.text()) : null))
       .catch(() => null)
       .then((j) => { if (live) { setStatus(j); setLoading(false); } });
     return () => { live = false; };
@@ -189,7 +190,9 @@ export default function Kusd() {
                 <div>
                   <div className={NUM}>{c.miner.state.votes > 0 ? usdPerKas(c.miner.state.median) : '—'}</div>
                   <div className="mt-1 font-mono text-[12px] text-gray-500">
-                    {c.miner.state.votes.toLocaleString()} of {c.miner.state.blocks.toLocaleString()} blocks voted · window anchored at DAA {c.miner.state.anchor_daa.toLocaleString()}
+                    {c.miner.state.blocks === 0
+                      ? 'no window: miner bound switched off (governance bound the oracle to a box nothing can post to)'
+                      : `${c.miner.state.votes.toLocaleString()} of ${c.miner.state.blocks.toLocaleString()} blocks voted · window anchored at DAA ${c.miner.state.anchor_daa.toLocaleString()}`}
                   </div>
                 </div>
                 <ul className="space-y-2 text-[15px] leading-relaxed text-gray-400">
