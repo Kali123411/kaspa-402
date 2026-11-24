@@ -12,6 +12,7 @@ import { accept, read, makeRetryQueue, RelayInputError } from '../../lib/kusd/re
 import { loadClient } from '../../lib/kusd/client.mjs';
 import { openFileStore } from '../../lib/kusd/file-store.mjs';
 import { limitedFetchJson, httpGetText } from '../../lib/kusd/fetch-limit.mjs';
+import { connectNodeChain } from '../../lib/kusd/node-chain.mjs';
 import { parseJson, stringifyJson } from '../../lib/kusd/json64.mjs';
 
 const MAX_BODY = 64 * 1024;
@@ -52,9 +53,9 @@ function readBody(req) {
   });
 }
 
-export function makeServer({ store, fetchJson, boxAddress, pins, api, limits = {}, now = Date.now, queue = makeRetryQueue(), retryEveryMs = 5_000 }) {
+export function makeServer({ store, fetchJson, boxAddress, pins, api, chain, limits = {}, now = Date.now, queue = makeRetryQueue(), retryEveryMs = 5_000 }) {
   const { postsPerMinute, maxClients, maxInFlight } = { ...DEFAULT_LIMITS, ...limits };
-  const deps = { store, fetchJson, boxAddress, pins, api, queue };
+  const deps = { store, fetchJson, boxAddress, pins, api, chain, queue };
   // fixed one-minute windows per client; refused requests are not counted; stale clients swept
   const windows = new Map(); // client -> { start, count }
   const limited = (client) => {
@@ -129,7 +130,14 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const dir = process.env.KUSD_RELAY_DIR || fileURLToPath(new URL('.', import.meta.url));
   const port = Number(process.env.KUSD_RELAY_PORT || 8735);
   const pins = JSON.parse(readFileSync(join(dir, 'pins.json'), 'utf8'));
+  // KUSD_RELAY_NODE (Borsh wRPC, e.g. ws://100.70.36.25:17210): verify against our own node's UTXO set instead of the
+  // public API, whose transaction index can lag the chain by many minutes. KUSD_RELAY_SDK: the Kaspa SDK directory.
+  const nodeUrl = process.env.KUSD_RELAY_NODE;
+  const sdkDir = pathToFileURL(`${process.env.KUSD_RELAY_SDK || fileURLToPath(new URL('../../public/kaspa-rpc/', import.meta.url))}/`.replace(/\/+$/, '/'));
+  const chain = nodeUrl ? await connectNodeChain(nodeUrl, sdkDir) : undefined;
+  if (chain) console.log(`kusd-relay: verifying against the node at ${nodeUrl}`);
   const server = makeServer({
+    chain,
     store: openFileStore(join(dir, 'store.json')),
     fetchJson: limitedFetchJson(httpGetText),
     boxAddress: loadClient().boxAddress,
