@@ -7,7 +7,7 @@ repo="$(cd "$here/../.." && pwd)"
 dest="${KUSD_RELAY_DIR:-$HOME/.local/share/kusd-relay}"
 
 mkdir -p "$dest/wasm"
-cp "$repo"/lib/kusd/{relay,client,file-store,fetch-limit}.mjs "$dest/"
+cp "$repo"/lib/kusd/{relay,client,file-store,fetch-limit,node-chain,json64}.mjs "$dest/"
 cp "$repo"/lib/kusd/wasm/{kusd_client_wasm.mjs,kusd_client_wasm_bg.wasm,SOURCE.json} "$dest/wasm/"
 sed "s#'../../lib/kusd/#'./#g" "$here/server.mjs" > "$dest/server.mjs"
 # pinned covenant IDs of the current deployment, from the bundled showcase snapshot

@@ -1,5 +1,5 @@
 // kUSD state relay HTTP service (runs on murr7800, public through the Cloudflare tunnel).
-//   GET  /health                 -> {ok, entries, queued}
+//   GET  /health                 -> {ok, entries, queued, node} (node: the node connection's stats, or null)
 //   GET  /state[?owner=<64hex>]  -> the protocol's latest verified boxes (+ that owner's boxes)
 //   POST /state {entries:[...]}  -> per-entry {ok, reason?, queued?}; stored only if verified against TN10;
 //                                   entries the API can't confirm yet are re-checked here for a few minutes
@@ -80,7 +80,7 @@ export function makeServer({ store, fetchJson, boxAddress, pins, api, chain, lim
         res.writeHead(204, CORS);
         return res.end();
       }
-      if (url.pathname === '/health' && req.method === 'GET') return send(res, 200, { ok: true, entries: store.size(), queued: queue.size });
+      if (url.pathname === '/health' && req.method === 'GET') return send(res, 200, { ok: true, entries: store.size(), queued: queue.size, node: chain?.stats?.() ?? null });
       if (url.pathname !== '/state') return send(res, 404, { error: 'not found' });
       if (req.method === 'GET') {
         const owner = url.searchParams.get('owner') || undefined;
