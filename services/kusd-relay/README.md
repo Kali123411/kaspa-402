@@ -17,7 +17,8 @@ posting client, keyed by the whole claimed entry (a forged copy can't take an ho
 it is full, the creators' own retries (page and driver) still apply. The queue lives in memory, so a
 restart drops it.
 
-- `GET /health` (`{ok, entries, queued}`), `GET /state[?owner=<64-hex x-only key>]`, `POST /state {"entries": [...]}` (≤ 16).
+- `GET /health` (`{ok, entries, queued, node}`; `node` is the node connection's `{connected, failures, reconnects}`,
+  or null without `KUSD_RELAY_NODE`), `GET /state[?owner=<64-hex x-only key>]`, `POST /state {"entries": [...]}` (≤ 16).
 - Runs on murr7800: `systemctl --user status kusd-relay`, logs `journalctl --user -u kusd-relay`,
   LAN `http://192.168.4.25:8735`.
 - Install or update: `services/kusd-relay/install.sh` (copies everything into
@@ -27,3 +28,11 @@ restart drops it.
   already running on murr7800 → Public Hostname → `kusd.kaspa-402.org` → `http://localhost:8735`.
 - New covenant family: rebuild `public/kusd/snapshot.json` (its covids are the pins), re-run the
   installer, and clear `store.json`.
+
+## Node connection
+
+With `KUSD_RELAY_NODE` the relay verifies against that node over wRPC and heals its own connection
+(`lib/kusd/node-chain.mjs`): a connection that fails two calls in a row is dropped and a fresh one is made on the
+next call, the node is probed every 30 s so a silent connection is caught with no traffic, and a connect that never
+settles (the SDK's connect to an unreachable node doesn't) times out after 8 s. Added 2026-11-26, after a connection
+opened during a reboot stopped answering and every verification failed for four hours.

@@ -221,3 +221,20 @@ test('i64_max_state_relayed_exactly', async () => {
     await s.close();
   }
 });
+
+test('health reports the node connection when the relay verifies against a node', async () => {
+  const chain = { stats: () => ({ connected: false, failures: 3, reconnects: 2 }) };
+  const s = await start({ fetchJson: fetchJsonFor([]), chain });
+  try {
+    const health = await (await fetch(`${s.base}/health`)).json();
+    assert.deepEqual(health.node, { connected: false, failures: 3, reconnects: 2 });
+  } finally {
+    await s.close();
+  }
+  const t = await start({ fetchJson: fetchJsonFor([]) });
+  try {
+    assert.equal((await (await fetch(`${t.base}/health`)).json()).node, null);
+  } finally {
+    await t.close();
+  }
+});
