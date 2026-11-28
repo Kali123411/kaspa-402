@@ -29,7 +29,8 @@ test('the app trusts vaults only from the factory group and passes the group in 
   const state = read('lib/kusd/app/state.mjs');
   assert.match(state, /const KINDS = \[[^\]]*'factory'/);
   assert.match(state, /e\.covid === pins\.factory/);
-  assert.match(read('components/kusd/app/useKusd.js'), /const GATE = \[PINS\.oracle, PINS\.psm, PINS\.surplus, PINS\.budget, PINS\.factory\]/);
+  // the gate's five covids, factory last, are checked with the real snapshot in kusd-app-pins.test.mjs
+  assert.match(read('components/kusd/app/useKusd.js'), /const GATE = appGate\(PINS\)/);
 });
 
 test('the page shows the vault factory beside the budget', () => {

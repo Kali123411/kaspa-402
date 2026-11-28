@@ -3,7 +3,7 @@
 // built; transactions are signed here and broadcast straight to the node.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import snapshot from '../../../public/kusd/snapshot.json';
-import { loadState, canAct, utxosFromSdk, untilVerified } from '../../../lib/kusd/app/state.mjs';
+import { loadState, canAct, utxosFromSdk, untilVerified, appPins, appGate } from '../../../lib/kusd/app/state.mjs';
 import { parseJson, stringifyJson } from '../../../lib/kusd/json64.mjs';
 import { coinsFromUtxos } from '../../../lib/kusd/app/coins.mjs';
 import { toSdkTransaction } from '../../../lib/kusd/app/sdk-tx.mjs';
@@ -13,10 +13,9 @@ import { loadLocal, saveLocal, mergeCreated, allEntries, pruneLocal } from '../.
 
 export const RELAY_URL = 'https://kusd.kaspa-402.org/state';
 export const NODE_KEY = 'kusd.node';
-const KINDS = ['oracle', 'psm', 'budget', 'authority', 'surplus'];
 // Pinned in reviewed code: a relay can't move the app onto other covenants.
-export const PINS = Object.fromEntries(KINDS.map((k) => [k, snapshot.covenants[k].covid]));
-const GATE = [PINS.oracle, PINS.psm, PINS.surplus, PINS.budget, PINS.factory];
+export const PINS = appPins(snapshot);
+const GATE = appGate(PINS);
 
 export const readStored = (key) => {
   try { return window.localStorage.getItem(key); } catch { return null; }
