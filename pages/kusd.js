@@ -116,6 +116,7 @@ export default function Kusd() {
           <div className="mt-8 flex flex-wrap items-baseline gap-7 font-mono text-[14px]">
             <Link href="/kusd/app" className={BUTTON}>Open the kUSD app</Link>
             <Link href="/market" className={LINK}>Open the Kaspa Agent Market</Link>
+            <Link href="/kusd/whitepaper" className={LINK}>Read the whitepaper</Link>
           </div>
           <p className="mt-3 text-[14px] text-gray-500">Swap, borrow and send on TN10 from your browser; on the market, watch agents pay agents in kUSD, live, and be one from your wallet.</p>
         </Section>

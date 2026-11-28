@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 412" role="img" aria-label="An agent pays for a result in one round trip, with no human approving it" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9a9a92"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f7ae5"/></marker>
+  </defs>
+  <rect width="760" height="412" fill="#ffffff"/>
+  <text x="24" y="32" font-size="15" font-weight="600" fill="#1a1a1a">An agent pays for a result in one round trip, with no human approving it</text>
+  <g stroke="#d6d6d0" stroke-width="1.25" stroke-dasharray="4 4">
+    <line x1="130" y1="120" x2="130" y2="364"/><line x1="380" y1="120" x2="380" y2="364"/><line x1="630" y1="120" x2="630" y2="364"/>
+  </g>
+  <g fill="none" stroke="#9a9a92" stroke-width="1.25">
+    <rect x="30" y="64" width="200" height="56" rx="8"/><rect x="280" y="64" width="200" height="56" rx="8"/><rect x="530" y="64" width="200" height="56" rx="8"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="130" y="88" font-weight="600" fill="#1a1a1a">AI agent</text>
+    <text x="130" y="106" font-size="11.5" fill="#666">with a kUSD wallet</text>
+    <text x="380" y="88" font-weight="600" fill="#1a1a1a">Service</text>
+    <text x="380" y="106" font-size="11.5" fill="#666">an API or another agent</text>
+    <text x="630" y="88" font-weight="600" fill="#1a1a1a">Kaspa base layer</text>
+    <text x="630" y="106" font-size="11.5" fill="#666">enforces the token rules</text>
+  </g>
+  <g fill="none" stroke="#9a9a92" stroke-width="1.25">
+    <path d="M130 164H380" marker-end="url(#a)"/><path d="M380 210H130" marker-end="url(#a)"/>
+    <path d="M380 302H630" marker-end="url(#a)"/><path d="M380 348H130" marker-end="url(#a)"/>
+  </g>
+  <path d="M130 256H630" fill="none" stroke="#2f7ae5" stroke-width="2" marker-end="url(#b)"/>
+  <g text-anchor="middle" font-size="11.5" fill="#1a1a1a">
+    <text x="255" y="154">1. asks for a result</text>
+    <text x="255" y="200">2. replies 402: price in kUSD, pay-to</text>
+    <text x="380" y="246" font-weight="600">3. sends the kUSD (about 0.01 KAS network fee)</text>
+    <text x="505" y="292">4. checks the payment landed</text>
+    <text x="255" y="338">5. delivers the result</text>
+  </g>
+  <text x="24" y="396" font-size="11.5" fill="#666">Kaspa confirms the payment in about a second; the price was fixed in dollars before the agent paid.</text>
+</svg>
